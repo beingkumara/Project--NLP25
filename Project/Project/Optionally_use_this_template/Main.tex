@@ -1,0 +1,77 @@
+% This is Main.tex, a sample chapter demonstrating the
+% LLNCS macro package for Springer Computer Science proceedings;
+% Version 2.20 of 2017/10/04
+% All rights to Springer
+
+\documentclass[runningheads]{llncs}
+
+\usepackage{graphicx}
+\usepackage{pgfplots}
+\usepackage{amsmath}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{paracol}
+\globalcounter{algocf}
+\usepackage{wrapfig}
+\usepackage{colortbl}
+
+\usepackage{amssymb}
+\usepackage{subcaption}
+
+\newcommand{\mymk}[1]{%
+  \tikz[baseline=(char.base)]\node[anchor=south west, draw,rectangle, rounded corners, inner sep=2pt, minimum size=4mm,
+    text height=2mm](char){\ensuremath{#1}} ;}
+
+\usepackage{xfakebold}
+
+\newcommand{\fbseries}{\unskip\setBold\aftergroup\unsetBold\aftergroup\ignorespaces}
+\makeatletter
+\newcommand{\setBoldness}[1]{\def\fake@bold{#1}}
+\makeatother
+
+
+\pgfplotsset{width=5cm, compat = 1.17}%
+\frenchspacing
+
+\begin{document}
+
+\title{Title} 
+
+\titlerunning{Running Title}
+
+
+\author{Autthor 1\inst{1}, Author 2\inst{1}, \and Author 3\inst{1,2}}
+\institute{Indian Institute of Technology, Madras, Chennai 600036, TN, India\\
+                \email{\{roll\_no\_1,roll\_no\_2,roll\_no\_3\}@smail.iitm.ac.in} \and
+            University 2
+                \email{email}
+           }
+
+\authorrunning{Team Number: 123 }
+%
+\maketitle   % typeset the header of the contribution
+%
+\begin{abstract}
+\input{Sections/Abstract}
+
+\keywords{Keyword 1 \and Keyword 2 \and Keyword 3}
+\end{abstract}
+
+\input{Sections/Introduction}
+
+\input{Sections/ProblemStatement}
+
+\input{Sections/Background}
+
+\input{Sections/Approach}
+
+\input{Sections/Experimentation}
+
+\input{Sections/Discussion}
+
+\input{Sections/ConclusionAndFutureWork}
+
+\bibliographystyle{splncs04}
+\bibliography{refs}
+
+\end{document}

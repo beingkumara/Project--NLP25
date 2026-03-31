@@ -1,0 +1,30 @@
+Part 4: Analysis [Theory]
+
+1. What are the limitations of the Vector Space Model (VSM)? Provide examples from the Cranfield dataset that illustrate these shortcomings in your IR system.
+
+The Vector Space Model has a few big problems when we use it for searching. At first, I thought it was a perfect mathematical representation, but after testing it with our dataset, I saw two main limitations.
+
+For the first point, we learned about the "semantic gap" in theory class. Let me explain what I noticed: VSM strictly checks for exact string matches. Suppose the user searches for "fast car" but our document only contains "quick vehicle". VSM will just give a zero score because it doesn't know these mean the exact same thing. 
+Also, VSM completely ignores grammar and the order of words because of the "Bag of Words" assumption. So a sentence like "aerodynamics effect the wing" will result in the exact same vector as "wing effect the aerodynamics". It loses all the actual context which gave me weird results.
+
+I wanted to see this in our own Cranfield dataset, so I wrote a Python script to search for a query where a relevant document got a really bad rank. I spent quite some time understanding how to extract this, but I finally found a great example:
+Query 1 asks: "what similarity laws must be obeyed when constructing aeroelastic models of heated high speed aircraft ."
+Our ground truth cran_qrels.json file says that Document 31 is highly relevant to this query (position 2). But when I checked our system's ordered list, Document 31 was ranked all the way down at 608!
+
+When I looked at Document 31's text, I understood why:
+"thermal buckling of supersonic wing panels . the temperature and thermal stress distributions are analyzed in multicellular supersonic wing structures . a buckling criterion is established for the panels of cover plates subjected to thermal stresses ."
+
+The query uses words like "heated" and "high speed aircraft", while the document uses "thermal", "temperature", and "supersonic wing structures". As a human, I can clearly see they mean the exact same concepts. But because the exact strings don't match, the TF-IDF calculation gives a very low cosine similarity score. The VSM just blindly matches the exact characters and misses the actual meaning completely.
+
+
+2. The Zero-Result Problem (OOV Issue):
+
+- What happens when a query contains a word that does not appear in the document vocabulary (Out-of-Vocabulary term)?
+If someone types a word that is not present in our entire index (Out-of-Vocabulary), the term frequency (TF) for that word is zero across all documents. So the IDF is also zero or undefined (which we handle as zero). During the cosine similarity calculation, this OOV word gets a zero weight and contributes absolutely nothing to the numerator (the dot product). So, the system just acts like that word was never typed in the first place.
+
+- How does this affect retrieval results in your system?
+I noticed this ruins the recall and precision completely. If the user makes a small spelling mistake or uses a new term we haven't indexed, the system completely ignores that word. If there are other normal words in the query, it will just search using those, and return matches that are kind of incomplete because it missed the main meaning of the OOV word. But if all the words in the query are OOV, the query vector is basically all zeros. When I did the math manually, the dot product with any document becomes exactly zero. Our rank function will then just return the documents in no particular order (in my test, it just returned documents 1, 2, 3, 4, 5...) because everything has a similarity score of exactly 0.0.
+
+- Provide an example query demonstrating this issue.
+I tested this by creating a completely random query: "intergalactic starships flippity floppity". Because none of these words exist in the 1400 Cranfield aerodynamics documents, they were all treated as OOV words.
+When I ran this through our IR script, it didn't find any meaningful matches. Instead of returning relevant docs, it just returned the top 5 documents as [1, 2, 3, 4, 5]. This proved to me that when the query vector is all zeros, the cosine similarity sorting just falls back to the default original order of the documents and the search completely fails.
