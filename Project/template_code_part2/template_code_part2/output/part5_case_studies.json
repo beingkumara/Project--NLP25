@@ -1,0 +1,32 @@
+{
+    "vocab_mismatch": {
+        "query_id": 1,
+        "doc_id": 29,
+        "query_text": "what similarity laws must be obeyed when constructing aeroelastic models of heated high speed aircraft .",
+        "ranks": {
+            "VSM (Baseline)": 109,
+            "BM25": 65,
+            "LSA (k=200)": 77,
+            "VSM + QE": 117,
+            "BM25 + PRF": 34,
+            "ESA": 126,
+            "ESA (Cranfield)": 27
+        }
+    },
+    "worst_ranked_relevant": {
+        "query_id": 1,
+        "doc_id": 29,
+        "baseline_rank": 109,
+        "qrel_position": 2,
+        "query_text": "what similarity laws must be obeyed when constructing aeroelastic models of heated high speed aircraft .",
+        "ranks": {
+            "VSM (Baseline)": 109,
+            "BM25": 65,
+            "LSA (k=200)": 77,
+            "VSM + QE": 117,
+            "BM25 + PRF": 34,
+            "ESA": 126,
+            "ESA (Cranfield)": 27
+        }
+    }
+}

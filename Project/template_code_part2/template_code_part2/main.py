@@ -41,24 +41,89 @@ class SearchEngine:
         self.evaluator = Evaluation()
 
     def segmentSentences(self, text):
+        """
+        Segment the input text into sentences.
+
+        Parameters
+        ----------
+        text : str
+            The raw text content of a document or query.
+
+        Returns
+        -------
+        list
+            A list of strings where each string is a sentence.
+        """
         if self.args.segmenter == "naive":
             return self.sentenceSegmenter.naive(text)
         elif self.args.segmenter == "punkt":
             return self.sentenceSegmenter.punkt(text)
 
     def tokenize(self, text):
+        """
+        Tokenize the input sentences.
+
+        Parameters
+        ----------
+        text : list
+            A list of strings (sentences).
+
+        Returns
+        -------
+        list
+            A list of lists (tokens per sentence).
+        """
         if self.args.tokenizer == "naive":
             return self.tokenizer.naive(text)
         elif self.args.tokenizer == "ptb":
             return self.tokenizer.pennTreeBank(text)
 
     def reduceInflection(self, text):
+        """
+        Reduce the words to their root forms.
+
+        Parameters
+        ----------
+        text : list
+            A list of lists of tokens.
+
+        Returns
+        -------
+        list
+            A list of lists of reduced tokens.
+        """
         return self.inflectionReducer.reduce(text)
 
     def removeStopwords(self, text):
+        """
+        Remove irrelevant common words from the text.
+
+        Parameters
+        ----------
+        text : list
+            A list of lists of tokens.
+
+        Returns
+        -------
+        list
+            A list of lists of tokens with stopwords removed.
+        """
         return self.stopwordRemover.fromList(text)
 
     def preprocessQueries(self, queries):
+        """
+        Complete preprocessing pipeline for queries.
+
+        Parameters
+        ----------
+        queries : list
+            A list of raw query strings.
+
+        Returns
+        -------
+        list
+            A list of preprocessed queries (3D list).
+        """
         segmentedQueries = []
         for query in queries:
             segmentedQuery = self.segmentSentences(query)
@@ -90,6 +155,19 @@ class SearchEngine:
         return stopwordRemovedQueries
 
     def preprocessDocs(self, docs):
+        """
+        Complete preprocessing pipeline for documents.
+
+        Parameters
+        ----------
+        docs : list
+            A list of raw document body strings.
+
+        Returns
+        -------
+        list
+            A list of preprocessed documents (3D list).
+        """
         segmentedDocs = []
         for doc in docs:
             segmentedDoc = self.segmentSentences(doc)
@@ -121,6 +199,17 @@ class SearchEngine:
         return stopwordRemovedDocs
 
     def evaluateDataset(self):
+        """
+        Run the full IR system evaluation on the Cranfield dataset.
+
+        Parameters
+        ----------
+        None.
+
+        Returns
+        -------
+        None.
+        """
 
         queries_json = json.load(open(os.path.join(args.dataset, "cran_queries.json"), 'r'))[:]
         query_ids = [item["query number"] for item in queries_json]
@@ -177,6 +266,17 @@ class SearchEngine:
         plt.savefig(os.path.join(args.out_folder, "eval_plot.png"))
 
     def handleCustomQuery(self):
+        """
+        Allow the user to enter a custom query via the terminal.
+
+        Parameters
+        ----------
+        None.
+
+        Returns
+        -------
+        None.
+        """
 
         print("Enter query below")
         query = input()

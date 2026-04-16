@@ -22,72 +22,7 @@ from informationRetrieval import InformationRetrieval
 from evaluation import Evaluation
 
 
-def load_json(file_path):
-    # I wrote this small function just to load json files easily.
-    # Basically it opens the file and reads data.
-    f_in = open(file_path, 'r')
-    read_data = json.load(f_in)
-    f_in.close()
-    return read_data
-
-
-def get_relevant_docs(qrels):
-    # This function goes through the qrels data to find relevant doc ids for each query.
-    # The question mentions that position 1 up to 4 means the document is relevant.
-    # So I have to put condition to check if position is in that range.
-    # At first I was confused how to store them, but then decided dictionary is easiest.
-    # key will be query id and value will be list of relevant doc ids.
-    
-    dict_relevant = {}
-
-    # Going through all entries one by one in the qrels list
-    for i in range(len(qrels)):
-        curr_entry = qrels[i]
-        
-        # When I printed query_num I saw it was string! So I have to convert to int here
-        # so it can match the query ids from cran_queries later on.
-        q_id = int(curr_entry["query_num"])
-        d_id = int(curr_entry["id"])
-        pos = curr_entry["position"]
-
-        # If query id is not present in my dictionary, create empty list
-        if q_id not in dict_relevant:
-            dict_relevant[q_id] = []
-
-        # I have to check if position is 1, 2, 3 or 4.
-        if pos == 1 or pos == 2 or pos == 3 or pos == 4:
-            # I must check if document is already there so no duplicates get added.
-            is_present = False
-            for prev_doc in dict_relevant[q_id]:
-                if prev_doc == d_id:
-                    is_present = True
-            
-            if is_present == False:
-                dict_relevant[q_id].append(d_id)
-
-    # print("Count of queries that have true relevance:", len(dict_relevant))
-
-    return dict_relevant
-
-
-def preprocess_text(text, _segmenter, _tokenizer, _reducer, _stop_remover):
-    # This function takes normal text and completely processes it.
-    # I am going step by step: segmenting, tokenizing, reducing inflection, and removing stop words.
-    # I am passing the objects so I don't have to create them again and again, which saves time.
-
-    # 1. break text into sentences
-    sent_list = _segmenter.punkt(text)
-
-    # 2. break sentences into tokens
-    tok_list = _tokenizer.pennTreeBank(sent_list)
-
-    # 3. do inflection reduction like lemmatize
-    red_list = _reducer.reduce(tok_list)
-
-    # 4. remove all the stop words
-    clean_list = _stop_remover.fromList(red_list)
-
-    return clean_list
+from util import load_json, get_relevant_docs, preprocess_text, parse_cranfield_data, ranked_list_to_dict
 
 
 def main():
@@ -118,19 +53,8 @@ def main():
     print("I loaded", len(all_docs), "documents")
     print("I loaded", len(all_qrels), "qrels items")
 
-    # Now I need to separate out query ids and the query text into separate lists
-    query_ids_list = []
-    query_text_list = []
-    for i in range(len(all_queries)):
-        query_ids_list.append(all_queries[i]["query number"])
-        query_text_list.append(all_queries[i]["query"])
-
-    # Doing the exact same thing for documents
-    doc_ids_list = []
-    doc_text_list = []
-    for i in range(len(all_docs)):
-        doc_ids_list.append(all_docs[i]["id"])
-        doc_text_list.append(all_docs[i]["body"])
+    # Using my shared parsing function to load and separate data
+    query_ids_list, query_text_list, doc_ids_list, doc_text_list = parse_cranfield_data(all_queries, all_docs)
 
     # Calling my function to build truth dict
     my_relevant_docs = get_relevant_docs(all_qrels)
@@ -161,12 +85,8 @@ def main():
     doc_IDs_ordered_list = ir_system.rank(processed_queries)
     print("Done ranking!")
 
-    # At first I got a bug because rank returns a list of lists, but my evaluation
-    # needs a dictionary with query_id as key. So I have to map them here manually.
-    dict_doc_IDs_ordered = {}
-    for i in range(len(query_ids_list)):
-        curr_qid = query_ids_list[i]
-        dict_doc_IDs_ordered[curr_qid] = doc_IDs_ordered_list[i]
+    # Using shared utility function for the list-to-dict conversion
+    dict_doc_IDs_ordered = ranked_list_to_dict(doc_IDs_ordered_list, query_ids_list)
 
     # Also another issue I found: some queries don't have any relevant docs in json!
     # If I don't add them as empty list, I will get KeyError in evaluation.

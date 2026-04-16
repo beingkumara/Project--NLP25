@@ -108,6 +108,16 @@ class InflectionReduction:
 		Wrapper function for inflection reduction.
 		Students may choose which method to call
 		or extend this function to support both options.
+
+		Parameters
+		----------
+		text : list
+			A list of lists where each sub-list is a sequence of tokens.
+
+		Returns
+		-------
+		list
+			A list of lists with reduced tokens.
 		"""
 		
 		# Earlier I had tried to return both the lemmatized and stemmed forms 

@@ -1,0 +1,50 @@
+[
+    {
+        "method": "BM25",
+        "statistic": 13286.5,
+        "p_value": 5.8138312904532545e-12,
+        "mean_delta_ap": 0.054975102572000785,
+        "significant": true,
+        "interpretation": "BM25 IS significantly better than VSM baseline (p=0.0, mean delta MAP=0.055)."
+    },
+    {
+        "method": "LSA (k=200)",
+        "statistic": 13018.5,
+        "p_value": 2.05401902613784e-09,
+        "mean_delta_ap": 0.054268074707833194,
+        "significant": true,
+        "interpretation": "LSA (k=200) IS significantly better than VSM baseline (p=0.0, mean delta MAP=0.0543)."
+    },
+    {
+        "method": "VSM + QE",
+        "statistic": 2237.5,
+        "p_value": 0.9999999999995954,
+        "mean_delta_ap": -0.03913213489243296,
+        "significant": false,
+        "interpretation": "VSM + QE is NOT significantly better than VSM baseline (p=1.0, mean delta MAP=-0.0391)."
+    },
+    {
+        "method": "BM25 + PRF",
+        "statistic": 13423.0,
+        "p_value": 1.7806213205185619e-09,
+        "mean_delta_ap": 0.05952982889007136,
+        "significant": true,
+        "interpretation": "BM25 + PRF IS significantly better than VSM baseline (p=0.0, mean delta MAP=0.0595)."
+    },
+    {
+        "method": "ESA",
+        "statistic": 4082.0,
+        "p_value": 0.9999999980009151,
+        "mean_delta_ap": -0.05757804190581224,
+        "significant": false,
+        "interpretation": "ESA is NOT significantly better than VSM baseline (p=1.0, mean delta MAP=-0.0576)."
+    },
+    {
+        "method": "ESA (Cranfield)",
+        "statistic": 12201.0,
+        "p_value": 3.673979269724947e-05,
+        "mean_delta_ap": 0.02728372582324774,
+        "significant": true,
+        "interpretation": "ESA (Cranfield) IS significantly better than VSM baseline (p=0.0, mean delta MAP=0.0273)."
+    }
+]

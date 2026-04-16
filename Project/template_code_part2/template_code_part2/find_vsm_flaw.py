@@ -8,20 +8,7 @@ from inflectionReduction import InflectionReduction
 from stopwordRemoval import StopwordRemoval
 from informationRetrieval import InformationRetrieval
 
-# simple json loader that i wrote before
-def load_json(file_path):
-    f_in = open(file_path, 'r')
-    read_data = json.load(f_in)
-    f_in.close()
-    return read_data
-
-# combining all text preprocessing steps
-def preprocess_text(text, _segmenter, _tokenizer, _reducer, _stop_remover):
-    sent_list = _segmenter.punkt(text)
-    tok_list = _tokenizer.pennTreeBank(sent_list)
-    red_list = _reducer.reduce(tok_list)
-    clean_list = _stop_remover.fromList(red_list)
-    return clean_list
+from util import load_json, preprocess_text
 
 def main():
     print("Loading data...")

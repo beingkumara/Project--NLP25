@@ -10,40 +10,39 @@ class InformationRetrieval():
 	def buildIndex(self, docs, docIDs):
 		"""
 		Builds the document index in terms of the document
-		IDs and stores it in the 'index' class variable
-		"""
-		number_of_documents = len(docs)
-		index = dict()
-		
-		# Iterate through all the documents first
-		for document_index in range(number_of_documents):
-			docID = docIDs[document_index]
-			
-			# Going inside the document sentence by sentence
-			for sentence in docs[document_index]:
-				
-				# Getting each word from the sentence list
-				for word in sentence:
-					
-					# Creating a dictionary for the word if it is coming for the first time
-					if word not in index:
-						index[word] = dict()
-					
-					# Setting initial frequency of this word in this document to 0
-					if docID not in index[word]:
-						index[word][docID] = 0
-					
-					# Increment the count of the word for this particular docID
-					index[word][docID] = index[word][docID] + 1
-					# print("word:", word, "found in doc:", docID)
+		IDs and stores it in the 'index' class variable.
+		We use our shared utility function to build the inverted index.
 
-		# Saving the built index and document IDs for ranking phase
-		self.index = index
+		Parameters
+		----------
+		docs : list
+			A 3D list where docs[i] is a document, docs[i][j] is a sentence, 
+			and docs[i][j][k] is a token.
+		docIDs : list
+			A list of integers representing the IDs of the documents.
+
+		Returns
+		-------
+		None
+		"""
+		# Using the shared function from util.py to avoid writing same loop again
+		self.index = build_inverted_index(docs, docIDs)
 		self.docIDs = docIDs
 
 	def rank(self, queries):
 		"""
-		Rank the documents according to relevance for each query
+		Rank the documents according to relevance for each query.
+
+		Parameters
+		----------
+		queries : list
+			A 3D list where queries[i] is a query, queries[i][j] is a sentence, 
+			and queries[i][j][k] is a token.
+
+		Returns
+		-------
+		list
+			A list of lists containing ranked document IDs for each query.
 		"""
 		# Base case: empty index or missing documents
 		if self.index is None or len(self.docIDs) == 0:
@@ -55,28 +54,12 @@ class InformationRetrieval():
 		doc_IDs_ordered = []
 
 		total_documents = len(self.docIDs)
-		idf_values = dict()
-		
-		# Now calculating IDF (Inverse Document Frequency) for all words in our vocabulary
-		# Formula from class is IDF = log10(N / df)
-		for word in self.index:
-			# df is document frequency, which is just the number of keys in the inner dictionary
-			document_frequency = len(self.index[word])
-			
-			# Storing idf values so we do not have to compute them again and again
-			idf_values[word] = math.log10(total_documents / document_frequency)
 
-		# Computing the maximum Term Frequency (TF) for each document
-		# This is required for finding the augmented TF later: TF_aug = 0.5 + 0.5*(tf/max_tf)
-		max_tf_per_doc = dict()
-		for word in self.index:
-			for docID in self.index[word]:
-				raw_tf = self.index[word][docID]
-				if docID not in max_tf_per_doc:
-					max_tf_per_doc[docID] = raw_tf
-				else:
-					if raw_tf > max_tf_per_doc[docID]:
-						max_tf_per_doc[docID] = raw_tf
+		# Using our shared IDF computation function
+		idf_values = compute_idf_values(self.index, total_documents)
+
+		# Using our shared max TF computation function
+		max_tf_per_doc = compute_max_tf_per_doc(self.index)
 
 		# We must compute norm (length) of every document vector to use in cosine similarity denominator
 		doc_vector_norms = dict()
@@ -106,25 +89,11 @@ class InformationRetrieval():
 		# Processing each query 
 		for query in queries:
 			
-			# Finding raw word counts for the query
-			query_tf = dict()
-			for sentence in query:
-				for word in sentence:
-					if word in query_tf:
-						query_tf[word] = query_tf[word] + 1
-					else:
-						query_tf[word] = 1
+			# Using our shared query word counting function
+			query_tf, max_tf_in_query = count_query_words(query)
 			
 			query_vector = dict()
 			query_vector_norm = 0
-			
-			# To apply augmented TF on the query, we find its max TF first
-			max_tf_in_query = 0
-			for word in query_tf:
-				if query_tf[word] > max_tf_in_query:
-					max_tf_in_query = query_tf[word]
-			if max_tf_in_query == 0:
-				max_tf_in_query = 1
 			
 			for word in query_tf:
 				raw_tf_q = query_tf[word]
@@ -177,26 +146,8 @@ class InformationRetrieval():
 					
 				document_scores[docID] = cosine_similarity
 
-			# Preparing the list to sort documents by their accumulated similarity scores
-			ranked_documents_list = []
-			for docID in document_scores:
-				final_score = document_scores[docID]
-				# putting score first to sort directly 
-				ranked_documents_list.append([final_score, docID])
-			
-			# descending order sorting based on scores
-			ranked_documents_list.sort(reverse=True)
-			
-			current_query_ranked_ids = []
-			for item in ranked_documents_list:
-				doc_id_only = item[1]
-				current_query_ranked_ids.append(doc_id_only)
-			
-			# Adding documents that did not match any word in the query at the end
-			# because they have 0 similarity score
-			for docID in self.docIDs:
-				if docID not in document_scores:
-					current_query_ranked_ids.append(docID)
+			# Using our shared sort and complete ranking function
+			current_query_ranked_ids = sort_and_complete_ranking(document_scores, self.docIDs)
 			
 			# Append the final ranked document IDs for this query
 			doc_IDs_ordered.append(current_query_ranked_ids)

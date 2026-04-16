@@ -61,6 +61,22 @@ class Evaluation():
 		"""
 		Computation of precision of the Information Retrieval System
 		at a given value of k, averaged over all the queries
+
+		Parameters
+		----------
+		doc_IDs_ordered : dict
+			A dictionary mapping query IDs to ranked document IDs.
+		query_ids : list
+			A list of integers representing the IDs of the queries.
+		qrels : dict
+			Relevance judgments mapping query IDs to relevant doc IDs.
+		k : int
+			The k value for Precision@k.
+
+		Returns
+		-------
+		float
+			The mean precision value across all queries.
 		"""
 
 
@@ -81,6 +97,22 @@ class Evaluation():
 		"""
 		Computation of recall of the Information Retrieval System
 		at a given value of k for a single query
+
+		Parameters
+		----------
+		query_doc_IDs_ordered : list
+			Ranked document IDs for the query.
+		query_id : int
+			The ID of the query.
+		true_doc_IDs : list
+			The ground truth list of relevant document IDs.
+		k : int
+			The k value for Recall@k.
+
+		Returns
+		-------
+		float
+			The recall value for this query at k.
 		"""
 
 		# Let us initialize recall as 0
@@ -118,6 +150,22 @@ class Evaluation():
 		"""
 		Computation of recall of the Information Retrieval System
 		at a given value of k, averaged over all the queries
+
+		Parameters
+		----------
+		doc_IDs_ordered : dict
+			A dictionary mapping query IDs to ranked document IDs.
+		query_ids : list
+			A list of integers representing the IDs of the queries.
+		qrels : dict
+			Relevance judgments mapping query IDs to relevant doc IDs.
+		k : int
+			The k value for Recall@k.
+
+		Returns
+		-------
+		float
+			The mean recall value across all queries.
 		"""
 
 		total_recall = 0
@@ -169,6 +217,22 @@ class Evaluation():
 		"""
 		Computation of fscore of the Information Retrieval System
 		at a given value of k, averaged over all the queries
+
+		Parameters
+		----------
+		doc_IDs_ordered : dict
+			A dictionary mapping query IDs to ranked document IDs.
+		query_ids : list
+			A list of integers representing the IDs of the queries.
+		qrels : dict
+			Relevance judgments mapping query IDs to relevant doc IDs.
+		k : int
+			The k value for Fscore@k.
+
+		Returns
+		-------
+		float
+			The mean F0.5-score across all queries.
 		"""
 
 		total_fscore = 0
@@ -187,6 +251,21 @@ class Evaluation():
 		Computation of nDCG of the Information Retrieval System
 		at given value of k for a single query.
 
+		Parameters
+		----------
+		query_doc_IDs_ordered : list
+			Ranked document IDs for the query.
+		query_id : int
+			The ID of the query.
+		true_doc_IDs : list
+			The ground truth list of relevant document IDs.
+		k : int
+			The k value for nDCG@k.
+
+		Returns
+		-------
+		float
+			The nDCG value for this query at k.
 		"""
 
 		# Initialize all values
@@ -236,6 +315,22 @@ class Evaluation():
 		"""
 		Computation of nDCG of the Information Retrieval System
 		at a given value of k, averaged over all the queries
+
+		Parameters
+		----------
+		doc_IDs_ordered : dict
+			A dictionary mapping query IDs to ranked document IDs.
+		query_ids : list
+			A list of integers representing the IDs of the queries.
+		qrels : dict
+			Relevance judgments mapping query IDs to relevant doc IDs.
+		k : int
+			The k value for nDCG@k.
+
+		Returns
+		-------
+		float
+			The mean nDCG value across all queries.
 		"""
 
 		# Handle edge case where no queries are given
@@ -258,6 +353,22 @@ class Evaluation():
 		Computation of average precision of the Information Retrieval System
 		at a given value of k for a single query (the average of precision@i
 		values for i such that the ith document is truly relevant)
+
+		Parameters
+		----------
+		query_doc_IDs_ordered : list
+			Ranked document IDs for the query.
+		query_id : int
+			The ID of the query.
+		true_doc_IDs : list
+			The ground truth list of relevant document IDs.
+		k : int
+			The k value for AP@k.
+
+		Returns
+		-------
+		float
+			The Average Precision value for this query at k.
 		"""
 
 		# AP@k = (1 / |R|) * sum of Precision@i for each relevant doc at position i within top-k
@@ -298,6 +409,22 @@ class Evaluation():
 		"""
 		Computation of MAP of the Information Retrieval System
 		at given value of k, averaged over all the queries
+
+		Parameters
+		----------
+		doc_IDs_ordered : dict
+			A dictionary mapping query IDs to ranked document IDs.
+		query_ids : list
+			A list of integers representing the IDs of the queries.
+		q_rels : dict
+			Relevance judgments mapping query IDs to relevant doc IDs.
+		k : int
+			The k value for MAP@k.
+
+		Returns
+		-------
+		float
+			The Mean Average Precision value across all queries.
 		"""
 
 		# Handle edge case: if no queries, return 0

@@ -6,23 +6,7 @@ from inflectionReduction import InflectionReduction
 from stopwordRemoval import StopwordRemoval
 from informationRetrieval import InformationRetrieval
 
-# helper function to load json files that i got from reference
-def load_json(file_path):
-    f_in = open(file_path, 'r')
-    read_data = json.load(f_in)
-    f_in.close()
-    return read_data
-
-# this function will apply all the nlp steps one after another
-def preprocess_text(text, _segmenter, _tokenizer, _reducer, _stop_remover):
-    # first we segment into sentences
-    sent_list = _segmenter.punkt(text)
-    # then tokenize
-    tok_list = _tokenizer.pennTreeBank(sent_list)
-    # apply inflection reduction like stemming
-    red_list = _reducer.reduce(tok_list)
-    # finally remove stop words so we have clean tokens
-    return _stop_remover.fromList(red_list)
+from util import load_json, preprocess_text
 
 def main():
     print("Loading data for OOV test...")

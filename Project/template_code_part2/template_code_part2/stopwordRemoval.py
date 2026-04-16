@@ -11,11 +11,23 @@ class StopwordRemoval():
 		# We initialize this variable to store our customized data-driven stopwords
 		self.data_driven_stopwords = None
 
-	def get_data_driven_stopwords(self, dataset_docs):
+	def get_data_driven_stopwords(self, docs, docIDs):
 		"""
 		Calculates the stopwords dynamically from the dataset using Augmented TF-IDF.
 		As discussed in the lectures, words with very low TF-IDF scores across the entire corpus
 		are highly frequent and do not help in distinguishing between documents.
+
+		Parameters
+		----------
+		docs : list
+			A 3D list of lists representing the documents.
+		docIDs : list
+			The corresponding list of document IDs.
+
+		Returns
+		-------
+		list
+			A list of strings containing the calculated stopwords.
 		"""
 		# We use standard dictionary to count frequencies
 		document_frequencies = dict()
