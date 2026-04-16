@@ -77,7 +77,7 @@ python test_oov.py
 ```
 
 ### Interactive Search
-To run the main search pipeline or use custom interactive queries:
+To run the main search pipeline or use custom interactive queries: - Will fail, need to write the main file properly
 ```bash
 python main.py
 ```
