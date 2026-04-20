@@ -1,0 +1,46 @@
+[
+    {
+        "system_a": "BM25",
+        "system_b": "LSA (k=200)",
+        "map_a": 0.324,
+        "map_b": 0.3233,
+        "difference": 0.0007,
+        "wins_a": 96,
+        "wins_b": 92,
+        "ties": 37,
+        "explanation": "Marginal MAP difference (0.0007) between BM25 and LSA (k=200). Query-level breakdown: BM25 wins on 96 queries, LSA (k=200) wins on 92 queries, 37 ties. The aggregate difference is marginal and should not be taken as proof of superiority without formal hypothesis testing."
+    },
+    {
+        "system_a": "BM25",
+        "system_b": "BM25 + PRF",
+        "map_a": 0.324,
+        "map_b": 0.3286,
+        "difference": 0.0046,
+        "wins_a": 87,
+        "wins_b": 85,
+        "ties": 53,
+        "explanation": "Marginal MAP difference (0.0046) between BM25 and BM25 + PRF. Query-level breakdown: BM25 wins on 87 queries, BM25 + PRF wins on 85 queries, 53 ties. The aggregate difference is marginal and should not be taken as proof of superiority without formal hypothesis testing."
+    },
+    {
+        "system_a": "LSA (k=200)",
+        "system_b": "BM25 + PRF",
+        "map_a": 0.3233,
+        "map_b": 0.3286,
+        "difference": 0.0053,
+        "wins_a": 86,
+        "wins_b": 105,
+        "ties": 34,
+        "explanation": "Marginal MAP difference (0.0053) between LSA (k=200) and BM25 + PRF. Query-level breakdown: LSA (k=200) wins on 86 queries, BM25 + PRF wins on 105 queries, 34 ties. The aggregate difference is marginal and should not be taken as proof of superiority without formal hypothesis testing."
+    },
+    {
+        "system_a": "VSM + QE",
+        "system_b": "ESA",
+        "map_a": 0.2299,
+        "map_b": 0.2115,
+        "difference": 0.0184,
+        "wins_a": 91,
+        "wins_b": 89,
+        "ties": 45,
+        "explanation": "Marginal MAP difference (0.0184) between VSM + QE and ESA. Query-level breakdown: VSM + QE wins on 91 queries, ESA wins on 89 queries, 45 ties. The aggregate difference is marginal and should not be taken as proof of superiority without formal hypothesis testing."
+    }
+]

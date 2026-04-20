@@ -1,0 +1,476 @@
+{
+    "BM25": {
+        "queries_improved": 136,
+        "queries_degraded": 47,
+        "queries_unchanged": 42,
+        "top_improvements": [
+            {
+                "query_id": 143,
+                "delta_ap": 0.4968,
+                "baseline_ap": 0.0476,
+                "method_ap": 0.5444,
+                "query_text": "what general solutions for the stresses in pressurized shells of revolution are available ."
+            },
+            {
+                "query_id": 51,
+                "delta_ap": 0.4698,
+                "baseline_ap": 0.1909,
+                "method_ap": 0.6608,
+                "query_text": "what is the available information pertaining to boundary layers on very slender bodies of revolution"
+            },
+            {
+                "query_id": 52,
+                "delta_ap": 0.4526,
+                "baseline_ap": 0.2067,
+                "method_ap": 0.6593,
+                "query_text": "what is the available information pertaining to the effect of slight rarefaction on boundary layer f"
+            },
+            {
+                "query_id": 198,
+                "delta_ap": 0.42,
+                "baseline_ap": 0.1,
+                "method_ap": 0.52,
+                "query_text": "is there any information available on the difference in the effects of various edge conditions on th"
+            },
+            {
+                "query_id": 193,
+                "delta_ap": 0.3764,
+                "baseline_ap": 0.4,
+                "method_ap": 0.7764,
+                "query_text": "general methods of solving clamped plate problems ."
+            }
+        ],
+        "top_degradations": [
+            {
+                "query_id": 27,
+                "delta_ap": -0.25,
+                "baseline_ap": 0.375,
+                "method_ap": 0.125,
+                "query_text": "how is the design of ring or part ring wings by linear theory affected by thickness ."
+            },
+            {
+                "query_id": 29,
+                "delta_ap": -0.2288,
+                "baseline_ap": 0.3717,
+                "method_ap": 0.1429,
+                "query_text": "what is the effect of cross sectional shape on the flow over simple delta wings with sharp leading e"
+            },
+            {
+                "query_id": 145,
+                "delta_ap": -0.214,
+                "baseline_ap": 0.5062,
+                "method_ap": 0.2923,
+                "query_text": "what are the best experimental data and classical small deflection theory analyses available for pre"
+            },
+            {
+                "query_id": 146,
+                "delta_ap": -0.2,
+                "baseline_ap": 0.8667,
+                "method_ap": 0.6667,
+                "query_text": "does a membrane theory exist by which the behaviour of pressurized membrane cylinders in bending can"
+            },
+            {
+                "query_id": 110,
+                "delta_ap": -0.2,
+                "baseline_ap": 0.2,
+                "method_ap": 0.0,
+                "query_text": "can increasing the edge loading of a plate beyond the critical value for buckling change the bucklin"
+            }
+        ]
+    },
+    "LSA (k=200)": {
+        "queries_improved": 124,
+        "queries_degraded": 62,
+        "queries_unchanged": 39,
+        "top_improvements": [
+            {
+                "query_id": 20,
+                "delta_ap": 0.5078,
+                "baseline_ap": 0.3922,
+                "method_ap": 0.9,
+                "query_text": "has anyone formally determined the influence of joule heating,  produced by the induced current,  in"
+            },
+            {
+                "query_id": 184,
+                "delta_ap": 0.4264,
+                "baseline_ap": 0.1528,
+                "method_ap": 0.5792,
+                "query_text": "work on small-oscillation re-entry motions ."
+            },
+            {
+                "query_id": 191,
+                "delta_ap": 0.4258,
+                "baseline_ap": 0.1829,
+                "method_ap": 0.6086,
+                "query_text": "what is the criterion for true panel flutter,  as opposed to small amplitude vibration arising from "
+            },
+            {
+                "query_id": 200,
+                "delta_ap": 0.4,
+                "baseline_ap": 0.35,
+                "method_ap": 0.75,
+                "query_text": "are asymptotic methods sufficiently accurate in the determination of pre-buckling stresses in torisp"
+            },
+            {
+                "query_id": 118,
+                "delta_ap": 0.3854,
+                "baseline_ap": 0.0312,
+                "method_ap": 0.4167,
+                "query_text": "what are the aerodynamic interference effects on the fin lift and body lift of a fin-body combinatio"
+            }
+        ],
+        "top_degradations": [
+            {
+                "query_id": 146,
+                "delta_ap": -0.2,
+                "baseline_ap": 0.8667,
+                "method_ap": 0.6667,
+                "query_text": "does a membrane theory exist by which the behaviour of pressurized membrane cylinders in bending can"
+            },
+            {
+                "query_id": 110,
+                "delta_ap": -0.2,
+                "baseline_ap": 0.2,
+                "method_ap": 0.0,
+                "query_text": "can increasing the edge loading of a plate beyond the critical value for buckling change the bucklin"
+            },
+            {
+                "query_id": 113,
+                "delta_ap": -0.2,
+                "baseline_ap": 0.2,
+                "method_ap": 0.0,
+                "query_text": "what data exists on oscillatory aerodynamic forces on control surfaces at transonic mach numbers ."
+            },
+            {
+                "query_id": 214,
+                "delta_ap": -0.2,
+                "baseline_ap": 0.4,
+                "method_ap": 0.2,
+                "query_text": "can non-linear shallow shell analysis be reduced to an engineering technique by use of the matrix ."
+            },
+            {
+                "query_id": 164,
+                "delta_ap": -0.1944,
+                "baseline_ap": 0.3796,
+                "method_ap": 0.1852,
+                "query_text": "what determines the onset of shock-induced boundary-layer separation ."
+            }
+        ]
+    },
+    "VSM + QE": {
+        "queries_improved": 28,
+        "queries_degraded": 130,
+        "queries_unchanged": 67,
+        "top_improvements": [
+            {
+                "query_id": 102,
+                "delta_ap": 0.2679,
+                "baseline_ap": 0.3321,
+                "method_ap": 0.6,
+                "query_text": "basic dynamic characteristics of structures continuous over many spans ."
+            },
+            {
+                "query_id": 18,
+                "delta_ap": 0.2361,
+                "baseline_ap": 0.1389,
+                "method_ap": 0.375,
+                "query_text": "are experimental pressure distributions on bodies of revolution at angle of attack available ."
+            },
+            {
+                "query_id": 177,
+                "delta_ap": 0.2225,
+                "baseline_ap": 0.7259,
+                "method_ap": 0.9484,
+                "query_text": "what mode of stalling can be expected for each stage of an axial compressor ."
+            },
+            {
+                "query_id": 188,
+                "delta_ap": 0.2153,
+                "baseline_ap": 0.25,
+                "method_ap": 0.4653,
+                "query_text": "what theoretical and experimental work has been done on the excitation and response of typical struc"
+            },
+            {
+                "query_id": 179,
+                "delta_ap": 0.2,
+                "baseline_ap": 0.4,
+                "method_ap": 0.6,
+                "query_text": "has a theory of quasi-conical flows been developed, in supersonic linearised theory, for which the u"
+            }
+        ],
+        "top_degradations": [
+            {
+                "query_id": 165,
+                "delta_ap": -0.5,
+                "baseline_ap": 0.8333,
+                "method_ap": 0.3333,
+                "query_text": "are the stable profiles of a compressible boundary layer induced by a moving wave known ."
+            },
+            {
+                "query_id": 81,
+                "delta_ap": -0.4603,
+                "baseline_ap": 0.7222,
+                "method_ap": 0.2619,
+                "query_text": "what are wind-tunnel corrections for a two-dimensional aerofoil mounted off-centre in a tunnel ."
+            },
+            {
+                "query_id": 190,
+                "delta_ap": -0.3214,
+                "baseline_ap": 0.4881,
+                "method_ap": 0.1667,
+                "query_text": "will an analysis of panel flutter based on arbitrarily assumed modes of deformation prove satisfacto"
+            },
+            {
+                "query_id": 41,
+                "delta_ap": -0.3146,
+                "baseline_ap": 0.7333,
+                "method_ap": 0.4187,
+                "query_text": "has anyone investigated and developed a simple model for the vortex wake behind a cruciform wing ."
+            },
+            {
+                "query_id": 183,
+                "delta_ap": -0.3128,
+                "baseline_ap": 0.5311,
+                "method_ap": 0.2183,
+                "query_text": "what factors have been shown to have a primary influence on sonic boom strength ."
+            }
+        ]
+    },
+    "BM25 + PRF": {
+        "queries_improved": 127,
+        "queries_degraded": 62,
+        "queries_unchanged": 36,
+        "top_improvements": [
+            {
+                "query_id": 106,
+                "delta_ap": 0.6528,
+                "baseline_ap": 0.1528,
+                "method_ap": 0.8056,
+                "query_text": "experimental techniques in shell vibration ."
+            },
+            {
+                "query_id": 222,
+                "delta_ap": 0.5117,
+                "baseline_ap": 0.1167,
+                "method_ap": 0.6283,
+                "query_text": "has anyone investigated the shear buckling of stiffened plates ."
+            },
+            {
+                "query_id": 198,
+                "delta_ap": 0.5,
+                "baseline_ap": 0.1,
+                "method_ap": 0.6,
+                "query_text": "is there any information available on the difference in the effects of various edge conditions on th"
+            },
+            {
+                "query_id": 208,
+                "delta_ap": 0.4522,
+                "baseline_ap": 0.4857,
+                "method_ap": 0.9379,
+                "query_text": "what is the effect of the shape of the drag polar of a lifting spacecraft on the amount of reduction"
+            },
+            {
+                "query_id": 193,
+                "delta_ap": 0.38,
+                "baseline_ap": 0.4,
+                "method_ap": 0.78,
+                "query_text": "general methods of solving clamped plate problems ."
+            }
+        ],
+        "top_degradations": [
+            {
+                "query_id": 146,
+                "delta_ap": -0.4778,
+                "baseline_ap": 0.8667,
+                "method_ap": 0.3889,
+                "query_text": "does a membrane theory exist by which the behaviour of pressurized membrane cylinders in bending can"
+            },
+            {
+                "query_id": 155,
+                "delta_ap": -0.2976,
+                "baseline_ap": 0.4405,
+                "method_ap": 0.1429,
+                "query_text": "technical report on measurement of ablation during flight ."
+            },
+            {
+                "query_id": 29,
+                "delta_ap": -0.2889,
+                "baseline_ap": 0.3717,
+                "method_ap": 0.0827,
+                "query_text": "what is the effect of cross sectional shape on the flow over simple delta wings with sharp leading e"
+            },
+            {
+                "query_id": 31,
+                "delta_ap": -0.25,
+                "baseline_ap": 0.5,
+                "method_ap": 0.25,
+                "query_text": "what size of end plate can be safely used to simulate two-dimensional flow conditions over a bluff c"
+            },
+            {
+                "query_id": 145,
+                "delta_ap": -0.2354,
+                "baseline_ap": 0.5062,
+                "method_ap": 0.2708,
+                "query_text": "what are the best experimental data and classical small deflection theory analyses available for pre"
+            }
+        ]
+    },
+    "ESA": {
+        "queries_improved": 60,
+        "queries_degraded": 120,
+        "queries_unchanged": 45,
+        "top_improvements": [
+            {
+                "query_id": 52,
+                "delta_ap": 0.7044,
+                "baseline_ap": 0.2067,
+                "method_ap": 0.9111,
+                "query_text": "what is the available information pertaining to the effect of slight rarefaction on boundary layer f"
+            },
+            {
+                "query_id": 64,
+                "delta_ap": 0.2778,
+                "baseline_ap": 0.1667,
+                "method_ap": 0.4444,
+                "query_text": "can't the static deflection shapes be used in predicting flutter in place of vibrational shapes . if"
+            },
+            {
+                "query_id": 187,
+                "delta_ap": 0.2388,
+                "baseline_ap": 0.2612,
+                "method_ap": 0.5,
+                "query_text": "has anyone analytically or experimentally investigated the effects of internal pressure on the buckl"
+            },
+            {
+                "query_id": 61,
+                "delta_ap": 0.1702,
+                "baseline_ap": 0.3278,
+                "method_ap": 0.498,
+                "query_text": "does there exist a closed-form expression for the local heat transfer around a yawed cylinder ."
+            },
+            {
+                "query_id": 4,
+                "delta_ap": 0.1361,
+                "baseline_ap": 0.6556,
+                "method_ap": 0.7917,
+                "query_text": "can a criterion be developed to show empirically the validity of flow solutions for chemically react"
+            }
+        ],
+        "top_degradations": [
+            {
+                "query_id": 49,
+                "delta_ap": -0.6667,
+                "baseline_ap": 0.6667,
+                "method_ap": 0.0,
+                "query_text": "can the three-point boundary-value problem for the blasius equation be integrated numerically,  usin"
+            },
+            {
+                "query_id": 81,
+                "delta_ap": -0.6111,
+                "baseline_ap": 0.7222,
+                "method_ap": 0.1111,
+                "query_text": "what are wind-tunnel corrections for a two-dimensional aerofoil mounted off-centre in a tunnel ."
+            },
+            {
+                "query_id": 173,
+                "delta_ap": -0.5714,
+                "baseline_ap": 1.0,
+                "method_ap": 0.4286,
+                "query_text": "references on lyapunov's method on the stability of linear differential equations with periodic coef"
+            },
+            {
+                "query_id": 78,
+                "delta_ap": -0.5429,
+                "baseline_ap": 0.7929,
+                "method_ap": 0.25,
+                "query_text": "has anyone explained the kink in the surge line of a multi-stage axial compressor ."
+            },
+            {
+                "query_id": 171,
+                "delta_ap": -0.5417,
+                "baseline_ap": 0.75,
+                "method_ap": 0.2083,
+                "query_text": "has a comparison been made between interference-free drag measurements using free-flight models and "
+            }
+        ]
+    },
+    "ESA (Cranfield)": {
+        "queries_improved": 120,
+        "queries_degraded": 71,
+        "queries_unchanged": 34,
+        "top_improvements": [
+            {
+                "query_id": 20,
+                "delta_ap": 0.4078,
+                "baseline_ap": 0.3922,
+                "method_ap": 0.8,
+                "query_text": "has anyone formally determined the influence of joule heating,  produced by the induced current,  in"
+            },
+            {
+                "query_id": 198,
+                "delta_ap": 0.3121,
+                "baseline_ap": 0.1,
+                "method_ap": 0.4121,
+                "query_text": "is there any information available on the difference in the effects of various edge conditions on th"
+            },
+            {
+                "query_id": 191,
+                "delta_ap": 0.298,
+                "baseline_ap": 0.1829,
+                "method_ap": 0.4809,
+                "query_text": "what is the criterion for true panel flutter,  as opposed to small amplitude vibration arising from "
+            },
+            {
+                "query_id": 95,
+                "delta_ap": 0.2944,
+                "baseline_ap": 0.15,
+                "method_ap": 0.4444,
+                "query_text": "what is the theoretical heat transfer distribution around a hemisphere ."
+            },
+            {
+                "query_id": 130,
+                "delta_ap": 0.2722,
+                "baseline_ap": 0.4583,
+                "method_ap": 0.7306,
+                "query_text": "what are the flutter characteristics of the exposed skin panels of the x-15 vertical stabilizer when"
+            }
+        ],
+        "top_degradations": [
+            {
+                "query_id": 31,
+                "delta_ap": -0.4,
+                "baseline_ap": 0.5,
+                "method_ap": 0.1,
+                "query_text": "what size of end plate can be safely used to simulate two-dimensional flow conditions over a bluff c"
+            },
+            {
+                "query_id": 24,
+                "delta_ap": -0.397,
+                "baseline_ap": 0.65,
+                "method_ap": 0.253,
+                "query_text": "what are the factors which influence the time required to invert large structural matrices ."
+            },
+            {
+                "query_id": 146,
+                "delta_ap": -0.2,
+                "baseline_ap": 0.8667,
+                "method_ap": 0.6667,
+                "query_text": "does a membrane theory exist by which the behaviour of pressurized membrane cylinders in bending can"
+            },
+            {
+                "query_id": 110,
+                "delta_ap": -0.2,
+                "baseline_ap": 0.2,
+                "method_ap": 0.0,
+                "query_text": "can increasing the edge loading of a plate beyond the critical value for buckling change the bucklin"
+            },
+            {
+                "query_id": 113,
+                "delta_ap": -0.2,
+                "baseline_ap": 0.2,
+                "method_ap": 0.0,
+                "query_text": "what data exists on oscillatory aerodynamic forces on control surfaces at transonic mach numbers ."
+            }
+        ]
+    }
+}

@@ -1,0 +1,558 @@
+{
+    "BM25": {
+        "new_failures_count": 2,
+        "fixed_failures_count": 5,
+        "new_failures": [
+            {
+                "query_id": 35,
+                "baseline_ap": 0.0278,
+                "method_ap": 0.0,
+                "query_text": "are there any papers dealing with acoustic wave propagation in reacting gases .",
+                "failure_reason": "Method retrieved zero relevant docs in top-10 for this query."
+            },
+            {
+                "query_id": 110,
+                "baseline_ap": 0.2,
+                "method_ap": 0.0,
+                "query_text": "can increasing the edge loading of a plate beyond the critical value for buckling change the bucklin",
+                "failure_reason": "Method retrieved zero relevant docs in top-10 for this query."
+            }
+        ],
+        "fixed_failures": [
+            {
+                "query_id": 36,
+                "baseline_ap": 0.0,
+                "method_ap": 0.3333,
+                "query_text": "has anyone investigated relaxation effects on gaseous heat transfer to a suddenly heated wall ."
+            },
+            {
+                "query_id": 74,
+                "baseline_ap": 0.0,
+                "method_ap": 0.0238,
+                "query_text": "how significant is the possible pressure of a dissociated free stream with respect to the realizatio"
+            },
+            {
+                "query_id": 117,
+                "baseline_ap": 0.0,
+                "method_ap": 0.0476,
+                "query_text": "is there any information on how the addition of a /boat-tail/ affects the normal force on the body o"
+            },
+            {
+                "query_id": 133,
+                "baseline_ap": 0.0,
+                "method_ap": 0.0429,
+                "query_text": "experimental studies of creep buckling ."
+            },
+            {
+                "query_id": 174,
+                "baseline_ap": 0.0,
+                "method_ap": 0.0167,
+                "query_text": "obtain all papers and reports that contain shock detachment distance data ."
+            }
+        ]
+    },
+    "LSA (k=200)": {
+        "new_failures_count": 5,
+        "fixed_failures_count": 6,
+        "new_failures": [
+            {
+                "query_id": 19,
+                "baseline_ap": 0.0125,
+                "method_ap": 0.0,
+                "query_text": "does there exist a good basic treatment of the dynamics of re-entry combining consideration of reali",
+                "failure_reason": "Method retrieved zero relevant docs in top-10 for this query."
+            },
+            {
+                "query_id": 69,
+                "baseline_ap": 0.0208,
+                "method_ap": 0.0,
+                "query_text": "what is known regarding asymptotic solutions to the exact boundary layer equations .",
+                "failure_reason": "Method retrieved zero relevant docs in top-10 for this query."
+            },
+            {
+                "query_id": 110,
+                "baseline_ap": 0.2,
+                "method_ap": 0.0,
+                "query_text": "can increasing the edge loading of a plate beyond the critical value for buckling change the bucklin",
+                "failure_reason": "Method retrieved zero relevant docs in top-10 for this query."
+            },
+            {
+                "query_id": 113,
+                "baseline_ap": 0.2,
+                "method_ap": 0.0,
+                "query_text": "what data exists on oscillatory aerodynamic forces on control surfaces at transonic mach numbers .",
+                "failure_reason": "Method retrieved zero relevant docs in top-10 for this query."
+            },
+            {
+                "query_id": 211,
+                "baseline_ap": 0.0083,
+                "method_ap": 0.0,
+                "query_text": "what papers are available on the buckling of empty cylindrical shells under non-uniform pressure .",
+                "failure_reason": "Method retrieved zero relevant docs in top-10 for this query."
+            }
+        ],
+        "fixed_failures": [
+            {
+                "query_id": 36,
+                "baseline_ap": 0.0,
+                "method_ap": 0.1111,
+                "query_text": "has anyone investigated relaxation effects on gaseous heat transfer to a suddenly heated wall ."
+            },
+            {
+                "query_id": 116,
+                "baseline_ap": 0.0,
+                "method_ap": 0.0833,
+                "query_text": "what is the magnitude and distribution of lift over the cone and the cylindrical portion of a cone-c"
+            },
+            {
+                "query_id": 117,
+                "baseline_ap": 0.0,
+                "method_ap": 0.0667,
+                "query_text": "is there any information on how the addition of a /boat-tail/ affects the normal force on the body o"
+            },
+            {
+                "query_id": 133,
+                "baseline_ap": 0.0,
+                "method_ap": 0.094,
+                "query_text": "experimental studies of creep buckling ."
+            },
+            {
+                "query_id": 151,
+                "baseline_ap": 0.0,
+                "method_ap": 0.1583,
+                "query_text": "what is the best theoretical method for calculating pressure on the surface of a wing alone ."
+            },
+            {
+                "query_id": 174,
+                "baseline_ap": 0.0,
+                "method_ap": 0.0833,
+                "query_text": "obtain all papers and reports that contain shock detachment distance data ."
+            }
+        ]
+    },
+    "VSM + QE": {
+        "new_failures_count": 16,
+        "fixed_failures_count": 0,
+        "new_failures": [
+            {
+                "query_id": 59,
+                "baseline_ap": 0.1,
+                "method_ap": 0.0,
+                "query_text": "how much is known about boundary layer flows along non-circular cylinders .",
+                "failure_reason": "Method retrieved zero relevant docs in top-10 for this query."
+            },
+            {
+                "query_id": 64,
+                "baseline_ap": 0.1667,
+                "method_ap": 0.0,
+                "query_text": "can't the static deflection shapes be used in predicting flutter in place of vibrational shapes . if",
+                "failure_reason": "Method retrieved zero relevant docs in top-10 for this query."
+            },
+            {
+                "query_id": 69,
+                "baseline_ap": 0.0208,
+                "method_ap": 0.0,
+                "query_text": "what is known regarding asymptotic solutions to the exact boundary layer equations .",
+                "failure_reason": "Method retrieved zero relevant docs in top-10 for this query."
+            },
+            {
+                "query_id": 72,
+                "baseline_ap": 0.0463,
+                "method_ap": 0.0,
+                "query_text": "what has been done about viscous interactions in relatively low reynolds number flows, particularly ",
+                "failure_reason": "Method retrieved zero relevant docs in top-10 for this query."
+            },
+            {
+                "query_id": 77,
+                "baseline_ap": 0.0143,
+                "method_ap": 0.0,
+                "query_text": "how close is the comparison of the shock layer theory with existing experiments in the low reynolds ",
+                "failure_reason": "Method retrieved zero relevant docs in top-10 for this query."
+            },
+            {
+                "query_id": 84,
+                "baseline_ap": 0.0208,
+                "method_ap": 0.0,
+                "query_text": "references on the methods available for accurately estimating aerodynamic heat transfer to conical b",
+                "failure_reason": "Method retrieved zero relevant docs in top-10 for this query."
+            },
+            {
+                "query_id": 87,
+                "baseline_ap": 0.037,
+                "method_ap": 0.0,
+                "query_text": "what effect has the boundary layer in modifying the basic inviscid flow behind the shock, neglecting",
+                "failure_reason": "Method retrieved zero relevant docs in top-10 for this query."
+            },
+            {
+                "query_id": 91,
+                "baseline_ap": 0.0111,
+                "method_ap": 0.0,
+                "query_text": "what interference effects are likely at transonic speeds .",
+                "failure_reason": "Method retrieved zero relevant docs in top-10 for this query."
+            },
+            {
+                "query_id": 100,
+                "baseline_ap": 0.0962,
+                "method_ap": 0.0,
+                "query_text": "what are the effects of initial imperfections on the elastic buckling of cylindrical shells under ax",
+                "failure_reason": "Method retrieved zero relevant docs in top-10 for this query."
+            },
+            {
+                "query_id": 118,
+                "baseline_ap": 0.0312,
+                "method_ap": 0.0,
+                "query_text": "what are the aerodynamic interference effects on the fin lift and body lift of a fin-body combinatio",
+                "failure_reason": "Method retrieved zero relevant docs in top-10 for this query."
+            },
+            {
+                "query_id": 167,
+                "baseline_ap": 0.0417,
+                "method_ap": 0.0,
+                "query_text": "exact solution methods for calculating the ablative mass loss of a material ablating at high tempera",
+                "failure_reason": "Method retrieved zero relevant docs in top-10 for this query."
+            },
+            {
+                "query_id": 196,
+                "baseline_ap": 0.0897,
+                "method_ap": 0.0,
+                "query_text": "the problem of similarity for representative investigation of aeroelastic effects in a flow with the",
+                "failure_reason": "Method retrieved zero relevant docs in top-10 for this query."
+            },
+            {
+                "query_id": 204,
+                "baseline_ap": 0.0111,
+                "method_ap": 0.0,
+                "query_text": "do viscous effects seriously modify pressure distributions .",
+                "failure_reason": "Method retrieved zero relevant docs in top-10 for this query."
+            },
+            {
+                "query_id": 209,
+                "baseline_ap": 0.0264,
+                "method_ap": 0.0,
+                "query_text": "what are the physical significance and characteristics of separated laminar and turbulent boundary l",
+                "failure_reason": "Method retrieved zero relevant docs in top-10 for this query."
+            },
+            {
+                "query_id": 221,
+                "baseline_ap": 0.0263,
+                "method_ap": 0.0,
+                "query_text": "papers applicable to this problem (calculation procedures for laminar incompressible flow with arbit",
+                "failure_reason": "Method retrieved zero relevant docs in top-10 for this query."
+            },
+            {
+                "query_id": 224,
+                "baseline_ap": 0.0432,
+                "method_ap": 0.0,
+                "query_text": "in practice, how close to reality are the assumptions that the flow in a hypersonic shock tube using",
+                "failure_reason": "Method retrieved zero relevant docs in top-10 for this query."
+            }
+        ],
+        "fixed_failures": []
+    },
+    "BM25 + PRF": {
+        "new_failures_count": 6,
+        "fixed_failures_count": 4,
+        "new_failures": [
+            {
+                "query_id": 14,
+                "baseline_ap": 0.0556,
+                "method_ap": 0.0,
+                "query_text": "papers on shock-sound wave interaction .",
+                "failure_reason": "Method retrieved zero relevant docs in top-10 for this query."
+            },
+            {
+                "query_id": 35,
+                "baseline_ap": 0.0278,
+                "method_ap": 0.0,
+                "query_text": "are there any papers dealing with acoustic wave propagation in reacting gases .",
+                "failure_reason": "Method retrieved zero relevant docs in top-10 for this query."
+            },
+            {
+                "query_id": 64,
+                "baseline_ap": 0.1667,
+                "method_ap": 0.0,
+                "query_text": "can't the static deflection shapes be used in predicting flutter in place of vibrational shapes . if",
+                "failure_reason": "Method retrieved zero relevant docs in top-10 for this query."
+            },
+            {
+                "query_id": 110,
+                "baseline_ap": 0.2,
+                "method_ap": 0.0,
+                "query_text": "can increasing the edge loading of a plate beyond the critical value for buckling change the bucklin",
+                "failure_reason": "Method retrieved zero relevant docs in top-10 for this query."
+            },
+            {
+                "query_id": 139,
+                "baseline_ap": 0.2,
+                "method_ap": 0.0,
+                "query_text": "has the effect of the change of initial pressure due to deformation,  on the frequencies of vibratio",
+                "failure_reason": "Method retrieved zero relevant docs in top-10 for this query."
+            },
+            {
+                "query_id": 204,
+                "baseline_ap": 0.0111,
+                "method_ap": 0.0,
+                "query_text": "do viscous effects seriously modify pressure distributions .",
+                "failure_reason": "Method retrieved zero relevant docs in top-10 for this query."
+            }
+        ],
+        "fixed_failures": [
+            {
+                "query_id": 36,
+                "baseline_ap": 0.0,
+                "method_ap": 0.1667,
+                "query_text": "has anyone investigated relaxation effects on gaseous heat transfer to a suddenly heated wall ."
+            },
+            {
+                "query_id": 74,
+                "baseline_ap": 0.0,
+                "method_ap": 0.0357,
+                "query_text": "how significant is the possible pressure of a dissociated free stream with respect to the realizatio"
+            },
+            {
+                "query_id": 133,
+                "baseline_ap": 0.0,
+                "method_ap": 0.1125,
+                "query_text": "experimental studies of creep buckling ."
+            },
+            {
+                "query_id": 174,
+                "baseline_ap": 0.0,
+                "method_ap": 0.0167,
+                "query_text": "obtain all papers and reports that contain shock detachment distance data ."
+            }
+        ]
+    },
+    "ESA": {
+        "new_failures_count": 16,
+        "fixed_failures_count": 2,
+        "new_failures": [
+            {
+                "query_id": 6,
+                "baseline_ap": 0.3,
+                "method_ap": 0.0,
+                "query_text": "what theoretical and experimental guides do we have as to turbulent couette flow behaviour .",
+                "failure_reason": "Method retrieved zero relevant docs in top-10 for this query."
+            },
+            {
+                "query_id": 19,
+                "baseline_ap": 0.0125,
+                "method_ap": 0.0,
+                "query_text": "does there exist a good basic treatment of the dynamics of re-entry combining consideration of reali",
+                "failure_reason": "Method retrieved zero relevant docs in top-10 for this query."
+            },
+            {
+                "query_id": 35,
+                "baseline_ap": 0.0278,
+                "method_ap": 0.0,
+                "query_text": "are there any papers dealing with acoustic wave propagation in reacting gases .",
+                "failure_reason": "Method retrieved zero relevant docs in top-10 for this query."
+            },
+            {
+                "query_id": 49,
+                "baseline_ap": 0.6667,
+                "method_ap": 0.0,
+                "query_text": "can the three-point boundary-value problem for the blasius equation be integrated numerically,  usin",
+                "failure_reason": "Method retrieved zero relevant docs in top-10 for this query."
+            },
+            {
+                "query_id": 55,
+                "baseline_ap": 0.0606,
+                "method_ap": 0.0,
+                "query_text": "to what extent can the available information for incompressible boundary layers be applied to proble",
+                "failure_reason": "Method retrieved zero relevant docs in top-10 for this query."
+            },
+            {
+                "query_id": 69,
+                "baseline_ap": 0.0208,
+                "method_ap": 0.0,
+                "query_text": "what is known regarding asymptotic solutions to the exact boundary layer equations .",
+                "failure_reason": "Method retrieved zero relevant docs in top-10 for this query."
+            },
+            {
+                "query_id": 72,
+                "baseline_ap": 0.0463,
+                "method_ap": 0.0,
+                "query_text": "what has been done about viscous interactions in relatively low reynolds number flows, particularly ",
+                "failure_reason": "Method retrieved zero relevant docs in top-10 for this query."
+            },
+            {
+                "query_id": 77,
+                "baseline_ap": 0.0143,
+                "method_ap": 0.0,
+                "query_text": "how close is the comparison of the shock layer theory with existing experiments in the low reynolds ",
+                "failure_reason": "Method retrieved zero relevant docs in top-10 for this query."
+            },
+            {
+                "query_id": 83,
+                "baseline_ap": 0.2,
+                "method_ap": 0.0,
+                "query_text": "what is the present state of the theory of quasi-conical flows .",
+                "failure_reason": "Method retrieved zero relevant docs in top-10 for this query."
+            },
+            {
+                "query_id": 100,
+                "baseline_ap": 0.0962,
+                "method_ap": 0.0,
+                "query_text": "what are the effects of initial imperfections on the elastic buckling of cylindrical shells under ax",
+                "failure_reason": "Method retrieved zero relevant docs in top-10 for this query."
+            },
+            {
+                "query_id": 119,
+                "baseline_ap": 0.1667,
+                "method_ap": 0.0,
+                "query_text": "what is the effect of initial axisymmetric deviations from circularity on the non linear (large-defl",
+                "failure_reason": "Method retrieved zero relevant docs in top-10 for this query."
+            },
+            {
+                "query_id": 127,
+                "baseline_ap": 0.0208,
+                "method_ap": 0.0,
+                "query_text": "is it possible to obtain a reasonably simple analytical solution to the heat equation for an exponen",
+                "failure_reason": "Method retrieved zero relevant docs in top-10 for this query."
+            },
+            {
+                "query_id": 178,
+                "baseline_ap": 0.2217,
+                "method_ap": 0.0,
+                "query_text": "has a criterion been established for determining the axial compressor choking line .",
+                "failure_reason": "Method retrieved zero relevant docs in top-10 for this query."
+            },
+            {
+                "query_id": 204,
+                "baseline_ap": 0.0111,
+                "method_ap": 0.0,
+                "query_text": "do viscous effects seriously modify pressure distributions .",
+                "failure_reason": "Method retrieved zero relevant docs in top-10 for this query."
+            },
+            {
+                "query_id": 205,
+                "baseline_ap": 0.0833,
+                "method_ap": 0.0,
+                "query_text": "has anyone investigated theoretically whether surface flexibility can stabilize a laminar boundary l",
+                "failure_reason": "Method retrieved zero relevant docs in top-10 for this query."
+            },
+            {
+                "query_id": 221,
+                "baseline_ap": 0.0263,
+                "method_ap": 0.0,
+                "query_text": "papers applicable to this problem (calculation procedures for laminar incompressible flow with arbit",
+                "failure_reason": "Method retrieved zero relevant docs in top-10 for this query."
+            }
+        ],
+        "fixed_failures": [
+            {
+                "query_id": 133,
+                "baseline_ap": 0.0,
+                "method_ap": 0.0139,
+                "query_text": "experimental studies of creep buckling ."
+            },
+            {
+                "query_id": 152,
+                "baseline_ap": 0.0,
+                "method_ap": 0.0159,
+                "query_text": "how can the effect of the boundary-layer on wing pressure be calculated, and what is its magnitude ."
+            }
+        ]
+    },
+    "ESA (Cranfield)": {
+        "new_failures_count": 8,
+        "fixed_failures_count": 6,
+        "new_failures": [
+            {
+                "query_id": 19,
+                "baseline_ap": 0.0125,
+                "method_ap": 0.0,
+                "query_text": "does there exist a good basic treatment of the dynamics of re-entry combining consideration of reali",
+                "failure_reason": "Method retrieved zero relevant docs in top-10 for this query."
+            },
+            {
+                "query_id": 59,
+                "baseline_ap": 0.1,
+                "method_ap": 0.0,
+                "query_text": "how much is known about boundary layer flows along non-circular cylinders .",
+                "failure_reason": "Method retrieved zero relevant docs in top-10 for this query."
+            },
+            {
+                "query_id": 75,
+                "baseline_ap": 0.0333,
+                "method_ap": 0.0,
+                "query_text": "do the discrepancies among current analyses of the vorticity effect on stagnation-point heat transfe",
+                "failure_reason": "Method retrieved zero relevant docs in top-10 for this query."
+            },
+            {
+                "query_id": 110,
+                "baseline_ap": 0.2,
+                "method_ap": 0.0,
+                "query_text": "can increasing the edge loading of a plate beyond the critical value for buckling change the bucklin",
+                "failure_reason": "Method retrieved zero relevant docs in top-10 for this query."
+            },
+            {
+                "query_id": 113,
+                "baseline_ap": 0.2,
+                "method_ap": 0.0,
+                "query_text": "what data exists on oscillatory aerodynamic forces on control surfaces at transonic mach numbers .",
+                "failure_reason": "Method retrieved zero relevant docs in top-10 for this query."
+            },
+            {
+                "query_id": 143,
+                "baseline_ap": 0.0476,
+                "method_ap": 0.0,
+                "query_text": "what general solutions for the stresses in pressurized shells of revolution are available .",
+                "failure_reason": "Method retrieved zero relevant docs in top-10 for this query."
+            },
+            {
+                "query_id": 167,
+                "baseline_ap": 0.0417,
+                "method_ap": 0.0,
+                "query_text": "exact solution methods for calculating the ablative mass loss of a material ablating at high tempera",
+                "failure_reason": "Method retrieved zero relevant docs in top-10 for this query."
+            },
+            {
+                "query_id": 205,
+                "baseline_ap": 0.0833,
+                "method_ap": 0.0,
+                "query_text": "has anyone investigated theoretically whether surface flexibility can stabilize a laminar boundary l",
+                "failure_reason": "Method retrieved zero relevant docs in top-10 for this query."
+            }
+        ],
+        "fixed_failures": [
+            {
+                "query_id": 63,
+                "baseline_ap": 0.0,
+                "method_ap": 0.025,
+                "query_text": "where can i find pressure data on surfaces of swept cylinders ."
+            },
+            {
+                "query_id": 116,
+                "baseline_ap": 0.0,
+                "method_ap": 0.0238,
+                "query_text": "what is the magnitude and distribution of lift over the cone and the cylindrical portion of a cone-c"
+            },
+            {
+                "query_id": 133,
+                "baseline_ap": 0.0,
+                "method_ap": 0.0125,
+                "query_text": "experimental studies of creep buckling ."
+            },
+            {
+                "query_id": 151,
+                "baseline_ap": 0.0,
+                "method_ap": 0.0208,
+                "query_text": "what is the best theoretical method for calculating pressure on the surface of a wing alone ."
+            },
+            {
+                "query_id": 174,
+                "baseline_ap": 0.0,
+                "method_ap": 0.0278,
+                "query_text": "obtain all papers and reports that contain shock detachment distance data ."
+            },
+            {
+                "query_id": 219,
+                "baseline_ap": 0.0,
+                "method_ap": 0.0526,
+                "query_text": "what are the general effects on flow fields when the reynolds number is small ."
+            }
+        ]
+    }
+}

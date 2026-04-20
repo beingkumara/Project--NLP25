@@ -132,13 +132,14 @@ def compute_all_metrics(evaluator, doc_IDs_ordered_dict, query_ids, relevant_doc
 
 def wilcoxon_test(ap_baseline, ap_method, method_name):
     """
-    Perform a two-sided Wilcoxon Signed-Rank test between two paired
+    Perform a one-sided Wilcoxon Signed-Rank test between two paired
     distributions of per-query AP scores.
 
-    H0: The two systems have the same distribution of AP scores.
+    Hypothesis framing (as per our evaluation theory):
+      H0: method and baseline have the same distribution of AP scores.
+      H1: method has a higher distribution of AP scores than the baseline.
     We reject H0 at p < 0.05 and conclude the improvement is significant.
-
-    Returns a dict with the test statistic, p-value, and interpretation.
+    Also computes Cohen's d effect size to quantify the magnitude of difference.
     """
     differences = []
     for i in range(len(ap_method)):
@@ -153,10 +154,13 @@ def wilcoxon_test(ap_baseline, ap_method, method_name):
     if len(non_zero) == 0:
         return {
             "method": method_name,
+            "H0": "AP scores of " + method_name + " and VSM baseline come from the same distribution.",
+            "H1": method_name + " has significantly higher AP scores than the VSM baseline.",
             "statistic": None,
             "p_value": 1.0,
+            "cohens_d": 0.0,
             "significant": False,
-            "interpretation": "Both systems have identical performance."
+            "interpretation": "Both systems have identical performance. Cannot reject H0."
         }
 
     stat, p_value = stats.wilcoxon(ap_method, ap_baseline, alternative='greater')
@@ -166,21 +170,56 @@ def wilcoxon_test(ap_baseline, ap_method, method_name):
     for d in differences:
         sum_diff = sum_diff + d
     mean_delta = float(sum_diff) / float(len(differences))
+
+    # Computing Cohen's d for effect size
+    # Cohen's d = mean(differences) / std(differences)
+    # First compute variance manually
+    sum_sq_diff = 0.0
+    for d in differences:
+        sum_sq_diff = sum_sq_diff + ((d - mean_delta) ** 2)
+    variance = sum_sq_diff / float(len(differences))
+    std_dev = math.sqrt(variance)
+
+    cohens_d = 0.0
+    if std_dev > 0:
+        cohens_d = mean_delta / std_dev
+    # print("debug: cohens_d for", method_name, "is", cohens_d)
+
+    # Interpreting effect size
+    effect_label = "negligible"
+    if abs(cohens_d) >= 0.2 and abs(cohens_d) < 0.5:
+        effect_label = "small"
+    elif abs(cohens_d) >= 0.5 and abs(cohens_d) < 0.8:
+        effect_label = "medium"
+    elif abs(cohens_d) >= 0.8:
+        effect_label = "large"
     
     significant = False
     if p_value < 0.05:
         significant = True
 
     if significant:
-        interpretation = str(method_name) + " IS significantly better than VSM baseline (p=" + str(round(p_value, 4)) + ", mean delta MAP=" + str(round(mean_delta, 4)) + ")."
+        interpretation = (str(method_name) + " IS significantly better than VSM baseline"
+            + " (p=" + str(round(p_value, 4))
+            + ", mean delta MAP=" + str(round(mean_delta, 4))
+            + ", Cohen's d=" + str(round(cohens_d, 3))
+            + " [" + effect_label + "] effect). Reject H0.")
     else:
-        interpretation = str(method_name) + " is NOT significantly better than VSM baseline (p=" + str(round(p_value, 4)) + ", mean delta MAP=" + str(round(mean_delta, 4)) + ")."
+        interpretation = (str(method_name) + " is NOT significantly better than VSM baseline"
+            + " (p=" + str(round(p_value, 4))
+            + ", mean delta MAP=" + str(round(mean_delta, 4))
+            + ", Cohen's d=" + str(round(cohens_d, 3))
+            + " [" + effect_label + "] effect). Cannot reject H0.")
 
     return {
         "method": method_name,
+        "H0": "AP scores of " + method_name + " and VSM baseline come from the same distribution.",
+        "H1": method_name + " has significantly higher AP scores than the VSM baseline.",
         "statistic": float(stat),
         "p_value": float(p_value),
         "mean_delta_ap": mean_delta,
+        "cohens_d": cohens_d,
+        "effect_size_label": effect_label,
         "significant": significant,
         "interpretation": interpretation
     }
@@ -323,6 +362,250 @@ def plot_final_bar_chart(final_metrics, out_path):
     plt.savefig(out_path, dpi=150)
     plt.close()
     print("  Saved plot at:", out_path)
+
+# ===========================================================================
+# STANDARDIZED FORMULATION STATEMENT
+# ===========================================================================
+
+def print_standardized_formulation(system_name, measures_list):
+    """
+    This function prints the standardized evaluation formulation for a given system.
+    According to our evaluation framework, we must always state:
+    'Took algorithm C over dataset D under assumption E across measure F.'
+    This is done for each system to maintain proper documentation.
+    """
+    # Building the measures string manually
+    measures_str = ""
+    for m_idx in range(len(measures_list)):
+        if m_idx > 0:
+            measures_str = measures_str + ", "
+        measures_str = measures_str + measures_list[m_idx]
+
+    formulation = ("Took algorithm " + str(system_name)
+        + " over dataset Cranfield (1400 documents, 225 queries)"
+        + " under assumption [binary relevance, position <= 4 in qrels]"
+        + " across evaluation measures " + measures_str + ".")
+    
+    print("  [Formulation] " + formulation)
+    return formulation
+
+
+# ===========================================================================
+# PER-QUERY GRANULARITY ANALYSIS
+# ===========================================================================
+
+def per_query_granularity_analysis(per_query_ap_dict, query_ids, query_text_dict, n_top=5):
+    """
+    This function does a query-level breakdown for each system compared to baseline.
+    For each method, we find the top-N queries where it most outperforms or
+    underperforms the baseline. This is required so we go beyond surface-level
+    aggregate numbers and see exactly where each method helps or hurts.
+    """
+    baseline_ap = per_query_ap_dict["VSM (Baseline)"]
+    analysis_result = {}
+
+    system_names = []
+    for name in per_query_ap_dict.keys():
+        if name != "VSM (Baseline)":
+            system_names.append(name)
+
+    for sys_idx in range(len(system_names)):
+        sys_name = system_names[sys_idx]
+        method_ap = per_query_ap_dict[sys_name]
+
+        # Compute delta for each query
+        deltas = []
+        for q_idx in range(len(query_ids)):
+            q_id = query_ids[q_idx]
+            delta_val = method_ap[q_idx] - baseline_ap[q_idx]
+            deltas.append((delta_val, q_id, q_idx))
+
+        # Sort by delta descending to find best improvements
+        deltas.sort(reverse=True)
+
+        # Top N improvements
+        top_improvements = []
+        for i in range(min(n_top, len(deltas))):
+            delta_val, q_id, q_idx = deltas[i]
+            q_text = "N/A"
+            if q_id in query_text_dict:
+                q_text = query_text_dict[q_id]
+            top_improvements.append({
+                "query_id": q_id,
+                "delta_ap": round(delta_val, 4),
+                "baseline_ap": round(baseline_ap[q_idx], 4),
+                "method_ap": round(method_ap[q_idx], 4),
+                "query_text": q_text[:100]
+            })
+
+        # Top N degradations (worst deltas at the end)
+        top_degradations = []
+        for i in range(min(n_top, len(deltas))):
+            idx = len(deltas) - 1 - i
+            delta_val, q_id, q_idx = deltas[idx]
+            q_text = "N/A"
+            if q_id in query_text_dict:
+                q_text = query_text_dict[q_id]
+            top_degradations.append({
+                "query_id": q_id,
+                "delta_ap": round(delta_val, 4),
+                "baseline_ap": round(baseline_ap[q_idx], 4),
+                "method_ap": round(method_ap[q_idx], 4),
+                "query_text": q_text[:100]
+            })
+
+        # Count how many queries improved, degraded, or stayed same
+        count_improved = 0
+        count_degraded = 0
+        count_same = 0
+        for d_tuple in deltas:
+            if d_tuple[0] > 0.001:
+                count_improved = count_improved + 1
+            elif d_tuple[0] < -0.001:
+                count_degraded = count_degraded + 1
+            else:
+                count_same = count_same + 1
+
+        analysis_result[sys_name] = {
+            "queries_improved": count_improved,
+            "queries_degraded": count_degraded,
+            "queries_unchanged": count_same,
+            "top_improvements": top_improvements,
+            "top_degradations": top_degradations
+        }
+
+    return analysis_result
+
+
+# ===========================================================================
+# SYSTEMATIC FAILURE ANALYSIS
+# ===========================================================================
+
+def systematic_failure_analysis(per_query_ap_dict, query_ids, query_text_dict):
+    """
+    This function systematically finds queries where a method completely fails
+    (AP@10 = 0) but the baseline had some success (AP > 0). This helps us
+    understand the boundary conditions under which each method breaks.
+    We also note cases where a method fixes baseline failures.
+    """
+    baseline_ap = per_query_ap_dict["VSM (Baseline)"]
+    failure_report = {}
+
+    system_names = []
+    for name in per_query_ap_dict.keys():
+        if name != "VSM (Baseline)":
+            system_names.append(name)
+
+    for sys_idx in range(len(system_names)):
+        sys_name = system_names[sys_idx]
+        method_ap = per_query_ap_dict[sys_name]
+
+        # Finding new failures: baseline had AP > 0 but method has AP = 0
+        new_failures = []
+        # Finding fixed failures: baseline had AP = 0 but method has AP > 0
+        fixed_failures = []
+
+        for q_idx in range(len(query_ids)):
+            q_id = query_ids[q_idx]
+            b_ap = baseline_ap[q_idx]
+            m_ap = method_ap[q_idx]
+
+            q_text = "N/A"
+            if q_id in query_text_dict:
+                q_text = query_text_dict[q_id]
+
+            # New failure: baseline managed something, but this method got nothing
+            if b_ap > 0.001 and m_ap < 0.001:
+                new_failures.append({
+                    "query_id": q_id,
+                    "baseline_ap": round(b_ap, 4),
+                    "method_ap": round(m_ap, 4),
+                    "query_text": q_text[:100],
+                    "failure_reason": "Method retrieved zero relevant docs in top-10 for this query."
+                })
+
+            # Fixed: baseline got nothing, but method managed to retrieve something
+            if b_ap < 0.001 and m_ap > 0.001:
+                fixed_failures.append({
+                    "query_id": q_id,
+                    "baseline_ap": round(b_ap, 4),
+                    "method_ap": round(m_ap, 4),
+                    "query_text": q_text[:100]
+                })
+
+        failure_report[sys_name] = {
+            "new_failures_count": len(new_failures),
+            "fixed_failures_count": len(fixed_failures),
+            "new_failures": new_failures,
+            "fixed_failures": fixed_failures
+        }
+
+    return failure_report
+
+
+# ===========================================================================
+# MARGINAL DIFFERENCE ANALYSIS
+# ===========================================================================
+
+def marginal_difference_analysis(final_metrics, per_query_ap_dict, query_ids, query_text_dict):
+    """
+    When two systems differ by less than 2% MAP, we dig deeper to understand why.
+    This function compares all pairs and for marginal ones, checks the query-level
+    distribution to explain the difference rather than just accepting the number.
+    """
+    marginal_pairs = []
+
+    system_names = list(final_metrics.keys())
+
+    for i in range(len(system_names)):
+        for j in range(i + 1, len(system_names)):
+            name_a = system_names[i]
+            name_b = system_names[j]
+            map_a = final_metrics[name_a]["map"]
+            map_b = final_metrics[name_b]["map"]
+
+            diff = abs(map_a - map_b)
+            # If less than 2% difference, we call it marginal and investigate
+            if diff < 0.02:
+                # Count query-level wins for each side
+                ap_a = per_query_ap_dict[name_a]
+                ap_b = per_query_ap_dict[name_b]
+
+                wins_a = 0
+                wins_b = 0
+                ties = 0
+                for q_idx in range(len(query_ids)):
+                    if ap_a[q_idx] > ap_b[q_idx] + 0.001:
+                        wins_a = wins_a + 1
+                    elif ap_b[q_idx] > ap_a[q_idx] + 0.001:
+                        wins_b = wins_b + 1
+                    else:
+                        ties = ties + 1
+
+                explanation = ("Marginal MAP difference ("
+                    + str(round(diff, 4))
+                    + ") between " + name_a + " and " + name_b
+                    + ". Query-level breakdown: " + name_a + " wins on "
+                    + str(wins_a) + " queries, " + name_b + " wins on "
+                    + str(wins_b) + " queries, " + str(ties)
+                    + " ties. The aggregate difference is marginal and"
+                    + " should not be taken as proof of superiority without"
+                    + " formal hypothesis testing.")
+
+                marginal_pairs.append({
+                    "system_a": name_a,
+                    "system_b": name_b,
+                    "map_a": round(map_a, 4),
+                    "map_b": round(map_b, 4),
+                    "difference": round(diff, 4),
+                    "wins_a": wins_a,
+                    "wins_b": wins_b,
+                    "ties": ties,
+                    "explanation": explanation
+                })
+
+    return marginal_pairs
+
 
 # ===========================================================================
 # QUALITATIVE CASE STUDY
@@ -571,8 +854,12 @@ def main():
     final_metrics_at_k10       = {}  # sys_name -> metrics_dict at k=10
     per_query_ap_at_k10        = {}  # sys_name -> list of per-query AP values
 
+    # Here we define the evaluation measures we report for the formulation
+    eval_measures = ["Precision@k", "Recall@k", "F0.5@k", "MAP@k", "nDCG@k"]
+
     # ── BASELINE: TF-IDF VSM ────────────────────────────────────────────────
     print("\n[3/6] Running BASELINE (TF-IDF VSM)...")
+    print_standardized_formulation("VSM (TF-IDF Baseline)", eval_measures)
     t0 = time.time()
     vsm = InformationRetrieval()
     vsm.buildIndex(processed_docs, doc_ids)
@@ -594,6 +881,7 @@ def main():
 
     # ── METHOD A: BM25 ───────────────────────────────────────────────────────
     print("\n[4a/6] Running METHOD A (BM25, k1=1.5, b=0.75)...")
+    print_standardized_formulation("BM25 (k1=1.5, b=0.75)", eval_measures)
     t0 = time.time()
     bm25 = InformationRetrievalBM25(k1=1.5, b=0.75)
     bm25.buildIndex(processed_docs, doc_ids)
@@ -615,6 +903,7 @@ def main():
 
     # ── METHOD B: LSA — Ablation Study ──────────────────────────────────────
     print("\n[4b/6] Running METHOD B (LSA) — Ablation over n_components...")
+    print_standardized_formulation("LSA (Truncated SVD)", eval_measures)
     ablation_results = {}
     best_lsa_k   = None
     best_lsa_map = -1
@@ -667,6 +956,7 @@ def main():
 
     # ── METHOD C: VSM + Query Expansion ─────────────────────────────────────
     print("\n[4c/6] Running METHOD C (VSM + WordNet Query Expansion)...")
+    print_standardized_formulation("VSM + WordNet Query Expansion", eval_measures)
     t0 = time.time()
     expander = QueryExpander()
 
@@ -698,6 +988,7 @@ def main():
 
     # ── METHOD D: Pseudo-Relevance Feedback (PRF) ───────────────────────────
     print("\n[4d/6] Running METHOD D (PRF)...")
+    print_standardized_formulation("BM25 + Pseudo-Relevance Feedback", eval_measures)
     t0 = time.time()
     prf = InformationRetrievalPRF(k1=1.5, b=0.75)
     prf.buildIndex(processed_docs, doc_ids)
@@ -719,6 +1010,7 @@ def main():
 
     # ── METHOD E: Explicit Semantic Analysis (ESA) ──────────────────────────
     print("\n[4e/6] Running METHOD E (ESA — WordNet Concept Space)...")
+    print_standardized_formulation("ESA (WordNet Concept Space)", eval_measures)
     t0 = time.time()
     esa = InformationRetrievalESA()
     esa.buildIndex(processed_docs, doc_ids)
@@ -740,6 +1032,7 @@ def main():
 
     # ── METHOD F: Explicit Semantic Analysis (ESA - Cranfield Space) ─────────
     print("\n[4f/6] Running METHOD F (ESA — Cranfield Concept Space)...")
+    print_standardized_formulation("ESA (Cranfield Concept Space)", eval_measures)
     t0 = time.time()
     esac = InformationRetrievalESACranfield()
     esac.buildIndex(processed_docs, doc_ids)
@@ -761,6 +1054,12 @@ def main():
 
     # ── WILCOXON HYPOTHESIS TESTS ────────────────────────────────────────────
     print("\n[5/6] Running Wilcoxon Signed-Rank Tests...")
+    print("  Formal Hypothesis Framework:")
+    print("    H0: The AP scores of method X and the VSM baseline come from the same distribution.")
+    print("    H1: Method X produces significantly higher AP scores than the VSM baseline.")
+    print("    Significance level: alpha = 0.05 (one-sided test)")
+    print("    Effect size: Cohen's d (small >= 0.2, medium >= 0.5, large >= 0.8)")
+    print()
     baseline_ap = per_query_ap_at_k10["VSM (Baseline)"]
     wilcoxon_results = []
 
@@ -770,11 +1069,15 @@ def main():
         result = wilcoxon_test(baseline_ap, per_query_ap_at_k10[sys_name], sys_name)
         wilcoxon_results.append(result)
         
-        sig_str = "not significant"
+        sig_str = "Cannot reject H0"
         if result["significant"]:
-            sig_str = "SIGNIFICANT"
+            sig_str = "REJECT H0"
             
-        print("  System:", sys_name, "| p-value:", round(result['p_value'], 4), "|", sig_str)
+        effect_str = ""
+        if "cohens_d" in result:
+            effect_str = " | Cohen's d=" + str(round(result['cohens_d'], 3))
+            
+        print("  System:", sys_name, "| p-value:", round(result['p_value'], 4), "|", sig_str + effect_str)
 
     # ── QUALITATIVE CASE STUDIES ─────────────────────────────────────────────
     print("\n[6/6] Qualitative Analysis...")
@@ -810,7 +1113,47 @@ def main():
             rank = wc["ranks"][sys_name]
             print("     Rank by", sys_name, "is", rank)
 
-    print("\n[Step 7] Writing outputs to disk...")
+    # ── PER-QUERY GRANULARITY ANALYSIS ────────────────────────────────────────
+    print("\n[Step 7] Per-Query Granularity Analysis...")
+    pq_analysis = per_query_granularity_analysis(
+        per_query_ap_at_k10, query_ids, query_text_dict, n_top=5)
+
+    # Printing a summary for each system
+    pq_sys_names = list(pq_analysis.keys())
+    for pq_idx in range(len(pq_sys_names)):
+        sys_name = pq_sys_names[pq_idx]
+        info = pq_analysis[sys_name]
+        print("  ", sys_name, ": improved on", info["queries_improved"],
+              "queries, degraded on", info["queries_degraded"],
+              "queries, unchanged on", info["queries_unchanged"], "queries.")
+
+    # ── SYSTEMATIC FAILURE ANALYSIS ───────────────────────────────────────────
+    print("\n[Step 8] Systematic Failure Analysis...")
+    failure_report = systematic_failure_analysis(
+        per_query_ap_at_k10, query_ids, query_text_dict)
+
+    fa_sys_names = list(failure_report.keys())
+    for fa_idx in range(len(fa_sys_names)):
+        sys_name = fa_sys_names[fa_idx]
+        fr = failure_report[sys_name]
+        print("  ", sys_name, ":", fr["new_failures_count"],
+              "new failures vs baseline,", fr["fixed_failures_count"],
+              "baseline failures fixed.")
+
+    # ── MARGINAL DIFFERENCE ANALYSIS ──────────────────────────────────────────
+    print("\n[Step 9] Marginal Difference Analysis (< 2% MAP gap)...")
+    marginal_pairs = marginal_difference_analysis(
+        final_metrics_at_k10, per_query_ap_at_k10, query_ids, query_text_dict)
+
+    if len(marginal_pairs) == 0:
+        print("  No pairs with marginal MAP difference found.")
+    else:
+        for mp_idx in range(len(marginal_pairs)):
+            mp = marginal_pairs[mp_idx]
+            print("  ", mp["explanation"])
+
+    # ── WRITING ALL OUTPUTS ──────────────────────────────────────────────────
+    print("\n[Step 10] Writing outputs to disk...")
 
     save_json(final_metrics_at_k10, OUT_DIR + "part5_final_metrics_k10.json")
 
@@ -821,6 +1164,9 @@ def main():
 
     save_json(wilcoxon_results, OUT_DIR + "part5_wilcoxon_tests.json")
     save_json(case_studies, OUT_DIR + "part5_case_studies.json")
+    save_json(pq_analysis, OUT_DIR + "part5_per_query_analysis.json")
+    save_json(failure_report, OUT_DIR + "part5_failure_analysis.json")
+    save_json(marginal_pairs, OUT_DIR + "part5_marginal_differences.json")
 
     metrics_over_k_serialisable = {}
     sys_list = list(all_systems_metrics_over_k.keys())

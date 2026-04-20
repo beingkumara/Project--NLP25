@@ -1,50 +1,74 @@
 [
     {
         "method": "BM25",
+        "H0": "AP scores of BM25 and VSM baseline come from the same distribution.",
+        "H1": "BM25 has significantly higher AP scores than the VSM baseline.",
         "statistic": 13286.5,
         "p_value": 5.8138312904532545e-12,
         "mean_delta_ap": 0.054975102572000785,
+        "cohens_d": 0.4616348910284835,
+        "effect_size_label": "small",
         "significant": true,
-        "interpretation": "BM25 IS significantly better than VSM baseline (p=0.0, mean delta MAP=0.055)."
+        "interpretation": "BM25 IS significantly better than VSM baseline (p=0.0, mean delta MAP=0.055, Cohen's d=0.462 [small] effect). Reject H0."
     },
     {
         "method": "LSA (k=200)",
+        "H0": "AP scores of LSA (k=200) and VSM baseline come from the same distribution.",
+        "H1": "LSA (k=200) has significantly higher AP scores than the VSM baseline.",
         "statistic": 13018.5,
         "p_value": 2.05401902613784e-09,
         "mean_delta_ap": 0.054268074707833194,
+        "cohens_d": 0.4343324163367307,
+        "effect_size_label": "small",
         "significant": true,
-        "interpretation": "LSA (k=200) IS significantly better than VSM baseline (p=0.0, mean delta MAP=0.0543)."
+        "interpretation": "LSA (k=200) IS significantly better than VSM baseline (p=0.0, mean delta MAP=0.0543, Cohen's d=0.434 [small] effect). Reject H0."
     },
     {
         "method": "VSM + QE",
+        "H0": "AP scores of VSM + QE and VSM baseline come from the same distribution.",
+        "H1": "VSM + QE has significantly higher AP scores than the VSM baseline.",
         "statistic": 2237.5,
         "p_value": 0.9999999999995954,
         "mean_delta_ap": -0.03913213489243296,
+        "cohens_d": -0.4153216263502761,
+        "effect_size_label": "small",
         "significant": false,
-        "interpretation": "VSM + QE is NOT significantly better than VSM baseline (p=1.0, mean delta MAP=-0.0391)."
+        "interpretation": "VSM + QE is NOT significantly better than VSM baseline (p=1.0, mean delta MAP=-0.0391, Cohen's d=-0.415 [small] effect). Cannot reject H0."
     },
     {
         "method": "BM25 + PRF",
+        "H0": "AP scores of BM25 + PRF and VSM baseline come from the same distribution.",
+        "H1": "BM25 + PRF has significantly higher AP scores than the VSM baseline.",
         "statistic": 13423.0,
         "p_value": 1.7806213205185619e-09,
         "mean_delta_ap": 0.05952982889007136,
+        "cohens_d": 0.40686404044069463,
+        "effect_size_label": "small",
         "significant": true,
-        "interpretation": "BM25 + PRF IS significantly better than VSM baseline (p=0.0, mean delta MAP=0.0595)."
+        "interpretation": "BM25 + PRF IS significantly better than VSM baseline (p=0.0, mean delta MAP=0.0595, Cohen's d=0.407 [small] effect). Reject H0."
     },
     {
         "method": "ESA",
+        "H0": "AP scores of ESA and VSM baseline come from the same distribution.",
+        "H1": "ESA has significantly higher AP scores than the VSM baseline.",
         "statistic": 4082.0,
         "p_value": 0.9999999980009151,
         "mean_delta_ap": -0.05757804190581224,
+        "cohens_d": -0.3828687119239485,
+        "effect_size_label": "small",
         "significant": false,
-        "interpretation": "ESA is NOT significantly better than VSM baseline (p=1.0, mean delta MAP=-0.0576)."
+        "interpretation": "ESA is NOT significantly better than VSM baseline (p=1.0, mean delta MAP=-0.0576, Cohen's d=-0.383 [small] effect). Cannot reject H0."
     },
     {
         "method": "ESA (Cranfield)",
+        "H0": "AP scores of ESA (Cranfield) and VSM baseline come from the same distribution.",
+        "H1": "ESA (Cranfield) has significantly higher AP scores than the VSM baseline.",
         "statistic": 12201.0,
         "p_value": 3.673979269724947e-05,
         "mean_delta_ap": 0.02728372582324774,
+        "cohens_d": 0.255168078391206,
+        "effect_size_label": "small",
         "significant": true,
-        "interpretation": "ESA (Cranfield) IS significantly better than VSM baseline (p=0.0, mean delta MAP=0.0273)."
+        "interpretation": "ESA (Cranfield) IS significantly better than VSM baseline (p=0.0, mean delta MAP=0.0273, Cohen's d=0.255 [small] effect). Reject H0."
     }
 ]
