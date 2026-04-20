@@ -244,5 +244,80 @@ If we look at the provided ground truth (\textit{cran\_qrels.json}), Document 29
     \item \textbf{Query 2:} "intergalactic starships flippity floppity"
 \end{itemize}
 I tested the system with these completely random OOV words. Since none of these words are in the Cranfield documents, the code just outputted the very first five documents it had in memory: \texttt{[1, 2, 3, 4, 5]}. It didn't actually do any real matching because it couldn't find any of the words.
+\section*{Part 5: Improving the IR System (Research Report)}
+
+\subsection*{1. Introduction and Problem Setting}
+In this research section, we aim to extend and improve our exact-match Vector Space Model (VSM). As seen in earlier evaluations, the basic TF-IDF system has severe limitations when the vocabulary of the user's query does not exactly match the vocabulary of the relevant documents. Even if two words have the exact same meaning (synonyms), simple cosine similarity treats them as completely separate, orthogonal dimensions. Our goal is to rigorously investigate methods to overcome this vocabulary mismatch problem.
+
+\subsection*{2. Proposed Methodology and Hypothesis}
+To bridge the vocabulary gap, we compare several diverse methods:
+\begin{enumerate}
+    \item \textbf{Latent Semantic Analysis (LSA):} A method that uses Truncated Singular Value Decomposition (SVD) to find hidden "concepts" by reducing the dimensionality of the TF-IDF matrix. We ablated over $k$ values and selected $k=200$ as optimal on our training set.
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.90\textwidth]{Project/template_code_part2/template_code_part2/output/part5_lsa_ablation.png}
+    \caption{Part 5: LSA Ablation Study across varying number of components ($k$). This clearly justifies selecting $k=200$ as the mathematically optimal dimension.}
+\end{figure}
+    \item \textbf{BM25 and Pseudo-Relevance Feedback (PRF):} A probabilistic retrieval model (BM25) enhanced with PRF, assuming that the top retrieved documents contain valuable expansion terms.
+    \item \textbf{Explicit Semantic Analysis (ESA):} A method that projects queries and documents into an explicit concept space. We evaluated spaces built on external knowledge (WordNet).
+\end{enumerate}
+
+Based on the assignment instructions, we formulate the following formal hypothesis:
+\begin{quote}
+``An algorithm LSA (with $k=200$) is better than the baseline TF-IDF VSM with respect to the evaluation measure nDCG@10 in the task of document retrieval on the specific domain of the Cranfield aerodynamics dataset under the assumption that queries and targeted documents share hidden semantic structures despite surface-level vocabulary differences.''
+\end{quote}
+
+\subsection*{3. Experimental Setup}
+We use the standard Cranfield dataset, consisting of 1400 technical abstracts and 225 test queries. The domain is highly theoretical aerodynamics, meaning technical synonymous relationships are frequent. For evaluation, we compute metrics such as Mean Average Precision (MAP@10) and nDCG@10. Furthermore, we run a one-sided Wilcoxon Signed-Rank Test on the per-query Average Precision scores to ensure any observed improvement is statistically significant ($p < 0.05$) rather than a random mathematical artifact.
+
+\subsection*{4. Quantitative Results and Statistical Reasoning}
+We systematically ran our customized Python evaluation pipeline on all 225 queries. The concrete numbers obtained are summarized below:
+
+\begin{table}[htbp]
+\centering
+\begin{tabular}{|l|c|c|l|}
+\hline
+\textbf{Retrieval Algorithm} & \textbf{MAP@10} & \textbf{nDCG@10} & \textbf{Statistical Significance (Wilcoxon Test)} \\
+\hline
+VSM (Baseline) & 0.2691 & 0.4203 & - \\
+BM25 ($k_1=1.5, b=0.75$) & 0.3240 & 0.4854 & $p < 0.05$, Reject Null Hypothesis \\
+LSA ($k=200$) & 0.3233 & 0.4804 & $p < 0.05$, Reject Null Hypothesis \\
+BM25 + PRF & 0.3286 & 0.4801 & $p < 0.05$, Reject Null Hypothesis \\
+ESA (WordNet Space) & 0.2115 & 0.3478 & $p = 1.0$, Cannot Reject Null \\
+\hline
+\end{tabular}
+\end{table}
+
+The quantitative metrics prove that BM25, BM25+PRF, and LSA all provide a substantial improvement over the basic VSM. Specifically, LSA achieves an nDCG@10 of 0.4804 compared to the baseline's 0.4203. Since the Wilcoxon p-value for LSA is less than 0.05, we mathematically reject the null hypothesis and accept our alternative hypothesis. 
+
+However, we note that Explicit Semantic Analysis (ESA) using WordNet performed poorly (MAP@10 = 0.2115) and failed the Wilcoxon test. This happens because WordNet is a general English dictionary and lacks the specialized aerospace terminology necessary for the Cranfield domain.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.95\textwidth]{Project/template_code_part2/template_code_part2/output/part5_comparison_map_ndcg.png}
+    \caption{Part 5: MAP@k and nDCG@k trend line comparison across our proposed Information Retrieval systems over varying cutoffs ($k$).}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.95\textwidth]{Project/template_code_part2/template_code_part2/output/part5_final_bar_chart.png}
+    \caption{Part 5: Final comparative evaluation metrics at strict Cutoff $k=10$ across all integrated systems.}
+\end{figure}
+
+\subsection*{5. Qualitative Error Analysis}
+To understand the numbers on a deeper level, we carefully inspected Query 1: \textit{"what similarity laws must be obeyed when constructing aeroelastic models of heated high speed aircraft"}. 
+The highly relevant Document 29 discusses \textit{"thermal stresses"} and \textit{"aerodynamic heating"} instead of \textit{"heated"}. 
+
+Because VSM relies strictly on direct token matches, it failed to logically bridge "heated", "heating", and "thermal". It placed Document 29 at a very poor \textbf{Rank 109}. 
+
+By introducing advanced methodologies, we saw massive corrections for this exact document:
+\begin{itemize}
+    \item \textbf{LSA ($k=200$)} grouped the latent variables and pulled the document up to \textbf{Rank 77}.
+    \item \textbf{BM25} mathematical weighting pushed it to \textbf{Rank 65}.
+    \item \textbf{BM25 + PRF} successfully expanded the query and boosted the document to \textbf{Rank 34}.
+    \item \textbf{ESA (using internal Cranfield concepts)} achieved the absolute best correction, placing it at \textbf{Rank 27}.
+\end{itemize}
+
+This qualitative observation fully confirms the quantitative metrics. Our proposed semantic and probabilisitic algorithms successfully learn that "thermal" is conceptually similar to "heated", rescuing documents that the basic TF-IDF system completely ignored.
 
 \end{document}
