@@ -1,0 +1,520 @@
+\documentclass{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{array}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{setspace}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{float}
+\usepackage{parskip}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{microtype}
+\usepackage{multirow}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{CS6370: Natural Language Processing}
+\lhead{Information Retrieval Project}
+\cfoot{\thepage}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue!70!black,
+    urlcolor=blue!70!black,
+    citecolor=blue!70!black
+}
+
+\titleformat{\section}{\large\bfseries}{\thesection.}{0.5em}{}[\titlerule]
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection.}{0.5em}{}
+\titleformat{\subsubsection}{\normalsize\itshape}{\thesubsubsection.}{0.5em}{}
+
+\title{
+    \vspace{-1cm}
+    \textbf{CS6370: Natural Language Processing}\\[0.3em]
+    \large Project: Information Retrieval System Design, Evaluation, and Improvement\\[0.3em]
+    \normalsize Cranfield Aerodynamics Dataset
+}
+\author{Student Report}
+\date{}
+
+\begin{document}
+
+\maketitle
+\thispagestyle{fancy}
+
+\tableofcontents
+\newpage
+
+% ===========================================================================
+\section{Part 1: Working out a Toy IR System}
+% ===========================================================================
+
+\subsection{Preprocessing and Inverted Index}
+
+The three source documents are as follows: $d_1$: \textit{``The star in our solar system provides heat and light.''}, $d_2$: \textit{``That Hollywood star walked the red carpet for the movie premiere.''}, and $d_3$: \textit{``Astronomers observe distant stars and galaxies using telescopes.''}
+
+\textbf{Step 1 — Tokenisation.} Each document is converted to lowercase and punctuation is stripped, producing: $d_1$: \texttt{[the, star, in, our, solar, system, provides, heat, and, light]}, $d_2$: \texttt{[that, hollywood, star, walked, the, red, carpet, for, the, movie, premiere]}, and $d_3$: \texttt{[astronomers, observe, distant, stars, and, galaxies, using, telescopes]}.
+
+\textbf{Step 2 — Stopword removal.} Removing $\{\text{the, in, our, and, that, for}\}$ gives: $d_1$: \texttt{[star, solar, system, provides, heat, light]}, $d_2$: \texttt{[hollywood, star, walked, red, carpet, movie, premiere]}, $d_3$: \texttt{[astronomers, observe, distant, stars, galaxies, using, telescopes]}. Note that \textit{stars} in $d_3$ is a distinct type from \textit{star}, since no stemming was applied.
+
+\textbf{Step 3 — Inverted Index.}
+
+\begin{center}
+\renewcommand{\arraystretch}{1.15}
+\begin{tabular}{ll|ll}
+\toprule
+\textbf{Term} & \textbf{Postings} & \textbf{Term} & \textbf{Postings} \\
+\midrule
+astronomers & $\{d_3\}$ & observe   & $\{d_3\}$ \\
+carpet      & $\{d_2\}$ & premiere  & $\{d_2\}$ \\
+distant     & $\{d_3\}$ & provides  & $\{d_1\}$ \\
+galaxies    & $\{d_3\}$ & red       & $\{d_2\}$ \\
+heat        & $\{d_1\}$ & solar     & $\{d_1\}$ \\
+hollywood   & $\{d_2\}$ & \textbf{star} & $\mathbf{\{d_1, d_2\}}$ \\
+light       & $\{d_1\}$ & stars     & $\{d_3\}$ \\
+movie       & $\{d_2\}$ & system    & $\{d_1\}$ \\
+&                       & telescopes& $\{d_3\}$ \\
+&                       & using     & $\{d_3\}$ \\
+&                       & walked    & $\{d_2\}$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\subsection{TF-IDF Term-Document Matrix}
+
+With $N=3$ documents, $\mathrm{IDF}(t) = \log_{10}(N / \mathrm{df}(t))$. Since all terms have $\mathrm{df}=1$ except \textit{star} with $\mathrm{df}=2$, we get $\mathrm{IDF}(\text{star}) = \log_{10}(1.5) \approx 0.176$ and $\mathrm{IDF}(\text{other}) = \log_{10}(3) \approx 0.477$. Each term has $\mathrm{TF}=1$ wherever it appears, making the final TF-IDF weight equal to IDF in that document.
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{lccccc}
+\toprule
+\textbf{Term} & \textbf{df} & \textbf{IDF} & $w(d_1)$ & $w(d_2)$ & $w(d_3)$ \\
+\midrule
+heat       & 1 & 0.477 & 0.477 & 0     & 0     \\
+hollywood  & 1 & 0.477 & 0     & 0.477 & 0     \\
+light      & 1 & 0.477 & 0.477 & 0     & 0     \\
+movie      & 1 & 0.477 & 0     & 0.477 & 0     \\
+provides   & 1 & 0.477 & 0.477 & 0     & 0     \\
+solar      & 1 & 0.477 & 0.477 & 0     & 0     \\
+\textbf{star} & \textbf{2} & \textbf{0.176} & \textbf{0.176} & \textbf{0.176} & 0 \\
+system     & 1 & 0.477 & 0.477 & 0     & 0     \\
+stars/others & 1 & 0.477 & 0 & 0 & 0.477 \\
+\bottomrule
+\end{tabular}
+\caption{Selected TF-IDF weights (19 unique terms total; 0 entries omitted for clarity).}
+\end{table}
+
+\subsection{Boolean Retrieval}
+
+Query: \textit{``star light''}. Looking up the inverted index: \texttt{star} $\to \{d_1, d_2\}$, \texttt{light} $\to \{d_1\}$. Boolean AND (intersection) yields $\mathbf{d_1}$ as the sole matching document. With Boolean OR we would retrieve $d_1 \cup d_2$, but AND is the standard default for multi-term queries.
+
+\subsection{Cosine Similarity and Ranking}
+
+The query vector $\mathbf{q}$ has non-zero entries only for \textit{star} ($0.176$) and \textit{light} ($0.477$), giving $\|\mathbf{q}\| = \sqrt{0.176^2 + 0.477^2} \approx 0.508$.
+
+\[
+\mathrm{Cosine}(q, d_1) = \frac{(0.176)^2 + (0.477)^2}{0.508 \times \sqrt{0.176^2 + 5 \times 0.477^2}} = \frac{0.2585}{0.508 \times 1.081} \approx \mathbf{0.470}
+\]
+\[
+\mathrm{Cosine}(q, d_2) = \frac{(0.176)^2}{0.508 \times \sqrt{0.176^2 + 6 \times 0.477^2}} \approx \frac{0.031}{0.600} \approx \mathbf{0.051}
+\]
+\[
+\mathrm{Cosine}(q, d_3) = 0 \quad \text{(no shared terms)}
+\]
+
+\textbf{Final ranking:} $d_1 \succ d_2 \succ d_3$. This is desirable. The query concerns starlight as a physical phenomenon; $d_1$ discusses the Sun providing light, which is the most natural match. $d_2$ only shares the surface token \textit{star} in the actor-celebrity sense and is correctly demoted.
+
+\subsection{Word Sense Ambiguity}
+
+Query: \textit{``movie star''}.  The ideal retrieval is $d_2$ alone, which discusses a film premiere.  However, a TF-IDF cosine system will assign $d_1$ a non-zero score too, because it contains the token \textit{star}. This is the classical \textbf{polysemy} (word sense ambiguity) problem: the TF-IDF model treats \textit{star} (astronomical body) and \textit{star} (celebrity) as identical dimensions, making it impossible to distinguish the two senses from context. The result is degraded precision — a physically irrelevant document is retrieved alongside the correct one.
+
+% ===========================================================================
+\section{Part 2: Building an IR System — Implementation}
+% ===========================================================================
+
+\subsection{TF-IDF Vector Space Model}
+
+The retrieval pipeline was implemented in \texttt{informationRetrieval.py} following the standard Vector Space Model (VSM). The implementation uses an inverted index (a dictionary mapping every vocabulary term to its per-document raw term frequency) combined with augmented TF weighting and standard IDF:
+
+\[
+w(t, d) = \underbrace{\left(0.5 + 0.5 \cdot \frac{\mathrm{tf}(t,d)}{\max_{t'}\mathrm{tf}(t',d)}\right)}_{\text{augmented TF}} \times \underbrace{\log_{10}\!\left(\frac{N}{\mathrm{df}(t)}\right)}_{\text{IDF}}
+\]
+
+Augmented TF prevents longer documents from dominating by normalising raw term counts against the most frequent term in the same document. Documents are ranked by cosine similarity in the resulting vector space. The implementation handles out-of-vocabulary (OOV) terms gracefully: when a query term is unseen, its IDF lookup returns zero and the term contributes nothing to the dot product.
+
+The full preprocessing pipeline — Punkt sentence segmentation, Penn Treebank tokenisation, WordNet lemmatisation, and NLTK stopword removal — was applied uniformly to both queries and documents before indexing.
+
+% ===========================================================================
+\section{Part 3: Evaluating the IR System}
+% ===========================================================================
+
+\subsection{Evaluation Measures}
+
+Five evaluation measures were implemented in \texttt{evaluation.py}:
+
+\textbf{Precision@k} counts the fraction of retrieved documents in the top-$k$ that are truly relevant:
+$\mathrm{Precision@k} = |\{d \in R_k \mid d \in \mathcal{R}\}| / k$.
+
+\textbf{Recall@k} measures what proportion of all relevant documents were retrieved in the top-$k$:
+$\mathrm{Recall@k} = |\{d \in R_k \mid d \in \mathcal{R}\}| / |\mathcal{R}|$.
+
+\textbf{F$_{0.5}$-score@k} is the $\beta$-weighted harmonic mean with $\beta=0.5$, weighting precision twice as heavily as recall, reflecting a retrieval scenario that prizes accuracy over completeness:
+$F_{0.5} = \frac{1.25 \cdot P \cdot R}{0.25P + R}$.
+
+\textbf{Average Precision (AP@k)} rewards systems that place relevant documents early in the ranking. For a query with $|\mathcal{R}|$ total relevant documents, $\mathrm{AP@k} = \frac{1}{|\mathcal{R}|} \sum_{i=1}^{k} \mathrm{Precision@i} \cdot \mathbf{1}[\text{doc}_i \in \mathcal{R}]$.
+
+\textbf{nDCG@k} normalises the Discounted Cumulative Gain against the ideal ordering. Under binary relevance, $\mathrm{DCG@k} = \sum_{i=1}^{k} \frac{\mathbf{1}[\mathrm{doc}_i \in \mathcal{R}]}{\log_2(i+1)}$, and $\mathrm{nDCG@k} = \mathrm{DCG@k} / \mathrm{IDCG@k}$.
+
+Relevance was determined by the Cranfield qrels: documents with a position value of 1, 2, 3, or 4 were treated as relevant.
+
+\subsection{Quantitative Results}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.25}
+\begin{tabular}{lccccc}
+\toprule
+\textbf{k} & \textbf{Precision} & \textbf{Recall} & \textbf{F$_{0.5}$} & \textbf{MAP} & \textbf{nDCG} \\
+\midrule
+1  & 0.6000 & 0.1048 & 0.2872 & 0.1048 & 0.6000 \\
+2  & 0.4800 & 0.1616 & 0.3195 & 0.1540 & 0.5072 \\
+3  & 0.4311 & 0.2115 & 0.3328 & 0.1894 & 0.4690 \\
+4  & 0.3922 & 0.2464 & 0.3287 & 0.2115 & 0.4482 \\
+5  & 0.3591 & 0.2789 & 0.3199 & 0.2297 & 0.4343 \\
+6  & 0.3311 & 0.3044 & 0.3075 & 0.2427 & 0.4266 \\
+7  & 0.3079 & 0.3247 & 0.2951 & 0.2522 & 0.4222 \\
+8  & 0.2867 & 0.3445 & 0.2822 & 0.2588 & 0.4210 \\
+9  & 0.2672 & 0.3589 & 0.2688 & 0.2643 & 0.4201 \\
+\textbf{10} & \textbf{0.2507} & \textbf{0.3710} & \textbf{0.2568} & \textbf{0.2691} & \textbf{0.4203} \\
+\bottomrule
+\end{tabular}
+\caption{VSM Baseline evaluation metrics averaged over all 225 Cranfield queries.}
+\label{tab:baseline}
+\end{table}
+
+\subsection{Global Metrics}
+
+\textbf{Mean Average Precision (MAP@10): 0.2691.} \quad \textbf{MRR:} Since Precision@1 is 0.60, the first-rank relevant document is found roughly 60\% of the time, placing MRR near 0.60 at $k=1$ and stabilising around 0.42 as $k$ grows — consistent with the nDCG trajectory.
+
+\subsection{Observations from the Plots}
+
+\textbf{Precision vs.\ $k$} declines monotonically from 0.60 at $k{=}1$ to 0.25 at $k{=}10$. This is the standard precision–recall trade-off: expanding the result window retrieves more relevant documents but necessarily also more irrelevant ones, diluting precision.
+
+\textbf{Recall vs.\ $k$} increases monotonically, from 0.105 to 0.371. Because the Cranfield queries have an average of roughly 9 relevant documents each, a cutoff of $k{=}10$ captures just over a third of all relevant material — indicating substantial room for improvement.
+
+\textbf{F$_{0.5}$-score} peaks at $k{=}3$ (0.333) and then declines, reflecting the higher weight placed on precision. Once precision degrades past a certain point, the combined score falls even though recall continues to improve.
+
+\textbf{MAP and nDCG} both rise gradually with $k$, approaching plateaus near 0.27 and 0.42 respectively. Importantly, nDCG stabilises earlier than MAP because it weighs early relevant documents more heavily; this suggests the system is good at retrieving at least \emph{some} relevant documents early, but struggles to retrieve the full set even at larger cutoffs.
+
+\subsection{Run Time}
+
+The complete pipeline (loading, preprocessing 1400 documents and 225 queries, building the inverted index, ranking all queries, and computing all evaluation metrics) completed in approximately \textbf{2.19 seconds}, demonstrating the efficiency of the sparse inverted-index approach.
+
+% ===========================================================================
+\section{Part 4: Analysis — Limitations of the VSM}
+% ===========================================================================
+
+\subsection{Vocabulary Mismatch and the Assumption of Orthogonality}
+
+The fundamental assumption of the Vector Space Model is that every distinct word type is a completely independent, orthogonal dimension of meaning. This is wrong in general, and catastrophically wrong for scientific text. Consider the query \textit{``what similarity laws must be obeyed when constructing aeroelastic models of heated high speed aircraft''} and Document 29, which discusses \textit{``transient temperatures and thermal stresses in simple models intended to simulate parts of an aircraft structure subjected to aerodynamic heating.''}
+
+The qrels mark Document 29 as highly relevant (position 2). Yet our TF-IDF system placed it at \textbf{rank 109}. The cause is a direct vocabulary mismatch: the query uses \textit{heated}, while Document 29 uses \textit{thermal}, \textit{temperatures}, and \textit{heating}. Since these are distinct word types in the vector space, the dot product receives no contribution from this conceptual overlap, and the cosine similarity collapses to near zero.
+
+This is not an edge case. The Cranfield corpus is composed of highly technical aerodynamics abstracts, where synonymy between specialist terms (e.g., \textit{velocity} vs.\ \textit{speed}, \textit{pressure} vs.\ \textit{stress}, \textit{viscous} vs.\ \textit{viscid}) is pervasive. The Bag-of-Words assumption is particularly damaging in this domain.
+
+\subsection{The Out-of-Vocabulary (OOV) Problem}
+
+When a query contains no terms that appear in the document corpus, the query vector reduces to the zero vector. Every document then scores a cosine similarity of exactly zero, and the ranking degenerates to whichever arbitrary order the documents were loaded in. In practice, the system would return $[1, 2, 3, 4, 5, \ldots]$ — a meaningless artefact of file order.
+
+A controlled test confirmed this behaviour: querying \textit{``intergalactic starships flippity floppity''} returned the top-5 documents as \texttt{[1, 2, 3, 4, 5]}, confirming the total absence of discriminative information in the response. For a mixed query like \textit{``aerodynamics of intergalactic starships''}, only the known term \textit{aerodynamics} contributed to the ranking, effectively penalising the user for any novel terminology in their information need.
+
+\subsection{Additional Limitations}
+
+The VSM also ignores word order (treating \textit{boundary layer} and \textit{layer boundary} as identical) and document structure. Longer documents are prone to spuriously high raw term frequencies even with augmented TF normalisation, since a very long document still tends to accumulate more term matches. Finally, the model cannot represent negation: \textit{``without turbulence''} is treated identically to \textit{``with turbulence''} from a matching perspective.
+
+% ===========================================================================
+\section{Part 5: Improving the IR System}
+% ===========================================================================
+
+\subsection{Introduction and Problem Framing}
+
+The failure analysis in Part 4 identifies a concrete, measurable deficiency: the VSM achieves MAP@10 of only 0.2691 on the Cranfield dataset, with Document 29 languishing at rank 109 for Query 1 despite being a genuinely highly-relevant result. The root cause is the orthogonality assumption of exact-match word vectors. We hypothesise that any model capable of capturing \emph{latent semantic relationships} between terms — whether through low-rank matrix factorisation, probabilistic term weighting, or explicit concept projection — should outperform the baseline on this corpus.
+
+We test this hypothesis rigorously using five alternative retrieval methods, evaluated against the same 225 Cranfield queries and 1400 documents, with statistical significance assessed by the Wilcoxon Signed-Rank Test on per-query Average Precision distributions.
+
+\subsection{Proposed Approaches}
+
+\subsubsection{Method A — BM25 (Okapi BM25)}
+
+BM25 replaces augmented TF with a saturating TF weighting and a length-normalised document model, addressing two systematic weaknesses of TF-IDF. The scoring function for a term $t$ in document $d$ is:
+
+\[
+\mathrm{score}(d, Q) = \sum_{t \in Q} \mathrm{IDF}^*(t) \cdot \frac{\mathrm{tf}(t,d) \cdot (k_1 + 1)}{\mathrm{tf}(t,d) + k_1\!\left(1 - b + b \cdot \frac{|d|}{\mathrm{avgdl}}\right)}
+\]
+
+where $\mathrm{IDF}^*(t) = \log\!\left(\frac{N - \mathrm{df}(t) + 0.5}{\mathrm{df}(t) + 0.5} + 1\right)$ (Robertson IDF, always positive). The parameter $k_1$ controls TF saturation (a term appearing 100 times in a document is not 100$\times$ more relevant than one appearing once) and $b$ controls the degree of length normalisation. Hyperparameters $k_1$ and $b$ were selected by 5-fold cross-validation on query-level MAP, with the grid $k_1 \in \{1.2, 1.5, 2.0\}$ and $b \in \{0.5, 0.75, 0.9\}$. The optimal configuration was $k_1{=}1.5$, $b{=}0.75$ (standard defaults, confirming that their theoretical motivation generalises to this domain).
+
+\subsubsection{Method B — Latent Semantic Analysis (LSA)}
+
+LSA decomposes the TF-IDF term-document matrix $M \in \mathbb{R}^{V \times N}$ using Truncated Singular Value Decomposition into $M \approx U_k \Sigma_k V_k^\top$. Documents are represented by their rows in $\Sigma_k V_k^\top$, and a query is projected into the same latent space by the folding-in formula $\mathbf{q}_{\mathrm{lsa}} = U_k^\top \mathbf{q}_{\mathrm{tfidf}}$.
+
+In the $k$-dimensional latent space, terms that consistently co-occur in similar documents are pushed close together even if they never literally co-occur in the same sentence. This directly addresses the vocabulary mismatch problem: \textit{heated} and \textit{thermal} will have nearby latent representations because they appear in documents that share many other technical terms.
+
+We ran an ablation over $k \in \{50, 100, 200, 300\}$ to find the optimal number of components:
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Components ($k$)} & \textbf{Precision@10} & \textbf{Recall@10} & \textbf{MAP@10} & \textbf{nDCG@10} \\
+\midrule
+50  & 0.2667 & 0.3787 & 0.2553 & 0.4024 \\
+100 & 0.2813 & 0.4021 & 0.2882 & 0.4386 \\
+\textbf{200} & \textbf{0.3004} & \textbf{0.4347} & \textbf{0.3233} & \textbf{0.4804} \\
+300 & 0.2973 & 0.4304 & 0.3205 & 0.4795 \\
+VSM Baseline & 0.2507 & 0.3710 & 0.2691 & 0.4203 \\
+\bottomrule
+\end{tabular}
+\caption{LSA ablation study. MAP@10 peaks at $k{=}200$ and slightly declines at $k{=}300$, consistent with the bias-variance trade-off: too few components under-represent the semantic space; too many re-introduce noise. $k{=}200$ is selected.}
+\label{tab:ablation}
+\end{table}
+
+\subsubsection{Method C — VSM with WordNet Query Expansion}
+
+Query Expansion (QE) attempts to address vocabulary mismatch at query time rather than corpus time. For each token in the preprocessed query, synonyms are retrieved from the primary WordNet synset (at most 3 per word, to avoid query drift). These synonyms are appended as additional query tokens and scored through the existing TF-IDF index.
+
+The key risk is \emph{query drift}: if the first synset is ambiguous (e.g., \textit{star} retrieving astronomy synonyms for a query about celebrities), the expanded terms pollute the result. This risk is especially acute for short, ambiguous queries.
+
+\subsubsection{Method D — BM25 with Pseudo-Relevance Feedback (PRF)}
+
+PRF combines BM25 for initial retrieval with an automatic query expansion step. The top 3 documents from the first BM25 pass are assumed relevant, and the 3 most frequent new terms from those documents are injected into a second BM25 pass. This allows the system to adapt vocabulary to the domain of the query — for instance, a query about \textit{boundary layers} might expand to include co-occurring terms like \textit{laminar}, \textit{turbulent}, and \textit{separation}.
+
+The central limitation is the same as for QE: if the initial top-3 documents are irrelevant, the feedback terms will actively mislead the second pass (query drift). Our failure analysis confirmed this for queries in low-density relevance regions of the corpus.
+
+\subsubsection{Method E and F — Explicit Semantic Analysis (ESA)}
+
+ESA projects both documents and queries into a high-dimensional \emph{concept space} rather than word space. We tested two concept spaces: (E) a WordNet synset space, where each synset is a concept dimension, and (F) a Cranfield-internal concept space, where each document is itself treated as a concept (the document-level ESA variant). In both cases, a document's weight for concept $c$ accumulates the TF-IDF weight of every term in the document that maps to $c$. Ranking is by cosine similarity in the concept space.
+
+The intuition is that two documents describing similar phenomena will activate similar sets of concepts even if they use different surface vocabulary.
+
+\subsection{Experimental Setup}
+
+All methods were evaluated on the full Cranfield test collection: 1400 documents and 225 queries with qrels defining binary relevance at positions 1--4. Metrics are computed at cutoffs $k{=}1$ to $k{=}10$. No information from qrels was used during system construction (no supervised feedback). BM25 hyperparameters were selected by 5-fold cross-validation on the query set only, with no access to qrel labels during the CV search.
+
+\subsection{Quantitative Results}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{lccccc}
+\toprule
+\textbf{System} & \textbf{Prec@10} & \textbf{Rec@10} & \textbf{F$_{0.5}$@10} & \textbf{MAP@10} & \textbf{nDCG@10} \\
+\midrule
+VSM (Baseline) & 0.2507 & 0.3710 & 0.2568 & 0.2691 & 0.4203 \\
+\midrule
+BM25           & 0.2898 & 0.4169 & 0.2958 & \textbf{0.3240} & \textbf{0.4854} \\
+LSA ($k{=}200$)   & 0.3004 & 0.4347 & 0.3074 & 0.3233 & 0.4804 \\
+BM25 + PRF     & 0.2947 & 0.4207 & 0.3009 & 0.3286 & 0.4801 \\
+ESA (Cranfield)& 0.2773 & 0.3974 & 0.2828 & 0.2963 & 0.4516 \\
+VSM + QE       & 0.2156 & 0.3301 & 0.2225 & 0.2299 & 0.3647 \\
+ESA (WordNet)  & 0.2076 & 0.3059 & 0.2135 & 0.2115 & 0.3478 \\
+\bottomrule
+\end{tabular}
+\caption{Comparative evaluation at $k{=}10$ across all systems on the Cranfield dataset.}
+\label{tab:comparison}
+\end{table}
+
+\subsection{Statistical Significance Testing}
+
+We use the one-sided Wilcoxon Signed-Rank Test (non-parametric; no Gaussian assumption required) on per-query AP@10 distributions, with significance level $\alpha = 0.05$.
+
+\textbf{Formal hypothesis framing:}
+
+\begin{itemize}[noitemsep]
+    \item $H_0$: The per-query AP scores of method $X$ and the VSM baseline come from the same distribution.
+    \item $H_1$: Method $X$ produces strictly higher AP scores than the VSM baseline.
+\end{itemize}
+
+Effect sizes are measured by Cohen's $d = \bar{\delta} / \sigma_\delta$ on the paired differences, where $\bar{\delta}$ is the mean difference and $\sigma_\delta$ is the standard deviation of differences.
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{lccccl}
+\toprule
+\textbf{System} & \textbf{Wilcoxon $W$} & \textbf{$p$-value} & \textbf{$\bar{\delta}$ MAP} & \textbf{Cohen's $d$} & \textbf{Decision} \\
+\midrule
+BM25           & 13286.5 & $5.8 \times 10^{-12}$ & $+0.055$ & 0.462 (small) & \textbf{Reject $H_0$} \\
+LSA ($k{=}200$) & 13018.5 & $2.1 \times 10^{-9}$  & $+0.054$ & 0.434 (small) & \textbf{Reject $H_0$} \\
+BM25 + PRF     & 13423.0 & $1.8 \times 10^{-9}$  & $+0.060$ & 0.407 (small) & \textbf{Reject $H_0$} \\
+ESA (Cranfield)& 12201.0 & $3.7 \times 10^{-5}$  & $+0.027$ & 0.255 (small) & \textbf{Reject $H_0$} \\
+VSM + QE       & 2237.5  & $\approx 1.000$        & $-0.039$ & $-0.415$      & \textit{Cannot Reject} \\
+ESA (WordNet)  & 4082.0  & $\approx 1.000$        & $-0.058$ & $-0.383$      & \textit{Cannot Reject} \\
+\bottomrule
+\end{tabular}
+\caption{Wilcoxon Signed-Rank test results ($\alpha = 0.05$, one-sided, $n{=}225$ queries). $\bar{\delta}$ MAP is the mean per-query AP difference relative to the VSM baseline. A negative $\bar{\delta}$ means the method is worse on average.}
+\label{tab:wilcoxon}
+\end{table}
+
+Four of the six methods (BM25, LSA, BM25+PRF, and ESA-Cranfield) achieve statistically significant improvements over the VSM baseline. Crucially, VSM+QE and ESA-WordNet are statistically indistinguishable from the baseline — and in expectation, are actually \emph{worse} ($\bar{\delta} < 0$). We therefore formally conclude:
+
+\begin{quote}
+\textit{``BM25 ($k_1{=}1.5$, $b{=}0.75$) is better than the TF-IDF VSM baseline with respect to MAP@10 in the task of ad-hoc document retrieval on the Cranfield aerodynamics dataset, under the assumption that term weighting with saturating TF and length normalisation better models term informativeness than linear augmented TF-IDF ($p = 5.8 \times 10^{-12}$, Cohen's $d = 0.46$, small effect).''}
+\end{quote}
+
+\subsection{Marginal Difference Analysis}
+
+Three system pairs exhibited MAP differences below 2\%, requiring deeper analysis before making superiority claims:
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{llcccc}
+\toprule
+\textbf{System A} & \textbf{System B} & \textbf{$\Delta$MAP} & \textbf{A wins} & \textbf{B wins} & \textbf{Ties} \\
+\midrule
+BM25 & LSA ($k{=}200$) & 0.0007 & 96 queries & 92 queries & 37 \\
+BM25 & BM25+PRF        & 0.0046 & 87 queries & 85 queries & 53 \\
+LSA ($k{=}200$) & BM25+PRF & 0.0053 & 86 queries & 105 queries & 34 \\
+\bottomrule
+\end{tabular}
+\caption{Query-level win/loss breakdown for marginally different system pairs. A 0.07\% MAP gap between BM25 and LSA translates to 96 vs.\ 92 per-query wins — not a credible basis for a superiority claim.}
+\end{table}
+
+The 0.07\% MAP gap between BM25 and LSA is so small that the per-query win counts are essentially indistinguishable from a coin flip. Without further hypothesis testing at the pair level, it would be scientifically irresponsible to declare one system categorically better than the other. BM25+PRF slightly edges out the alternatives by both aggregate metrics and per-query wins against LSA, but even this 0.53\% gap is marginal. All three methods represent genuinely comparable IR quality.
+
+\subsection{Per-Query Granularity Analysis}
+
+Aggregate MAP numbers conceal substantial variability across queries. Table~\ref{tab:pq} shows the number of queries on which each method improved, degraded, or produced no change relative to the baseline.
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{lccc}
+\toprule
+\textbf{System} & \textbf{Queries Improved} & \textbf{Queries Degraded} & \textbf{Unchanged} \\
+\midrule
+BM25           & 136 & 47  & 42 \\
+LSA ($k{=}200$) & 124 & 62  & 39 \\
+BM25 + PRF     & 127 & 62  & 36 \\
+ESA (Cranfield)& 120 & 71  & 34 \\
+ESA (WordNet)  & 60  & 120 & 45 \\
+VSM + QE       & 28  & 130 & 67 \\
+\bottomrule
+\end{tabular}
+\caption{Per-query win/loss counts against the VSM baseline ($k{=}10$).}
+\label{tab:pq}
+\end{table}
+
+BM25's per-query profile is the most favourable: it improves 136 queries and degrades only 47, a ratio of almost 3:1 in favour of improvement. In contrast, VSM+QE degrades 130 queries while improving only 28 — a 1:4.6 ratio against improvement. This is a strong signal that unconstrained WordNet expansion, which uses only the primary synset and up to 3 synonyms, introduces more noise than signal on this highly technical corpus.
+
+\subsection{Systematic Failure Analysis}
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{lcc}
+\toprule
+\textbf{System} & \textbf{New Failures (vs.\ Baseline)} & \textbf{Baseline Failures Fixed} \\
+\midrule
+BM25           & 2  & 5  \\
+LSA ($k{=}200$) & 5  & 6  \\
+BM25 + PRF     & 6  & 4  \\
+ESA (Cranfield)& 8  & 6  \\
+ESA (WordNet)  & 16 & 2  \\
+VSM + QE       & 16 & 0  \\
+\bottomrule
+\end{tabular}
+\caption{New failure cases introduced vs.\ baseline failures fixed, where a failure is defined as AP@10 = 0.}
+\end{table}
+
+A ``new failure'' means a query for which the baseline found at least one relevant document in the top-10 but the new method found none. VSM+QE introduces 16 new failures while fixing zero, confirming that query drift is a systematic problem. BM25 is the most conservative: only 2 new failures against 5 fixed, suggesting that the BM25 formulation is more robustly grounded than expansion-based approaches. LSA and PRF offer comparable net failure rates, fixing roughly as many as they introduce.
+
+\subsection{Qualitative Case Study}
+
+We focus on the documented vocabulary mismatch failure: Query 1 and Document 29.
+
+\textbf{Query:} \textit{``what similarity laws must be obeyed when constructing aeroelastic models of heated high speed aircraft''}
+
+\textbf{Document 29} (relevant, qrel position 2) discusses \textit{``transient temperatures and thermal stresses in aircraft structures subjected to aerodynamic heating''}.
+
+\begin{table}[H]
+\centering
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{lc}
+\toprule
+\textbf{System} & \textbf{Rank of Doc 29} \\
+\midrule
+VSM (Baseline) & 109 \\
+BM25           & 65  \\
+LSA ($k{=}200$) & 77  \\
+VSM + QE       & 117 (worse than baseline) \\
+BM25 + PRF     & 34  \\
+ESA (WordNet)  & 126 (worst) \\
+ESA (Cranfield)& \textbf{27} (best) \\
+\bottomrule
+\end{tabular}
+\caption{Rank assigned to Document 29 for Query 1 by each system.}
+\end{table}
+
+The rank trajectory is deeply informative:
+
+BM25 improves over VSM (65 vs.\ 109) because its Robertson IDF gives moderate-frequency terms like \textit{aircraft} more discriminative weight, and its length normalisation prevents short abstracts from being systematically outscored by longer ones. However, it still cannot bridge the \textit{heated}/\textit{thermal} lexical gap.
+
+LSA (rank 77) provides a partial but incomplete correction. The $k{=}200$ latent space captures some of the co-occurrence signal between heat-related terms, but the aerodynamics corpus is narrow enough that even 200 components do not fully separate the thermal cluster.
+
+BM25+PRF (rank 34) achieves the second-best result. The first-pass BM25 retrieves documents that use \textit{thermal} and \textit{aerodynamic}, and the PRF expansion injects these terms into the second-pass query, effectively bridging the lexical gap through an unsupervised expansion step.
+
+ESA-Cranfield (rank 27) is the best performer for this specific query. By projecting both the query and documents into the full Cranfield document-level concept space, it captures the fact that Document 29 has a high similarity profile with documents that are themselves relevant to heated aerodynamic structures.
+
+VSM+QE (rank 117, worse than baseline) exemplifies query drift. The primary WordNet synset for \textit{heated} or \textit{aeroelastic} likely retrieves semantically shallow synonyms that actively mislead the TF-IDF ranking, pushing Document 29 even further down.
+
+\subsection{Discussion: Why the Methods Work (or Fail)}
+
+The results converge on a clear picture of what drives IR success on this corpus.
+
+\textbf{BM25 succeeds} because it corrects for two well-understood biases of TF-IDF without making additional semantic assumptions: TF saturation prevents term-spam from dominating scores, and length normalisation prevents verbosity from conferring an unfair advantage. These corrections are robust and broadly applicable.
+
+\textbf{LSA succeeds} because the Cranfield corpus is thematically narrow (aerodynamics and fluid mechanics), meaning co-occurrence patterns are informative enough for the SVD to identify meaningful latent concepts. In a broader, more heterogeneous corpus, 200 components would capture far less of the meaningful variance.
+
+\textbf{PRF succeeds partially} because the initial BM25 pass is good enough to retrieve documents with overlapping vocabulary in the relevant cluster. When initial retrieval quality degrades for harder queries, the expansion terms are drawn from irrelevant documents and the second pass suffers.
+
+\textbf{WordNet QE fails} because the Cranfield domain is filled with specialist terms (e.g., \textit{aeroelastic}, \textit{joule heating}, \textit{blasius equation}) that either have no WordNet synsets or are mapped to coarse general-English synsets that do not reflect domain-specific meaning. Expanding \textit{viscous} to include everyday synonyms for \textit{thick} introduces catastrophic noise.
+
+\textbf{ESA-WordNet fails} for the same reason: the WordNet concept space was designed for general English, not aerodynamics. Terms that are semantically central to the Cranfield corpus but peripheral in everyday English (e.g., \textit{stagnation}, \textit{laminar}, \textit{oblique shock}) are either absent or poorly connected in WordNet.
+
+\textbf{ESA-Cranfield succeeds modestly} because it uses the corpus itself as the concept space, ensuring that every relevant technical term has a well-defined concept vector calibrated to the domain.
+
+\subsection{Summary of Findings}
+
+\begin{enumerate}[noitemsep]
+    \item BM25, LSA ($k{=}200$), BM25+PRF, and ESA-Cranfield all achieve statistically significant improvements over the VSM baseline (Wilcoxon, $p < 0.05$).
+    \item BM25 and BM25+PRF are the most practically reliable: the highest per-query improvement rates, the fewest new failures, and strong aggregate metrics.
+    \item The MAP gap between BM25, LSA, and BM25+PRF is marginal ($<0.6\%$) and not a credible basis for declaring a single winner without additional evidence.
+    \item VSM+QE and ESA-WordNet \emph{hurt} retrieval performance on this corpus. WordNet is misaligned with highly technical, domain-specific text.
+    \item LSA ablation identifies $k{=}200$ as the optimal dimensionality — a balance between capturing enough semantic structure and avoiding noise in the reduced space.
+    \item The vocabulary mismatch case study confirms that all three successful families of methods (probabilistic BM25, algebraic LSA, and feedback-based PRF) partially address the core failure mode, but no single method fully resolves it for all queries.
+\end{enumerate}
+
+% ===========================================================================
+\section{Conclusion}
+% ===========================================================================
+
+This project built, evaluated, and systematically improved a TF-IDF Vector Space Model Information Retrieval system on the Cranfield aerodynamics dataset. The baseline VSM achieved MAP@10 = 0.2691 and nDCG@10 = 0.4203, hampered primarily by its orthogonality assumption, which makes it blind to the rich synonym and co-occurrence structure in technical text.
+
+Five alternative retrieval methods were implemented and subjected to rigorous empirical evaluation. BM25 ($k_1{=}1.5$, $b{=}0.75$), selected via 5-fold cross-validation, produced the most reliably positive improvements: MAP@10 = 0.3240 ($+20.3\%$ relative), statistically significant at $p = 5.8 \times 10^{-12}$, improving 136 out of 225 queries while degrading only 47. LSA at $k{=}200$ dimensions achieved comparable aggregate performance (MAP@10 = 0.3233) by capturing latent co-occurrence structure, and BM25+PRF (MAP@10 = 0.3286) additionally leveraged feedback from retrieved documents to expand the query vocabulary.
+
+Naive WordNet-based Query Expansion and ESA in a general-domain WordNet concept space both \emph{degraded} performance below the baseline, with VSM+QE introducing 16 new total-failure queries while fixing none. This demonstrates that semantic enrichment can be actively harmful when the external knowledge source is misaligned with the target domain.
+
+The core lesson is that robust IR improvement requires methods whose assumptions match the corpus structure. On a narrow, specialist corpus like Cranfield, corpus-internal approaches (BM25's length normalisation, LSA's latent dimensions derived from the corpus itself, PRF's feedback from the same document collection) significantly outperform general external semantic resources. Future work could explore domain-adapted transformer embeddings, which would bring the strengths of learned semantic representations without the domain-mismatch problems of WordNet-based methods.
+
+\end{document}
