@@ -4,12 +4,6 @@
         "doc_id": 29,
         "query_text": "what similarity laws must be obeyed when constructing aeroelastic models of heated high speed aircraft .",
         "ranks": {
-            "VSM (Baseline)": 109,
-            "BM25": 65,
-            "LSA (k=200)": 77,
-            "VSM + QE": 117,
-            "BM25 + PRF": 34,
-            "ESA": 126,
             "ESA (Cranfield)": 27
         }
     },
@@ -21,10 +15,10 @@
         "query_text": "what similarity laws must be obeyed when constructing aeroelastic models of heated high speed aircraft .",
         "ranks": {
             "VSM (Baseline)": 109,
-            "BM25": 65,
-            "LSA (k=200)": 77,
+            "BM25": 79,
+            "LSA (k=200, CV)": 77,
             "VSM + QE": 117,
-            "BM25 + PRF": 34,
+            "BM25 + PRF": 39,
             "ESA": 126,
             "ESA (Cranfield)": 27
         }

@@ -1,74 +1,80 @@
 [
     {
         "method": "BM25",
+        "alternative_used": "greater",
         "H0": "AP scores of BM25 and VSM baseline come from the same distribution.",
         "H1": "BM25 has significantly higher AP scores than the VSM baseline.",
-        "statistic": 13286.5,
-        "p_value": 5.8138312904532545e-12,
-        "mean_delta_ap": 0.054975102572000785,
-        "cohens_d": 0.4616348910284835,
-        "effect_size_label": "small",
+        "statistic": 13663.5,
+        "p_value": 3.2720449892542955e-16,
+        "mean_delta_ap": 0.06136322928712623,
+        "cohens_d": 0.5690855641676006,
+        "effect_size_label": "medium",
         "significant": true,
-        "interpretation": "BM25 IS significantly better than VSM baseline (p=0.0, mean delta MAP=0.055, Cohen's d=0.462 [small] effect). Reject H0."
+        "interpretation": "BM25 IS significantly different from VSM baseline (alternative=greater, p=0.0, mean delta MAP=0.0614, Cohen's d=0.569 [medium] effect). Reject H0."
     },
     {
-        "method": "LSA (k=200)",
-        "H0": "AP scores of LSA (k=200) and VSM baseline come from the same distribution.",
-        "H1": "LSA (k=200) has significantly higher AP scores than the VSM baseline.",
+        "method": "LSA (k=200, CV)",
+        "alternative_used": "greater",
+        "H0": "AP scores of LSA (k=200, CV) and VSM baseline come from the same distribution.",
+        "H1": "LSA (k=200, CV) has significantly higher AP scores than the VSM baseline.",
         "statistic": 13018.5,
-        "p_value": 2.05401902613784e-09,
+        "p_value": 2.0540190261378403e-09,
         "mean_delta_ap": 0.054268074707833194,
         "cohens_d": 0.4343324163367307,
         "effect_size_label": "small",
         "significant": true,
-        "interpretation": "LSA (k=200) IS significantly better than VSM baseline (p=0.0, mean delta MAP=0.0543, Cohen's d=0.434 [small] effect). Reject H0."
+        "interpretation": "LSA (k=200, CV) IS significantly different from VSM baseline (alternative=greater, p=0.0, mean delta MAP=0.0543, Cohen's d=0.434 [small] effect). Reject H0."
     },
     {
         "method": "VSM + QE",
+        "alternative_used": "two-sided",
         "H0": "AP scores of VSM + QE and VSM baseline come from the same distribution.",
-        "H1": "VSM + QE has significantly higher AP scores than the VSM baseline.",
+        "H1": "VSM + QE has significantly different AP scores from the VSM baseline (two-sided).",
         "statistic": 2237.5,
-        "p_value": 0.9999999999995954,
+        "p_value": 8.091429163582947e-13,
         "mean_delta_ap": -0.03913213489243296,
         "cohens_d": -0.4153216263502761,
         "effect_size_label": "small",
-        "significant": false,
-        "interpretation": "VSM + QE is NOT significantly better than VSM baseline (p=1.0, mean delta MAP=-0.0391, Cohen's d=-0.415 [small] effect). Cannot reject H0."
+        "significant": true,
+        "interpretation": "VSM + QE IS significantly different from VSM baseline (alternative=two-sided, p=0.0, mean delta MAP=-0.0391, Cohen's d=-0.415 [small] effect). Reject H0."
     },
     {
         "method": "BM25 + PRF",
+        "alternative_used": "greater",
         "H0": "AP scores of BM25 + PRF and VSM baseline come from the same distribution.",
         "H1": "BM25 + PRF has significantly higher AP scores than the VSM baseline.",
-        "statistic": 13423.0,
-        "p_value": 1.7806213205185619e-09,
-        "mean_delta_ap": 0.05952982889007136,
-        "cohens_d": 0.40686404044069463,
+        "statistic": 14079.0,
+        "p_value": 1.7628401281914182e-12,
+        "mean_delta_ap": 0.06969990474605907,
+        "cohens_d": 0.4939220026719668,
         "effect_size_label": "small",
         "significant": true,
-        "interpretation": "BM25 + PRF IS significantly better than VSM baseline (p=0.0, mean delta MAP=0.0595, Cohen's d=0.407 [small] effect). Reject H0."
+        "interpretation": "BM25 + PRF IS significantly different from VSM baseline (alternative=greater, p=0.0, mean delta MAP=0.0697, Cohen's d=0.494 [small] effect). Reject H0."
     },
     {
         "method": "ESA",
+        "alternative_used": "two-sided",
         "H0": "AP scores of ESA and VSM baseline come from the same distribution.",
-        "H1": "ESA has significantly higher AP scores than the VSM baseline.",
+        "H1": "ESA has significantly different AP scores from the VSM baseline (two-sided).",
         "statistic": 4082.0,
-        "p_value": 0.9999999980009151,
+        "p_value": 3.9981698496396255e-09,
         "mean_delta_ap": -0.05757804190581224,
         "cohens_d": -0.3828687119239485,
         "effect_size_label": "small",
-        "significant": false,
-        "interpretation": "ESA is NOT significantly better than VSM baseline (p=1.0, mean delta MAP=-0.0576, Cohen's d=-0.383 [small] effect). Cannot reject H0."
+        "significant": true,
+        "interpretation": "ESA IS significantly different from VSM baseline (alternative=two-sided, p=0.0, mean delta MAP=-0.0576, Cohen's d=-0.383 [small] effect). Reject H0."
     },
     {
         "method": "ESA (Cranfield)",
+        "alternative_used": "two-sided",
         "H0": "AP scores of ESA (Cranfield) and VSM baseline come from the same distribution.",
-        "H1": "ESA (Cranfield) has significantly higher AP scores than the VSM baseline.",
-        "statistic": 12201.0,
-        "p_value": 3.673979269724947e-05,
+        "H1": "ESA (Cranfield) has significantly different AP scores from the VSM baseline (two-sided).",
+        "statistic": 6135.0,
+        "p_value": 7.347958539449891e-05,
         "mean_delta_ap": 0.02728372582324774,
         "cohens_d": 0.255168078391206,
         "effect_size_label": "small",
         "significant": true,
-        "interpretation": "ESA (Cranfield) IS significantly better than VSM baseline (p=0.0, mean delta MAP=0.0273, Cohen's d=0.255 [small] effect). Reject H0."
+        "interpretation": "ESA (Cranfield) IS significantly different from VSM baseline (alternative=two-sided, p=0.0001, mean delta MAP=0.0273, Cohen's d=0.255 [small] effect). Reject H0."
     }
 ]

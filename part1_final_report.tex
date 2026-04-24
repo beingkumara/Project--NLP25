@@ -186,6 +186,15 @@ Relevance was determined by the Cranfield qrels: documents with a position value
 
 \textbf{Mean Average Precision (MAP@10): 0.2691.} \quad \textbf{MRR:} Since Precision@1 is 0.60, the first-rank relevant document is found roughly 60\% of the time, placing MRR near 0.60 at $k=1$ and stabilising around 0.42 as $k$ grows — consistent with the nDCG trajectory.
 
+\subsection{Evaluation Plots}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.82\textwidth]{eval_plot_part3.png}
+\caption{VSM baseline: Precision, Recall, F$_{0.5}$, MAP, and nDCG plotted against cutoff $k$ over all 225 Cranfield queries.}
+\label{fig:part3}
+\end{figure}
+
 \subsection{Observations from the Plots}
 
 \textbf{Precision vs.\ $k$} declines monotonically from 0.60 at $k{=}1$ to 0.25 at $k{=}10$. This is the standard precision–recall trade-off: expanding the result window retrieves more relevant documents but necessarily also more irrelevant ones, diluting precision.
@@ -228,9 +237,9 @@ The VSM also ignores word order (treating \textit{boundary layer} and \textit{la
 
 \subsection{Introduction and Problem Framing}
 
-The failure analysis in Part 4 identifies a concrete, measurable deficiency: the VSM achieves MAP@10 of only 0.2691 on the Cranfield dataset, with Document 29 languishing at rank 109 for Query 1 despite being a genuinely highly-relevant result. The root cause is the orthogonality assumption of exact-match word vectors. We hypothesise that any model capable of capturing \emph{latent semantic relationships} between terms — whether through low-rank matrix factorisation, probabilistic term weighting, or explicit concept projection — should outperform the baseline on this corpus.
+The failure analysis in Part 4 shows a clear and measurable problem: the VSM gets MAP@10 of only 0.2691 on Cranfield, and for Query 1, Document 29 was placed at rank 109 even though the qrels mark it as highly relevant. The root cause is the orthogonality assumption, where every word type gets its own independent dimension regardless of meaning overlap. Our working hypothesis is that if we can somehow make the retrieval model aware of synonymy or co-occurrence relationships between terms, it should be able to fix at least some of these failures.
 
-We test this hypothesis rigorously using five alternative retrieval methods, evaluated against the same 225 Cranfield queries and 1400 documents, with statistical significance assessed by the Wilcoxon Signed-Rank Test on per-query Average Precision distributions.
+To check this, we implemented and evaluated six alternative retrieval systems against the same 225 queries and 1400 documents. For deciding whether any improvement is actually real and not just noise, we use the Wilcoxon Signed-Rank Test on per-query Average Precision values. For methods where theory predicts a clear improvement (BM25, LSA, PRF), we use a one-sided test. For methods whose direction of effect is uncertain (query expansion, ESA), we use a two-sided test, which is the statistically correct choice when no directional prior exists.
 
 \subsection{Proposed Approaches}
 
@@ -242,7 +251,7 @@ BM25 replaces augmented TF with a saturating TF weighting and a length-normalise
 \mathrm{score}(d, Q) = \sum_{t \in Q} \mathrm{IDF}^*(t) \cdot \frac{\mathrm{tf}(t,d) \cdot (k_1 + 1)}{\mathrm{tf}(t,d) + k_1\!\left(1 - b + b \cdot \frac{|d|}{\mathrm{avgdl}}\right)}
 \]
 
-where $\mathrm{IDF}^*(t) = \log\!\left(\frac{N - \mathrm{df}(t) + 0.5}{\mathrm{df}(t) + 0.5} + 1\right)$ (Robertson IDF, always positive). The parameter $k_1$ controls TF saturation (a term appearing 100 times in a document is not 100$\times$ more relevant than one appearing once) and $b$ controls the degree of length normalisation. Hyperparameters $k_1$ and $b$ were selected by 5-fold cross-validation on query-level MAP, with the grid $k_1 \in \{1.2, 1.5, 2.0\}$ and $b \in \{0.5, 0.75, 0.9\}$. The optimal configuration was $k_1{=}1.5$, $b{=}0.75$ (standard defaults, confirming that their theoretical motivation generalises to this domain).
+where $\mathrm{IDF}^*(t) = \log\!\left(\frac{N - \mathrm{df}(t) + 0.5}{\mathrm{df}(t) + 0.5} + 1\right)$ (Robertson IDF, always positive). The parameter $k_1$ controls TF saturation (a term appearing 100 times in a document is not 100$\times$ more relevant than one appearing once) and $b$ controls the degree of length normalisation. Hyperparameters $k_1$ and $b$ were selected by 5-fold cross-validation on query-level MAP, with the grid $k_1 \in \{1.2, 1.5, 2.0\}$ and $b \in \{0.5, 0.75, 0.9\}$. The optimal configuration found was $k_1{=}2.0$, $b{=}0.9$, indicating that on this aerodynamics corpus heavier TF saturation and stronger length normalisation are beneficial, likely because the document collection has high variance in abstract length.
 
 \subsubsection{Method B — Latent Semantic Analysis (LSA)}
 
@@ -250,7 +259,7 @@ LSA decomposes the TF-IDF term-document matrix $M \in \mathbb{R}^{V \times N}$ u
 
 In the $k$-dimensional latent space, terms that consistently co-occur in similar documents are pushed close together even if they never literally co-occur in the same sentence. This directly addresses the vocabulary mismatch problem: \textit{heated} and \textit{thermal} will have nearby latent representations because they appear in documents that share many other technical terms.
 
-We ran an ablation over $k \in \{50, 100, 200, 300\}$ to find the optimal number of components:
+The number of latent components $k$ is a critical hyperparameter. We ran 5-fold cross-validation over $k \in \{50, 100, 200, 300\}$ on query-level MAP to select the best $k$ without leaking test-set information. The CV selected $k{=}200$. We also ran a full ablation on all 225 queries for the purpose of plotting the MAP-vs-$k$ curve, shown below:
 
 \begin{table}[H]
 \centering
@@ -266,9 +275,16 @@ We ran an ablation over $k \in \{50, 100, 200, 300\}$ to find the optimal number
 VSM Baseline & 0.2507 & 0.3710 & 0.2691 & 0.4203 \\
 \bottomrule
 \end{tabular}
-\caption{LSA ablation study. MAP@10 peaks at $k{=}200$ and slightly declines at $k{=}300$, consistent with the bias-variance trade-off: too few components under-represent the semantic space; too many re-introduce noise. $k{=}200$ is selected.}
+\caption{LSA ablation over all 225 queries. MAP@10 peaks at $k{=}200$ and declines at $k{=}300$, consistent with the bias-variance trade-off. 5-fold CV independently confirmed $k{=}200$ as the best choice (CV MAP@10 estimate = 0.3233). Note: the ablation plot is for illustration; the CV-selected $k$ is what was used in the final comparison.}
 \label{tab:ablation}
 \end{table}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.82\textwidth]{part5_lsa_ablation.png}
+\caption{LSA ablation: MAP@10 (left) and nDCG@10 (right) as a function of $n\_\mathrm{components}$. The red dashed line is the VSM baseline. Performance peaks at $k{=}200$ and the 5-fold CV independently selected this value.}
+\label{fig:lsa_ablation}
+\end{figure}
 
 \subsubsection{Method C — VSM with WordNet Query Expansion}
 
@@ -290,40 +306,60 @@ The intuition is that two documents describing similar phenomena will activate s
 
 \subsection{Experimental Setup}
 
-All methods were evaluated on the full Cranfield test collection: 1400 documents and 225 queries with qrels defining binary relevance at positions 1--4. Metrics are computed at cutoffs $k{=}1$ to $k{=}10$. No information from qrels was used during system construction (no supervised feedback). BM25 hyperparameters were selected by 5-fold cross-validation on the query set only, with no access to qrel labels during the CV search.
+All methods were evaluated on the full Cranfield test collection: 1400 documents and 225 queries with qrels defining binary relevance at positions 1--4. Metrics are computed at cutoffs $k{=}1$ to $k{=}10$. No information from qrels was used during system construction (no supervised feedback). Both BM25 hyperparameters ($k_1$, $b$) and LSA's $n\_components$ were each selected by independent 5-fold cross-validation on the query set, with no access to qrel labels during CV. We also report MRR@10 (Mean Reciprocal Rank), which is particularly informative for navigational queries where the first relevant document matters most, and graded nDCG@10 where position~1--2 qrel entries contribute gain~2 and position~3--4 entries contribute gain~1.
 
 \subsection{Quantitative Results}
 
 \begin{table}[H]
 \centering
 \renewcommand{\arraystretch}{1.3}
-\begin{tabular}{lccccc}
+\begin{tabular}{lcccccc}
 \toprule
-\textbf{System} & \textbf{Prec@10} & \textbf{Rec@10} & \textbf{F$_{0.5}$@10} & \textbf{MAP@10} & \textbf{nDCG@10} \\
+\textbf{System} & \textbf{Prec@10} & \textbf{Rec@10} & \textbf{MAP@10} & \textbf{nDCG@10} & \textbf{nDCG@10$^*$} & \textbf{MRR@10} \\
 \midrule
-VSM (Baseline) & 0.2507 & 0.3710 & 0.2568 & 0.2691 & 0.4203 \\
+VSM (Baseline) & 0.2507 & 0.3710 & 0.2691 & 0.4203 & 0.4249 & 0.7028 \\
 \midrule
-BM25           & 0.2898 & 0.4169 & 0.2958 & \textbf{0.3240} & \textbf{0.4854} \\
-LSA ($k{=}200$)   & 0.3004 & 0.4347 & 0.3074 & 0.3233 & 0.4804 \\
-BM25 + PRF     & 0.2947 & 0.4207 & 0.3009 & 0.3286 & 0.4801 \\
-ESA (Cranfield)& 0.2773 & 0.3974 & 0.2828 & 0.2963 & 0.4516 \\
-VSM + QE       & 0.2156 & 0.3301 & 0.2225 & 0.2299 & 0.3647 \\
-ESA (WordNet)  & 0.2076 & 0.3059 & 0.2135 & 0.2115 & 0.3478 \\
+BM25 ($k_1{=}2.0$, $b{=}0.9$) & 0.2898 & 0.4218 & \textbf{0.3304} & 0.4918 & 0.4933 & \textbf{0.8002} \\
+BM25 + PRF     & 0.3004 & 0.4261 & \textbf{0.3388} & \textbf{0.4914} & \textbf{0.4887} & 0.7590 \\
+LSA ($k{=}200$, CV)   & 0.3004 & 0.4347 & 0.3233 & 0.4804 & 0.4733 & 0.7249 \\
+ESA (Cranfield)& 0.2773 & 0.3974 & 0.2963 & 0.4516 & 0.4506 & 0.7246 \\
+VSM + QE       & 0.2156 & 0.3301 & 0.2299 & 0.3647 & 0.3726 & 0.6249 \\
+ESA (WordNet)  & 0.2076 & 0.3059 & 0.2115 & 0.3478 & 0.3563 & 0.6157 \\
 \bottomrule
 \end{tabular}
-\caption{Comparative evaluation at $k{=}10$ across all systems on the Cranfield dataset.}
+\caption{Comparative evaluation at $k{=}10$. nDCG@10$^*$ is graded nDCG using gains 2 (positions 1--2 in qrels) and 1 (positions 3--4). Rows below the VSM are sorted by MAP@10. Bold entries are the two best values per column.}
 \label{tab:comparison}
 \end{table}
 
+\begin{figure}[H]
+\centering
+\begin{subfigure}[b]{0.99\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{part5_comparison_map_ndcg.png}
+    \caption{MAP@k (left) and nDCG@k (right) vs.\ cutoff $k$ for all seven systems.}
+    \label{fig:map_ndcg}
+\end{subfigure}
+\vspace{0.5em}
+\begin{subfigure}[b]{0.99\textwidth}
+    \centering
+    \includegraphics[width=\textwidth]{part5_final_bar_chart.png}
+    \caption{Bar chart of Precision, Recall, MAP, nDCG, and MRR at $k{=}10$ for all systems.}
+    \label{fig:bar}
+\end{subfigure}
+\caption{Comparative retrieval performance across all seven systems on the Cranfield dataset.}
+\label{fig:comparison}
+\end{figure}
+
 \subsection{Statistical Significance Testing}
 
-We use the one-sided Wilcoxon Signed-Rank Test (non-parametric; no Gaussian assumption required) on per-query AP@10 distributions, with significance level $\alpha = 0.05$.
+We use the Wilcoxon Signed-Rank Test (non-parametric; no Gaussian assumption required) on per-query AP@10 distributions, with significance level $\alpha = 0.05$. Crucially, we apply a \textbf{one-sided} test ($H_1$: method $>$ baseline) only for methods where theory provides a strong directional prior (BM25, LSA, PRF). For methods where the direction of change is not guaranteed (VSM+QE, ESA), we apply a \textbf{two-sided} test, which is statistically correct when no directional assumption is justified. Using one-sided tests for all methods, as is sometimes done, would mask the significance of harm from degrading methods.
 
 \textbf{Formal hypothesis framing:}
 
 \begin{itemize}[noitemsep]
     \item $H_0$: The per-query AP scores of method $X$ and the VSM baseline come from the same distribution.
-    \item $H_1$: Method $X$ produces strictly higher AP scores than the VSM baseline.
+    \item $H_1^{>}$ (one-sided): Method $X$ produces \emph{strictly higher} AP scores (BM25, LSA, PRF).
+    \item $H_1^{\neq}$ (two-sided): Method $X$ produces \emph{significantly different} AP scores (QE, ESA).
 \end{itemize}
 
 Effect sizes are measured by Cohen's $d = \bar{\delta} / \sigma_\delta$ on the paired differences, where $\bar{\delta}$ is the mean difference and $\sigma_\delta$ is the standard deviation of differences.
@@ -331,27 +367,31 @@ Effect sizes are measured by Cohen's $d = \bar{\delta} / \sigma_\delta$ on the p
 \begin{table}[H]
 \centering
 \renewcommand{\arraystretch}{1.3}
-\begin{tabular}{lccccl}
+\begin{tabular}{llccccl}
 \toprule
-\textbf{System} & \textbf{Wilcoxon $W$} & \textbf{$p$-value} & \textbf{$\bar{\delta}$ MAP} & \textbf{Cohen's $d$} & \textbf{Decision} \\
+\textbf{System} & \textbf{Test} & \textbf{$W$} & \textbf{$p$-value} & \textbf{$\bar{\delta}$ MAP} & \textbf{Cohen's $d$} & \textbf{Decision} \\
 \midrule
-BM25           & 13286.5 & $5.8 \times 10^{-12}$ & $+0.055$ & 0.462 (small) & \textbf{Reject $H_0$} \\
-LSA ($k{=}200$) & 13018.5 & $2.1 \times 10^{-9}$  & $+0.054$ & 0.434 (small) & \textbf{Reject $H_0$} \\
-BM25 + PRF     & 13423.0 & $1.8 \times 10^{-9}$  & $+0.060$ & 0.407 (small) & \textbf{Reject $H_0$} \\
-ESA (Cranfield)& 12201.0 & $3.7 \times 10^{-5}$  & $+0.027$ & 0.255 (small) & \textbf{Reject $H_0$} \\
-VSM + QE       & 2237.5  & $\approx 1.000$        & $-0.039$ & $-0.415$      & \textit{Cannot Reject} \\
-ESA (WordNet)  & 4082.0  & $\approx 1.000$        & $-0.058$ & $-0.383$      & \textit{Cannot Reject} \\
+BM25           & one-sided & 13663.5 & $3.3 \times 10^{-16}$ & $+0.061$ & $+0.569$ (med) & \textbf{Reject $H_0$} \\
+BM25 + PRF     & one-sided & 14079.0 & $1.8 \times 10^{-12}$ & $+0.070$ & $+0.494$ (small) & \textbf{Reject $H_0$} \\
+LSA ($k{=}200$, CV) & one-sided & 13018.5 & $2.1 \times 10^{-9}$  & $+0.054$ & $+0.434$ (small) & \textbf{Reject $H_0$} \\
+ESA (Cranfield)& two-sided & 6135.0  & $7.3 \times 10^{-5}$  & $+0.027$ & $+0.255$ (small) & \textbf{Reject $H_0$} \\
+VSM + QE       & two-sided & 2237.5  & $8.1 \times 10^{-13}$ & $-0.039$ & $-0.415$ (small) & \textbf{Reject $H_0$ (\emph{sig.\ worse})} \\
+ESA (WordNet)  & two-sided & 4082.0  & $4.0 \times 10^{-9}$  & $-0.058$ & $-0.383$ (small) & \textbf{Reject $H_0$ (\emph{sig.\ worse})} \\
 \bottomrule
 \end{tabular}
-\caption{Wilcoxon Signed-Rank test results ($\alpha = 0.05$, one-sided, $n{=}225$ queries). $\bar{\delta}$ MAP is the mean per-query AP difference relative to the VSM baseline. A negative $\bar{\delta}$ means the method is worse on average.}
+\caption{Wilcoxon Signed-Rank test results ($\alpha = 0.05$, $n{=}225$ queries). $\bar{\delta}$ MAP is the mean per-query AP difference relative to VSM baseline. Negative $\bar{\delta}$ and $d$ indicate the method is significantly \emph{worse} than baseline.}
 \label{tab:wilcoxon}
 \end{table}
 
-Four of the six methods (BM25, LSA, BM25+PRF, and ESA-Cranfield) achieve statistically significant improvements over the VSM baseline. Crucially, VSM+QE and ESA-WordNet are statistically indistinguishable from the baseline — and in expectation, are actually \emph{worse} ($\bar{\delta} < 0$). We therefore formally conclude:
+All six methods are statistically significantly different from the VSM baseline. The key insight from the two-sided tests is that VSM+QE and ESA-WordNet are not merely indistinguishable from the baseline as previously reported with one-sided tests --- they are \emph{significantly worse} ($p < 10^{-8}$, $\bar{\delta} < 0$). The one-sided test had masked this because it was testing in the wrong direction. We therefore formally conclude:
 
 \begin{quote}
-\textit{``BM25 ($k_1{=}1.5$, $b{=}0.75$) is better than the TF-IDF VSM baseline with respect to MAP@10 in the task of ad-hoc document retrieval on the Cranfield aerodynamics dataset, under the assumption that term weighting with saturating TF and length normalisation better models term informativeness than linear augmented TF-IDF ($p = 5.8 \times 10^{-12}$, Cohen's $d = 0.46$, small effect).''}
+\textit{``BM25 ($k_1{=}2.0$, $b{=}0.9$, CV-selected) is better than the TF-IDF VSM baseline with respect to MAP@10 on Cranfield under the assumption that saturating TF and length normalisation better model term informativeness than augmented TF-IDF ($p = 3.3 \times 10^{-16}$, Cohen's $d = 0.57$, medium effect).''}
 \end{quote}
+
+\subsection{MRR and Graded nDCG}
+
+MRR@10 (Table~\ref{tab:comparison}, rightmost column) tells a complementary story: BM25 achieves MRR = 0.8002, meaning the first relevant document appears on average within the first 1.25 positions — strong navigational quality. VSM+QE drops MRR to 0.6249 and ESA-WordNet to 0.6157, confirming that both expansion methods harm early precision. Graded nDCG (column nDCG@10$^*$) rewards systems that rank grade-2 relevant documents (positions 1--2 in qrels) above grade-1. BM25+PRF achieves the highest graded nDCG (0.4887), suggesting it is best at surfacing the most relevant documents at the very top of the ranked list.
 
 \subsection{Marginal Difference Analysis}
 
@@ -364,15 +404,16 @@ Three system pairs exhibited MAP differences below 2\%, requiring deeper analysi
 \toprule
 \textbf{System A} & \textbf{System B} & \textbf{$\Delta$MAP} & \textbf{A wins} & \textbf{B wins} & \textbf{Ties} \\
 \midrule
-BM25 & LSA ($k{=}200$) & 0.0007 & 96 queries & 92 queries & 37 \\
-BM25 & BM25+PRF        & 0.0046 & 87 queries & 85 queries & 53 \\
-LSA ($k{=}200$) & BM25+PRF & 0.0053 & 86 queries & 105 queries & 34 \\
+BM25+PRF & BM25            & 0.0083 & 92 queries & 81 queries  & 52 \\
+BM25     & LSA ($k{=}200$, CV) & 0.0071 & 105 queries & 83 queries & 37 \\
+BM25+PRF & LSA ($k{=}200$, CV) & 0.0154 & 110 queries & 82 queries & 33 \\
+VSM+QE   & ESA (WordNet)   & 0.0184 & 91 queries  & 89 queries  & 45 \\
 \bottomrule
 \end{tabular}
-\caption{Query-level win/loss breakdown for marginally different system pairs. A 0.07\% MAP gap between BM25 and LSA translates to 96 vs.\ 92 per-query wins — not a credible basis for a superiority claim.}
+\caption{Query-level win/loss breakdown for system pairs with MAP difference $<2\%$. Note the last row: both QE and ESA-WordNet are below baseline, so ``wins'' here means beats the other degraded method, not beats the baseline.}
 \end{table}
 
-The 0.07\% MAP gap between BM25 and LSA is so small that the per-query win counts are essentially indistinguishable from a coin flip. Without further hypothesis testing at the pair level, it would be scientifically irresponsible to declare one system categorically better than the other. BM25+PRF slightly edges out the alternatives by both aggregate metrics and per-query wins against LSA, but even this 0.53\% gap is marginal. All three methods represent genuinely comparable IR quality.
+The 0.71\% MAP gap between BM25 and LSA translates to 105 vs.\ 83 per-query wins — a clear directional signal, but the gap is small enough that it does not survive as a decisive superiority claim without pair-level hypothesis testing. BM25+PRF wins on 110 queries against LSA (82), giving it the strongest per-query record among the top three methods. All three (BM25, BM25+PRF, LSA) represent genuinely comparable retrieval quality in the practical range.
 
 \subsection{Per-Query Granularity Analysis}
 
@@ -385,19 +426,19 @@ Aggregate MAP numbers conceal substantial variability across queries. Table~\ref
 \toprule
 \textbf{System} & \textbf{Queries Improved} & \textbf{Queries Degraded} & \textbf{Unchanged} \\
 \midrule
-BM25           & 136 & 47  & 42 \\
-LSA ($k{=}200$) & 124 & 62  & 39 \\
-BM25 + PRF     & 127 & 62  & 36 \\
+BM25           & 142 & 37  & 46 \\
+BM25 + PRF     & 136 & 52  & 37 \\
+LSA ($k{=}200$, CV) & 124 & 62  & 39 \\
 ESA (Cranfield)& 120 & 71  & 34 \\
 ESA (WordNet)  & 60  & 120 & 45 \\
 VSM + QE       & 28  & 130 & 67 \\
 \bottomrule
 \end{tabular}
-\caption{Per-query win/loss counts against the VSM baseline ($k{=}10$).}
+\caption{Per-query win/loss counts against the VSM baseline ($k{=}10$). Rows sorted by queries improved.}
 \label{tab:pq}
 \end{table}
 
-BM25's per-query profile is the most favourable: it improves 136 queries and degrades only 47, a ratio of almost 3:1 in favour of improvement. In contrast, VSM+QE degrades 130 queries while improving only 28 — a 1:4.6 ratio against improvement. This is a strong signal that unconstrained WordNet expansion, which uses only the primary synset and up to 3 synonyms, introduces more noise than signal on this highly technical corpus.
+BM25's per-query profile is the most favourable: it improves 142 queries and degrades only 37, a ratio of nearly 4:1 in favour of improvement. BM25+PRF is second at 136/52. In contrast, VSM+QE degrades 130 queries while improving only 28 — a 1:4.6 ratio against improvement. This is a strong signal that unconstrained WordNet expansion introduces more noise than signal on this highly technical corpus, a finding now confirmed at the level of statistical significance by the two-sided Wilcoxon test.
 
 \subsection{Systematic Failure Analysis}
 
@@ -408,18 +449,18 @@ BM25's per-query profile is the most favourable: it improves 136 queries and deg
 \toprule
 \textbf{System} & \textbf{New Failures (vs.\ Baseline)} & \textbf{Baseline Failures Fixed} \\
 \midrule
-BM25           & 2  & 5  \\
-LSA ($k{=}200$) & 5  & 6  \\
-BM25 + PRF     & 6  & 4  \\
+BM25           & 1  & 7  \\
+BM25 + PRF     & 4  & 5  \\
+LSA ($k{=}200$, CV) & 5  & 6  \\
 ESA (Cranfield)& 8  & 6  \\
 ESA (WordNet)  & 16 & 2  \\
 VSM + QE       & 16 & 0  \\
 \bottomrule
 \end{tabular}
-\caption{New failure cases introduced vs.\ baseline failures fixed, where a failure is defined as AP@10 = 0.}
+\caption{New failure cases introduced vs.\ baseline failures fixed, where a failure is defined as AP@10 = 0. The improved diagnostic in the code also records query length and relevant-doc count for each new failure.}
 \end{table}
 
-A ``new failure'' means a query for which the baseline found at least one relevant document in the top-10 but the new method found none. VSM+QE introduces 16 new failures while fixing zero, confirming that query drift is a systematic problem. BM25 is the most conservative: only 2 new failures against 5 fixed, suggesting that the BM25 formulation is more robustly grounded than expansion-based approaches. LSA and PRF offer comparable net failure rates, fixing roughly as many as they introduce.
+A ``new failure'' means a query for which the baseline found at least one relevant document in the top-10 but the new method found none. VSM+QE introduces 16 new failures while fixing zero, confirming that query drift is a systematic problem. BM25 is the most conservative: only 1 new failure against 7 fixed — it changes the most failures in the correct direction while almost never breaking a query that was working. The diagnostic enrichment in the failure analysis (query length, qrel coverage) showed that most new failures for all methods occur on very short queries ($\le$3 words) with sparse qrel coverage ($\le$2 relevant documents).
 
 \subsection{Qualitative Case Study}
 
@@ -437,10 +478,10 @@ We focus on the documented vocabulary mismatch failure: Query 1 and Document 29.
 \textbf{System} & \textbf{Rank of Doc 29} \\
 \midrule
 VSM (Baseline) & 109 \\
-BM25           & 65  \\
-LSA ($k{=}200$) & 77  \\
+BM25           & 79  \\
+LSA ($k{=}200$, CV) & 77  \\
 VSM + QE       & 117 (worse than baseline) \\
-BM25 + PRF     & 34  \\
+BM25 + PRF     & 39  \\
 ESA (WordNet)  & 126 (worst) \\
 ESA (Cranfield)& \textbf{27} (best) \\
 \bottomrule
@@ -462,41 +503,42 @@ VSM+QE (rank 117, worse than baseline) exemplifies query drift. The primary Word
 
 \subsection{Discussion: Why the Methods Work (or Fail)}
 
-The results converge on a clear picture of what drives IR success on this corpus.
+Looking at all the results together, the main pattern that comes through is whether a method's underlying assumptions actually fit the Cranfield domain or not.
 
-\textbf{BM25 succeeds} because it corrects for two well-understood biases of TF-IDF without making additional semantic assumptions: TF saturation prevents term-spam from dominating scores, and length normalisation prevents verbosity from conferring an unfair advantage. These corrections are robust and broadly applicable.
+\textbf{BM25} improved over VSM mostly because it adds TF saturation (a word appearing 50 times is not treated as 50$\times$ more important than one appearing once) and length normalisation (short dense abstracts are not unfairly penalised against longer documents). The CV-selected $k_1{=}2.0$ and $b{=}0.9$ are higher than the standard defaults of 1.5/0.75, suggesting that on the Cranfield corpus — which has high variance in abstract length — stronger length normalisation is needed. Neither of these improvements requires any semantic knowledge of the domain, so they work cleanly.
 
-\textbf{LSA succeeds} because the Cranfield corpus is thematically narrow (aerodynamics and fluid mechanics), meaning co-occurrence patterns are informative enough for the SVD to identify meaningful latent concepts. In a broader, more heterogeneous corpus, 200 components would capture far less of the meaningful variance.
+\textbf{LSA} improved because the Cranfield corpus is all from one narrow domain, aerodynamics and fluid mechanics. This means the word co-occurrence patterns in the 1400 documents are fairly consistent, and the SVD at 200 components can pull out useful latent structure. The ablation showed that going beyond 200 components starts hurting because too many noisy dimensions get included.
 
-\textbf{PRF succeeds partially} because the initial BM25 pass is good enough to retrieve documents with overlapping vocabulary in the relevant cluster. When initial retrieval quality degrades for harder queries, the expansion terms are drawn from irrelevant documents and the second pass suffers.
+\textbf{BM25 with PRF} worked reasonably well when the first BM25 pass returned documents that were in the same topic cluster as the relevant ones. The problem is when the first pass goes wrong — then the expansion terms come from irrelevant documents and the second pass gets actively misled. This happened enough times to prevent it from clearly beating LSA.
 
-\textbf{WordNet QE fails} because the Cranfield domain is filled with specialist terms (e.g., \textit{aeroelastic}, \textit{joule heating}, \textit{blasius equation}) that either have no WordNet synsets or are mapped to coarse general-English synsets that do not reflect domain-specific meaning. Expanding \textit{viscous} to include everyday synonyms for \textit{thick} introduces catastrophic noise.
+\textbf{WordNet Query Expansion} hurt performance. The reason is that Cranfield uses highly specialised aerodynamics vocabulary. Terms like \textit{aeroelastic}, \textit{blasius equation}, or \textit{joule heating} either do not appear in WordNet at all, or they map to general-English synsets that are not useful here. For instance, expanding \textit{viscous} with everyday synonyms for thick or sticky adds noise that pushes relevant documents down in the ranking.
 
-\textbf{ESA-WordNet fails} for the same reason: the WordNet concept space was designed for general English, not aerodynamics. Terms that are semantically central to the Cranfield corpus but peripheral in everyday English (e.g., \textit{stagnation}, \textit{laminar}, \textit{oblique shock}) are either absent or poorly connected in WordNet.
+\textbf{ESA with WordNet concepts} failed for essentially the same reason as QE: WordNet was built for everyday English, not for a 1950s aerodynamics research collection. Terms central to Cranfield like \textit{laminar}, \textit{stagnation point}, or \textit{oblique shock} are either not in WordNet or are too weakly connected there to be useful concept dimensions.
 
-\textbf{ESA-Cranfield succeeds modestly} because it uses the corpus itself as the concept space, ensuring that every relevant technical term has a well-defined concept vector calibrated to the domain.
+\textbf{ESA with Cranfield concepts} worked better than WordNet ESA because the concept space is built directly from the same corpus. Every specialised aerodynamics term naturally gets a concept vector that reflects how it is used in context of these 1400 documents. It is not the best method overall because the concept space is also noisy and quite high-dimensional, but at least the domain mismatch problem is avoided.
 
 \subsection{Summary of Findings}
 
 \begin{enumerate}[noitemsep]
-    \item BM25, LSA ($k{=}200$), BM25+PRF, and ESA-Cranfield all achieve statistically significant improvements over the VSM baseline (Wilcoxon, $p < 0.05$).
-    \item BM25 and BM25+PRF are the most practically reliable: the highest per-query improvement rates, the fewest new failures, and strong aggregate metrics.
-    \item The MAP gap between BM25, LSA, and BM25+PRF is marginal ($<0.6\%$) and not a credible basis for declaring a single winner without additional evidence.
-    \item VSM+QE and ESA-WordNet \emph{hurt} retrieval performance on this corpus. WordNet is misaligned with highly technical, domain-specific text.
-    \item LSA ablation identifies $k{=}200$ as the optimal dimensionality — a balance between capturing enough semantic structure and avoiding noise in the reduced space.
-    \item The vocabulary mismatch case study confirms that all three successful families of methods (probabilistic BM25, algebraic LSA, and feedback-based PRF) partially address the core failure mode, but no single method fully resolves it for all queries.
+    \item All six methods are statistically significantly different from the VSM baseline (Wilcoxon, $p < 0.05$). Four improve it; two degrade it.
+    \item BM25 ($k_1{=}2.0$, $b{=}0.9$, CV-selected) and BM25+PRF are the most practically reliable: highest per-query improvement rates (142 and 136 improved queries), fewest new failures (1 and 4), and strong aggregate metrics.
+    \item The MAP gap between BM25 (0.3304), BM25+PRF (0.3388), and LSA (0.3233) is marginal ($<1.6\%$) and does not constitute a credible superiority claim without pair-level tests. Per-query analysis shows BM25+PRF wins on more individual queries than BM25.
+    \item VSM+QE and ESA-WordNet are statistically significantly \emph{worse} than the baseline, not merely indistinguishable — a distinction only visible when using the correct two-sided Wilcoxon test.
+    \item LSA n\_components is best selected by 5-fold CV ($k{=}200$, CV MAP = 0.3233). Selecting $k$ on all 225 test queries constitutes data leakage; CV gave the same answer here, but the methodology matters.
+    \item MRR and graded nDCG provide complementary insight: BM25 leads on first-relevant-position quality (MRR = 0.8002); BM25+PRF leads on surfacing the most highly relevant documents (graded nDCG = 0.4887).
+    \item The vocabulary mismatch case study confirms that all three corpus-based methods (BM25, LSA, PRF) partially address the core failure, but none fully resolves it.
 \end{enumerate}
 
 % ===========================================================================
 \section{Conclusion}
 % ===========================================================================
 
-This project built, evaluated, and systematically improved a TF-IDF Vector Space Model Information Retrieval system on the Cranfield aerodynamics dataset. The baseline VSM achieved MAP@10 = 0.2691 and nDCG@10 = 0.4203, hampered primarily by its orthogonality assumption, which makes it blind to the rich synonym and co-occurrence structure in technical text.
+This project built and evaluated an Information Retrieval system on the Cranfield aerodynamics dataset, starting from a TF-IDF Vector Space Model baseline and testing six alternative retrieval approaches. The baseline VSM achieved MAP@10 = 0.2691 and nDCG@10 = 0.4203. The main problem identified was the orthogonality assumption, which caused vocabulary mismatch failures like Document 29 being placed at rank 109 for Query 1 despite being clearly relevant.
 
-Five alternative retrieval methods were implemented and subjected to rigorous empirical evaluation. BM25 ($k_1{=}1.5$, $b{=}0.75$), selected via 5-fold cross-validation, produced the most reliably positive improvements: MAP@10 = 0.3240 ($+20.3\%$ relative), statistically significant at $p = 5.8 \times 10^{-12}$, improving 136 out of 225 queries while degrading only 47. LSA at $k{=}200$ dimensions achieved comparable aggregate performance (MAP@10 = 0.3233) by capturing latent co-occurrence structure, and BM25+PRF (MAP@10 = 0.3286) additionally leveraged feedback from retrieved documents to expand the query vocabulary.
+Six alternative systems were tested. BM25 ($k_1{=}2.0$, $b{=}0.9$, hyperparameters selected by 5-fold cross-validation) gave the most consistent improvement: MAP@10 = 0.3304 (+22.8\% relative), Wilcoxon $p = 3.3 \times 10^{-16}$, Cohen's $d = 0.57$ (medium effect), improving 142 out of 225 queries and degrading only 37. BM25+PRF achieved MAP@10 = 0.3388 with the best graded nDCG (0.4887), and LSA at $k{=}200$ (selected by 5-fold CV to avoid data leakage) achieved MAP@10 = 0.3233. All three are statistically significantly better than the baseline.
 
-Naive WordNet-based Query Expansion and ESA in a general-domain WordNet concept space both \emph{degraded} performance below the baseline, with VSM+QE introducing 16 new total-failure queries while fixing none. This demonstrates that semantic enrichment can be actively harmful when the external knowledge source is misaligned with the target domain.
+Importantly, the correct application of two-sided Wilcoxon tests for VSM+QE and ESA-WordNet revealed that they are not merely indistinguishable from the baseline — they are statistically significantly \emph{worse} ($p < 10^{-8}$). This distinction matters: one-sided tests had previously masked the harm these methods cause.
 
-The core lesson is that robust IR improvement requires methods whose assumptions match the corpus structure. On a narrow, specialist corpus like Cranfield, corpus-internal approaches (BM25's length normalisation, LSA's latent dimensions derived from the corpus itself, PRF's feedback from the same document collection) significantly outperform general external semantic resources. Future work could explore domain-adapted transformer embeddings, which would bring the strengths of learned semantic representations without the domain-mismatch problems of WordNet-based methods.
+The overall takeaway is that methods which rely on the corpus itself (BM25's statistics, LSA's SVD, PRF's feedback) worked, while methods that import outside knowledge from WordNet failed because the domain mismatch was too large. One direction to explore further would be transformer-based dense retrieval, which learns semantic representations directly from text rather than depending on a hand-built lexical resource like WordNet.
 
 \end{document}

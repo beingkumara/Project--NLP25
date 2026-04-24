@@ -246,9 +246,9 @@ The VSM also ignores word order (treating \textit{boundary layer} and \textit{la
 
 \subsection{Introduction and Problem Framing}
 
-The failure analysis in Part 4 identifies a concrete, measurable deficiency: the VSM achieves MAP@10 of only 0.2691 on the Cranfield dataset, with Document 29 languishing at rank 109 for Query 1 despite being a genuinely highly-relevant result. The root cause is the orthogonality assumption of exact-match word vectors. We hypothesise that any model capable of capturing \emph{latent semantic relationships} between terms — whether through low-rank matrix factorisation, probabilistic term weighting, or explicit concept projection — should outperform the baseline on this corpus.
+The failure analysis in Part 4 shows a clear and measurable problem: the VSM gets MAP@10 of only 0.2691 on Cranfield, and for Query 1, Document 29 was placed at rank 109 even though the qrels mark it as highly relevant. The root cause is the orthogonality assumption, where every word type gets its own independent dimension regardless of meaning overlap. Our working hypothesis is that if we can somehow make the retrieval model aware of synonymy or co-occurrence relationships between terms, it should be able to fix at least some of these failures.
 
-We test this hypothesis rigorously using five alternative retrieval methods, evaluated against the same 225 Cranfield queries and 1400 documents, with statistical significance assessed by the Wilcoxon Signed-Rank Test on per-query Average Precision distributions.
+To check this, we implemented and evaluated five alternative retrieval systems against the same 225 queries and 1400 documents. For deciding whether any improvement is actually real and not just noise, we use the Wilcoxon Signed-Rank Test on per-query Average Precision values.
 
 \subsection{Proposed Approaches}
 
@@ -480,19 +480,19 @@ VSM+QE (rank 117, worse than baseline) exemplifies query drift. The primary Word
 
 \subsection{Discussion: Why the Methods Work (or Fail)}
 
-The results converge on a clear picture of what drives IR success on this corpus.
+Looking at all the results together, the main pattern that comes through is whether a method's underlying assumptions actually fit the Cranfield domain or not.
 
-\textbf{BM25 succeeds} because it corrects for two well-understood biases of TF-IDF without making additional semantic assumptions: TF saturation prevents term-spam from dominating scores, and length normalisation prevents verbosity from conferring an unfair advantage. These corrections are robust and broadly applicable.
+\textbf{BM25} improved over VSM mostly because it adds TF saturation (so a word appearing 50 times in a document is not treated as 50 times more important than one appearing once) and length normalisation (so short, dense abstracts are not unfairly penalised against longer documents). Neither of these requires any semantic knowledge about the domain, so they work cleanly on this corpus.
 
-\textbf{LSA succeeds} because the Cranfield corpus is thematically narrow (aerodynamics and fluid mechanics), meaning co-occurrence patterns are informative enough for the SVD to identify meaningful latent concepts. In a broader, more heterogeneous corpus, 200 components would capture far less of the meaningful variance.
+\textbf{LSA} improved because the Cranfield corpus is all from one narrow domain, aerodynamics and fluid mechanics. This means the word co-occurrence patterns in the 1400 documents are fairly consistent, and the SVD at 200 components can pull out useful latent structure. The ablation showed that going beyond 200 components starts hurting because too many noisy dimensions get included.
 
-\textbf{PRF succeeds partially} because the initial BM25 pass is good enough to retrieve documents with overlapping vocabulary in the relevant cluster. When initial retrieval quality degrades for harder queries, the expansion terms are drawn from irrelevant documents and the second pass suffers.
+\textbf{BM25 with PRF} worked reasonably well when the first BM25 pass returned documents that were in the same topic cluster as the relevant ones. The problem is when the first pass goes wrong — then the expansion terms come from irrelevant documents and the second pass gets actively misled. This happened enough times to prevent it from clearly beating LSA.
 
-\textbf{WordNet QE fails} because the Cranfield domain is filled with specialist terms (e.g., \textit{aeroelastic}, \textit{joule heating}, \textit{blasius equation}) that either have no WordNet synsets or are mapped to coarse general-English synsets that do not reflect domain-specific meaning. Expanding \textit{viscous} to include everyday synonyms for \textit{thick} introduces catastrophic noise.
+\textbf{WordNet Query Expansion} hurt performance. The reason is that Cranfield uses highly specialised aerodynamics vocabulary. Terms like \textit{aeroelastic}, \textit{blasius equation}, or \textit{joule heating} either do not appear in WordNet at all, or they map to general-English synsets that are not useful here. For instance, expanding \textit{viscous} with everyday synonyms for thick or sticky adds noise that pushes relevant documents down in the ranking.
 
-\textbf{ESA-WordNet fails} for the same reason: the WordNet concept space was designed for general English, not aerodynamics. Terms that are semantically central to the Cranfield corpus but peripheral in everyday English (e.g., \textit{stagnation}, \textit{laminar}, \textit{oblique shock}) are either absent or poorly connected in WordNet.
+\textbf{ESA with WordNet concepts} failed for essentially the same reason as QE: WordNet was built for everyday English, not for a 1950s aerodynamics research collection. Terms central to Cranfield like \textit{laminar}, \textit{stagnation point}, or \textit{oblique shock} are either not in WordNet or are too weakly connected there to be useful concept dimensions.
 
-\textbf{ESA-Cranfield succeeds modestly} because it uses the corpus itself as the concept space, ensuring that every relevant technical term has a well-defined concept vector calibrated to the domain.
+\textbf{ESA with Cranfield concepts} worked better than WordNet ESA because the concept space is built directly from the same corpus. Every specialised aerodynamics term naturally gets a concept vector that reflects how it is used in context of these 1400 documents. It is not the best method overall because the concept space is also noisy and quite high-dimensional, but at least the domain mismatch problem is avoided.
 
 \subsection{Summary of Findings}
 
@@ -509,12 +509,12 @@ The results converge on a clear picture of what drives IR success on this corpus
 \section{Conclusion}
 % ===========================================================================
 
-This project built, evaluated, and systematically improved a TF-IDF Vector Space Model Information Retrieval system on the Cranfield aerodynamics dataset. The baseline VSM achieved MAP@10 = 0.2691 and nDCG@10 = 0.4203, hampered primarily by its orthogonality assumption, which makes it blind to the rich synonym and co-occurrence structure in technical text.
+This project built and evaluated an Information Retrieval system on the Cranfield aerodynamics dataset, starting from a TF-IDF Vector Space Model baseline and testing five alternative retrieval approaches. The baseline VSM achieved MAP@10 = 0.2691 and nDCG@10 = 0.4203. The main problem identified was the orthogonality assumption, which caused vocabulary mismatch failures like Document 29 being placed at rank 109 for Query 1 despite being clearly relevant.
 
-Five alternative retrieval methods were implemented and subjected to rigorous empirical evaluation. BM25 ($k_1{=}1.5$, $b{=}0.75$), selected via 5-fold cross-validation, produced the most reliably positive improvements: MAP@10 = 0.3240 ($+20.3\%$ relative), statistically significant at $p = 5.8 \times 10^{-12}$, improving 136 out of 225 queries while degrading only 47. LSA at $k{=}200$ dimensions achieved comparable aggregate performance (MAP@10 = 0.3233) by capturing latent co-occurrence structure, and BM25+PRF (MAP@10 = 0.3286) additionally leveraged feedback from retrieved documents to expand the query vocabulary.
+Five alternative systems were tested. BM25 ($k_1{=}1.5$, $b{=}0.75$, hyperparameters selected by 5-fold cross-validation) gave the most consistent improvement: MAP@10 = 0.3240 (+20.3\% relative), Wilcoxon $p = 5.8 \times 10^{-12}$, improving 136 out of 225 queries and degrading only 47. LSA at $k{=}200$ components gave nearly the same aggregate performance (MAP@10 = 0.3233), and BM25+PRF achieved MAP@10 = 0.3286 by using the top retrieved documents to expand the query vocabulary. All three are statistically significantly better than the baseline.
 
-Naive WordNet-based Query Expansion and ESA in a general-domain WordNet concept space both \emph{degraded} performance below the baseline, with VSM+QE introducing 16 new total-failure queries while fixing none. This demonstrates that semantic enrichment can be actively harmful when the external knowledge source is misaligned with the target domain.
+WordNet Query Expansion and ESA with WordNet concepts both performed below the baseline. VSM+QE introduced 16 new total-failure queries and fixed none. This happened because WordNet's vocabulary does not match the specialist aerodynamics terminology in Cranfield, so the expansion terms added noise rather than helping.
 
-The core lesson is that robust IR improvement requires methods whose assumptions match the corpus structure. On a narrow, specialist corpus like Cranfield, corpus-internal approaches (BM25's length normalisation, LSA's latent dimensions derived from the corpus itself, PRF's feedback from the same document collection) significantly outperform general external semantic resources. Future work could explore domain-adapted transformer embeddings, which would bring the strengths of learned semantic representations without the domain-mismatch problems of WordNet-based methods.
+The overall takeaway is that methods which rely on the corpus itself (BM25's statistics, LSA's SVD on this corpus's term-document matrix, PRF's feedback from this corpus's documents) worked, while methods that bring in outside knowledge from WordNet failed because the domain mismatch was too large. One direction to explore further would be using transformer-based dense retrieval, which learns semantic representations directly from text rather than depending on a hand-built lexical resource like WordNet.
 
 \end{document}
