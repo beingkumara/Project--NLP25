@@ -1,0 +1,56 @@
+{
+    "system_a": "BM25",
+    "system_b": "LSA (k=200, CV)",
+    "by_query_length": {
+        "short": {
+            "a_wins": 0,
+            "b_wins": 0,
+            "ties": 0,
+            "count": 0,
+            "a_win_pct": 0.0,
+            "b_win_pct": 0.0
+        },
+        "medium": {
+            "a_wins": 13,
+            "b_wins": 12,
+            "ties": 7,
+            "count": 32,
+            "a_win_pct": 40.6,
+            "b_win_pct": 37.5
+        },
+        "long": {
+            "a_wins": 92,
+            "b_wins": 71,
+            "ties": 30,
+            "count": 193,
+            "a_win_pct": 47.7,
+            "b_win_pct": 36.8
+        }
+    },
+    "by_qrel_density": {
+        "sparse": {
+            "a_wins": 14,
+            "b_wins": 9,
+            "ties": 12,
+            "count": 35,
+            "a_win_pct": 40.0,
+            "b_win_pct": 25.7
+        },
+        "medium": {
+            "a_wins": 55,
+            "b_wins": 47,
+            "ties": 21,
+            "count": 123,
+            "a_win_pct": 44.7,
+            "b_win_pct": 38.2
+        },
+        "dense": {
+            "a_wins": 36,
+            "b_wins": 27,
+            "ties": 4,
+            "count": 67,
+            "a_win_pct": 53.7,
+            "b_win_pct": 40.3
+        }
+    }
+}

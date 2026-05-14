@@ -103,6 +103,7 @@ def main():
     list_fs = []
     list_map = []
     list_ndcg = []
+    list_mrr = []
 
     print("\n-------------------------")
     print("FINAL RESULTS")
@@ -110,20 +111,22 @@ def main():
 
     # According to question, I need to check k from 1 to 10
     for my_k in range(1, 11):
-        
+
         # Computing all metrics for current k
         m_prec = my_evaluator.meanPrecision(dict_doc_IDs_ordered, query_ids_list, my_relevant_docs, my_k)
         m_rec = my_evaluator.meanRecall(dict_doc_IDs_ordered, query_ids_list, my_relevant_docs, my_k)
         m_fs = my_evaluator.meanFscore(dict_doc_IDs_ordered, query_ids_list, my_relevant_docs, my_k)
         m_map = my_evaluator.meanAveragePrecision(dict_doc_IDs_ordered, query_ids_list, my_relevant_docs, my_k)
         m_ndcg = my_evaluator.meanNDCG(dict_doc_IDs_ordered, query_ids_list, my_relevant_docs, my_k)
-        
+        m_mrr = my_evaluator.meanReciprocalRank(dict_doc_IDs_ordered, query_ids_list, my_relevant_docs, my_k)
+
         # Adding to logic lists
         list_prec.append(m_prec)
         list_rec.append(m_rec)
         list_fs.append(m_fs)
         list_map.append(m_map)
         list_ndcg.append(m_ndcg)
+        list_mrr.append(m_mrr)
 
         print("For k =", my_k)
         print("  Precision: ", round(m_prec, 4))
@@ -131,6 +134,7 @@ def main():
         print("  F-score:   ", round(m_fs, 4))
         print("  MAP:       ", round(m_map, 4))
         print("  nDCG:      ", round(m_ndcg, 4))
+        print("  MRR:       ", round(m_mrr, 4))
         print("---")
 
     print("\nStarting to plot the graph...")
@@ -147,6 +151,7 @@ def main():
     my_ax.plot(k_vals, list_fs, marker='^', label="F-score")
     my_ax.plot(k_vals, list_map, marker='D', label="MAP")
     my_ax.plot(k_vals, list_ndcg, marker='x', label="nDCG")
+    my_ax.plot(k_vals, list_mrr, marker='*', label="MRR")
 
     # Adding labels
     my_ax.set_xlabel("k values")
@@ -170,7 +175,8 @@ def main():
     json_data["fscore"] = list_fs
     json_data["map"] = list_map
     json_data["ndcg"] = list_ndcg
-    
+    json_data["mrr"] = list_mrr
+
     f_json_out = open(my_out_dir + "metrics_part3.json", 'w')
     json.dump(json_data, f_json_out, indent=4)
     f_json_out.close()

@@ -34,9 +34,9 @@ class StopwordRemoval():
 		list_of_term_frequencies = []
 		
 		# We need to know total number of documents for IDF calculation
-		total_documents = len(dataset_docs)
-		
-		for document in dataset_docs:
+		total_documents = len(docs)
+
+		for document in docs:
 			# Tokenize the document
 			words_in_doc = word_tokenize(document.lower())
 			

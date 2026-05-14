@@ -908,7 +908,7 @@ def qualitative_case_study(all_ranked_dicts, query_ids, all_qrels,
                     rank = r_idx + 1
                     break
 
-        case_entry["ranks"][sys_name] = rank
+            case_entry["ranks"][sys_name] = rank
         case_studies["vocab_mismatch"] = case_entry
 
     # ── Case 2: Find the worst-ranked highly-relevant doc across all queries ─
@@ -1675,6 +1675,17 @@ def main():
     save_json(wilcoxon_results, OUT_DIR + "part5_wilcoxon_tests.json")
     save_json(case_studies, OUT_DIR + "part5_case_studies.json")
     save_json(pq_analysis, OUT_DIR + "part5_per_query_analysis.json")
+
+    # Saving the full per-query AP for all 225 queries for each system.
+    # We need this in query_class_analysis.py to do class-level breakdown.
+    # We save query_ids alongside so the analysis script can match them correctly.
+    full_pq_ap_to_save = {}
+    full_pq_ap_to_save["query_ids"] = query_ids
+    pq_ap_sys_names = list(per_query_ap_at_k10.keys())
+    for sys_idx in range(len(pq_ap_sys_names)):
+        sys_name = pq_ap_sys_names[sys_idx]
+        full_pq_ap_to_save[sys_name] = per_query_ap_at_k10[sys_name]
+    save_json(full_pq_ap_to_save, OUT_DIR + "part5_full_per_query_ap.json")
     save_json(failure_report, OUT_DIR + "part5_failure_analysis.json")
     save_json(marginal_pairs, OUT_DIR + "part5_marginal_differences.json")
 

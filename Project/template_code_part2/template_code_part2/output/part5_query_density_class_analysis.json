@@ -1,0 +1,100 @@
+{
+    "VSM (Baseline)": {
+        "dense": {
+            "count": 67,
+            "mean_ap": 0.168
+        },
+        "medium": {
+            "count": 123,
+            "mean_ap": 0.2813
+        },
+        "sparse": {
+            "count": 35,
+            "mean_ap": 0.4195
+        }
+    },
+    "BM25": {
+        "dense": {
+            "count": 67,
+            "mean_ap": 0.2369
+        },
+        "medium": {
+            "count": 123,
+            "mean_ap": 0.3383
+        },
+        "sparse": {
+            "count": 35,
+            "mean_ap": 0.482
+        }
+    },
+    "LSA (k=200, CV)": {
+        "dense": {
+            "count": 67,
+            "mean_ap": 0.2405
+        },
+        "medium": {
+            "count": 123,
+            "mean_ap": 0.3275
+        },
+        "sparse": {
+            "count": 35,
+            "mean_ap": 0.4672
+        }
+    },
+    "VSM + QE": {
+        "dense": {
+            "count": 67,
+            "mean_ap": 0.128
+        },
+        "medium": {
+            "count": 123,
+            "mean_ap": 0.2488
+        },
+        "sparse": {
+            "count": 35,
+            "mean_ap": 0.3589
+        }
+    },
+    "BM25 + PRF": {
+        "dense": {
+            "count": 67,
+            "mean_ap": 0.2626
+        },
+        "medium": {
+            "count": 123,
+            "mean_ap": 0.3557
+        },
+        "sparse": {
+            "count": 35,
+            "mean_ap": 0.4251
+        }
+    },
+    "ESA": {
+        "dense": {
+            "count": 67,
+            "mean_ap": 0.138
+        },
+        "medium": {
+            "count": 123,
+            "mean_ap": 0.2199
+        },
+        "sparse": {
+            "count": 35,
+            "mean_ap": 0.3224
+        }
+    },
+    "ESA (Cranfield)": {
+        "dense": {
+            "count": 67,
+            "mean_ap": 0.2132
+        },
+        "medium": {
+            "count": 123,
+            "mean_ap": 0.3044
+        },
+        "sparse": {
+            "count": 35,
+            "mean_ap": 0.4273
+        }
+    }
+}

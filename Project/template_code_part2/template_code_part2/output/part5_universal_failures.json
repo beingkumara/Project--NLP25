@@ -1,0 +1,66 @@
+[
+    {
+        "query_id": 9,
+        "query_text": "papers on internal /slip flow/ heat transfer studies .",
+        "length_words": 9,
+        "length_group": "medium",
+        "relevant_count": 4,
+        "density_group": "medium"
+    },
+    {
+        "query_id": 22,
+        "query_text": "did anyone else discover that the turbulent skin friction is not over sensitive to the nature of the variation of the viscosity with temperature .",
+        "length_words": 25,
+        "length_group": "long",
+        "relevant_count": 2,
+        "density_group": "sparse"
+    },
+    {
+        "query_id": 28,
+        "query_text": "what application has the linear theory design of curved wings .",
+        "length_words": 11,
+        "length_group": "long",
+        "relevant_count": 3,
+        "density_group": "sparse"
+    },
+    {
+        "query_id": 44,
+        "query_text": "what are the details of the rigorous kinetic theory of gases . (chapman-enskog theory) .",
+        "length_words": 15,
+        "length_group": "long",
+        "relevant_count": 4,
+        "density_group": "medium"
+    },
+    {
+        "query_id": 62,
+        "query_text": "how far around a cylinder and under what conditions of flow, if any, is the velocity just outside of the boundary layer a linear function of the distance around the cylinder .",
+        "length_words": 32,
+        "length_group": "long",
+        "relevant_count": 6,
+        "density_group": "medium"
+    },
+    {
+        "query_id": 109,
+        "query_text": "panels subjected to aerodynamic heating .",
+        "length_words": 6,
+        "length_group": "medium",
+        "relevant_count": 6,
+        "density_group": "medium"
+    },
+    {
+        "query_id": 207,
+        "query_text": "how do large changes in new mass ratio quantitatively affect wing-flutter boundaries .",
+        "length_words": 13,
+        "length_group": "long",
+        "relevant_count": 6,
+        "density_group": "medium"
+    },
+    {
+        "query_id": 216,
+        "query_text": "what investigations have been made of the wave system created by a static pressure distribution over a liquid surface .",
+        "length_words": 20,
+        "length_group": "long",
+        "relevant_count": 2,
+        "density_group": "sparse"
+    }
+]

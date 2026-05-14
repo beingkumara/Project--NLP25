@@ -1,0 +1,915 @@
+{
+    "BM25": {
+        "new_failures_count": 1,
+        "fixed_failures_count": 7,
+        "failures_by_length_group": {
+            "short": 0,
+            "medium": 0,
+            "long": 1
+        },
+        "failures_by_density_group": {
+            "sparse": 0,
+            "medium": 1,
+            "dense": 0
+        },
+        "new_failures": [
+            {
+                "query_id": 35,
+                "baseline_ap": 0.0278,
+                "method_ap": 0.0,
+                "query_text": "are there any papers dealing with acoustic wave propagation in reacting gases .",
+                "query_length_words": 13,
+                "relevant_docs_count": 4,
+                "failure_reason": "Query is long (13 words), 4 relevant docs in qrels. Possible cause: semantic representation may diverge from relevant documents for this topic.",
+                "length_group": "long",
+                "length_words": 13,
+                "density_group": "medium",
+                "relevant_count": 4
+            }
+        ],
+        "fixed_failures": [
+            {
+                "query_id": 36,
+                "baseline_ap": 0.0,
+                "method_ap": 0.3333,
+                "query_text": "has anyone investigated relaxation effects on gaseous heat transfer to a suddenly heated wall ."
+            },
+            {
+                "query_id": 74,
+                "baseline_ap": 0.0,
+                "method_ap": 0.0143,
+                "query_text": "how significant is the possible pressure of a dissociated free stream with respect to the realizatio"
+            },
+            {
+                "query_id": 115,
+                "baseline_ap": 0.0,
+                "method_ap": 0.02,
+                "query_text": "is the problem of similarity for representative investigations of aeroelastic effects in heated flow"
+            },
+            {
+                "query_id": 116,
+                "baseline_ap": 0.0,
+                "method_ap": 0.0185,
+                "query_text": "what is the magnitude and distribution of lift over the cone and the cylindrical portion of a cone-c"
+            },
+            {
+                "query_id": 117,
+                "baseline_ap": 0.0,
+                "method_ap": 0.0333,
+                "query_text": "is there any information on how the addition of a /boat-tail/ affects the normal force on the body o"
+            },
+            {
+                "query_id": 152,
+                "baseline_ap": 0.0,
+                "method_ap": 0.0143,
+                "query_text": "how can the effect of the boundary-layer on wing pressure be calculated, and what is its magnitude ."
+            },
+            {
+                "query_id": 174,
+                "baseline_ap": 0.0,
+                "method_ap": 0.0278,
+                "query_text": "obtain all papers and reports that contain shock detachment distance data ."
+            }
+        ]
+    },
+    "LSA (k=200, CV)": {
+        "new_failures_count": 5,
+        "fixed_failures_count": 6,
+        "failures_by_length_group": {
+            "short": 0,
+            "medium": 0,
+            "long": 5
+        },
+        "failures_by_density_group": {
+            "sparse": 0,
+            "medium": 3,
+            "dense": 2
+        },
+        "new_failures": [
+            {
+                "query_id": 19,
+                "baseline_ap": 0.0125,
+                "method_ap": 0.0,
+                "query_text": "does there exist a good basic treatment of the dynamics of re-entry combining consideration of reali",
+                "query_length_words": 23,
+                "relevant_docs_count": 10,
+                "failure_reason": "Query is long (23 words), 10 relevant docs in qrels. Possible cause: semantic representation may diverge from relevant documents for this topic.",
+                "length_group": "long",
+                "length_words": 23,
+                "density_group": "dense",
+                "relevant_count": 10
+            },
+            {
+                "query_id": 69,
+                "baseline_ap": 0.0208,
+                "method_ap": 0.0,
+                "query_text": "what is known regarding asymptotic solutions to the exact boundary layer equations .",
+                "query_length_words": 13,
+                "relevant_docs_count": 6,
+                "failure_reason": "Query is long (13 words), 6 relevant docs in qrels. Possible cause: semantic representation may diverge from relevant documents for this topic.",
+                "length_group": "long",
+                "length_words": 13,
+                "density_group": "medium",
+                "relevant_count": 6
+            },
+            {
+                "query_id": 110,
+                "baseline_ap": 0.2,
+                "method_ap": 0.0,
+                "query_text": "can increasing the edge loading of a plate beyond the critical value for buckling change the bucklin",
+                "query_length_words": 19,
+                "relevant_docs_count": 5,
+                "failure_reason": "Query is long (19 words), 5 relevant docs in qrels. Possible cause: semantic representation may diverge from relevant documents for this topic.",
+                "length_group": "long",
+                "length_words": 19,
+                "density_group": "medium",
+                "relevant_count": 5
+            },
+            {
+                "query_id": 113,
+                "baseline_ap": 0.2,
+                "method_ap": 0.0,
+                "query_text": "what data exists on oscillatory aerodynamic forces on control surfaces at transonic mach numbers .",
+                "query_length_words": 15,
+                "relevant_docs_count": 5,
+                "failure_reason": "Query is long (15 words), 5 relevant docs in qrels. Possible cause: semantic representation may diverge from relevant documents for this topic.",
+                "length_group": "long",
+                "length_words": 15,
+                "density_group": "medium",
+                "relevant_count": 5
+            },
+            {
+                "query_id": 211,
+                "baseline_ap": 0.0083,
+                "method_ap": 0.0,
+                "query_text": "what papers are available on the buckling of empty cylindrical shells under non-uniform pressure .",
+                "query_length_words": 15,
+                "relevant_docs_count": 12,
+                "failure_reason": "Query is long (15 words), 12 relevant docs in qrels. Possible cause: semantic representation may diverge from relevant documents for this topic.",
+                "length_group": "long",
+                "length_words": 15,
+                "density_group": "dense",
+                "relevant_count": 12
+            }
+        ],
+        "fixed_failures": [
+            {
+                "query_id": 36,
+                "baseline_ap": 0.0,
+                "method_ap": 0.1111,
+                "query_text": "has anyone investigated relaxation effects on gaseous heat transfer to a suddenly heated wall ."
+            },
+            {
+                "query_id": 116,
+                "baseline_ap": 0.0,
+                "method_ap": 0.0833,
+                "query_text": "what is the magnitude and distribution of lift over the cone and the cylindrical portion of a cone-c"
+            },
+            {
+                "query_id": 117,
+                "baseline_ap": 0.0,
+                "method_ap": 0.0667,
+                "query_text": "is there any information on how the addition of a /boat-tail/ affects the normal force on the body o"
+            },
+            {
+                "query_id": 133,
+                "baseline_ap": 0.0,
+                "method_ap": 0.094,
+                "query_text": "experimental studies of creep buckling ."
+            },
+            {
+                "query_id": 151,
+                "baseline_ap": 0.0,
+                "method_ap": 0.1583,
+                "query_text": "what is the best theoretical method for calculating pressure on the surface of a wing alone ."
+            },
+            {
+                "query_id": 174,
+                "baseline_ap": 0.0,
+                "method_ap": 0.0833,
+                "query_text": "obtain all papers and reports that contain shock detachment distance data ."
+            }
+        ]
+    },
+    "VSM + QE": {
+        "new_failures_count": 16,
+        "fixed_failures_count": 0,
+        "failures_by_length_group": {
+            "short": 0,
+            "medium": 2,
+            "long": 14
+        },
+        "failures_by_density_group": {
+            "sparse": 2,
+            "medium": 6,
+            "dense": 8
+        },
+        "new_failures": [
+            {
+                "query_id": 59,
+                "baseline_ap": 0.1,
+                "method_ap": 0.0,
+                "query_text": "how much is known about boundary layer flows along non-circular cylinders .",
+                "query_length_words": 12,
+                "relevant_docs_count": 5,
+                "failure_reason": "Query is long (12 words), 5 relevant docs in qrels. Possible cause: semantic representation may diverge from relevant documents for this topic.",
+                "length_group": "long",
+                "length_words": 12,
+                "density_group": "medium",
+                "relevant_count": 5
+            },
+            {
+                "query_id": 64,
+                "baseline_ap": 0.1667,
+                "method_ap": 0.0,
+                "query_text": "can't the static deflection shapes be used in predicting flutter in place of vibrational shapes . if",
+                "query_length_words": 29,
+                "relevant_docs_count": 3,
+                "failure_reason": "Query is long (29 words), 3 relevant docs in qrels. Possible cause: semantic representation may diverge from relevant documents for this topic.",
+                "length_group": "long",
+                "length_words": 29,
+                "density_group": "sparse",
+                "relevant_count": 3
+            },
+            {
+                "query_id": 69,
+                "baseline_ap": 0.0208,
+                "method_ap": 0.0,
+                "query_text": "what is known regarding asymptotic solutions to the exact boundary layer equations .",
+                "query_length_words": 13,
+                "relevant_docs_count": 6,
+                "failure_reason": "Query is long (13 words), 6 relevant docs in qrels. Possible cause: semantic representation may diverge from relevant documents for this topic.",
+                "length_group": "long",
+                "length_words": 13,
+                "density_group": "medium",
+                "relevant_count": 6
+            },
+            {
+                "query_id": 72,
+                "baseline_ap": 0.0463,
+                "method_ap": 0.0,
+                "query_text": "what has been done about viscous interactions in relatively low reynolds number flows, particularly ",
+                "query_length_words": 19,
+                "relevant_docs_count": 18,
+                "failure_reason": "Query is long (19 words), 18 relevant docs in qrels. Possible cause: semantic representation may diverge from relevant documents for this topic.",
+                "length_group": "long",
+                "length_words": 19,
+                "density_group": "dense",
+                "relevant_count": 18
+            },
+            {
+                "query_id": 77,
+                "baseline_ap": 0.0143,
+                "method_ap": 0.0,
+                "query_text": "how close is the comparison of the shock layer theory with existing experiments in the low reynolds ",
+                "query_length_words": 21,
+                "relevant_docs_count": 7,
+                "failure_reason": "Query is long (21 words), 7 relevant docs in qrels. Possible cause: semantic representation may diverge from relevant documents for this topic.",
+                "length_group": "long",
+                "length_words": 21,
+                "density_group": "medium",
+                "relevant_count": 7
+            },
+            {
+                "query_id": 84,
+                "baseline_ap": 0.0208,
+                "method_ap": 0.0,
+                "query_text": "references on the methods available for accurately estimating aerodynamic heat transfer to conical b",
+                "query_length_words": 21,
+                "relevant_docs_count": 12,
+                "failure_reason": "Query is long (21 words), 12 relevant docs in qrels. Possible cause: semantic representation may diverge from relevant documents for this topic.",
+                "length_group": "long",
+                "length_words": 21,
+                "density_group": "dense",
+                "relevant_count": 12
+            },
+            {
+                "query_id": 87,
+                "baseline_ap": 0.037,
+                "method_ap": 0.0,
+                "query_text": "what effect has the boundary layer in modifying the basic inviscid flow behind the shock, neglecting",
+                "query_length_words": 23,
+                "relevant_docs_count": 9,
+                "failure_reason": "Query is long (23 words), 9 relevant docs in qrels. Possible cause: semantic representation may diverge from relevant documents for this topic.",
+                "length_group": "long",
+                "length_words": 23,
+                "density_group": "medium",
+                "relevant_count": 9
+            },
+            {
+                "query_id": 91,
+                "baseline_ap": 0.0111,
+                "method_ap": 0.0,
+                "query_text": "what interference effects are likely at transonic speeds .",
+                "query_length_words": 9,
+                "relevant_docs_count": 10,
+                "failure_reason": "Query is long (9 words), 10 relevant docs in qrels. Possible cause: semantic representation may diverge from relevant documents for this topic.",
+                "length_group": "medium",
+                "length_words": 9,
+                "density_group": "dense",
+                "relevant_count": 10
+            },
+            {
+                "query_id": 100,
+                "baseline_ap": 0.0962,
+                "method_ap": 0.0,
+                "query_text": "what are the effects of initial imperfections on the elastic buckling of cylindrical shells under ax",
+                "query_length_words": 18,
+                "relevant_docs_count": 10,
+                "failure_reason": "Query is long (18 words), 10 relevant docs in qrels. Possible cause: semantic representation may diverge from relevant documents for this topic.",
+                "length_group": "long",
+                "length_words": 18,
+                "density_group": "dense",
+                "relevant_count": 10
+            },
+            {
+                "query_id": 118,
+                "baseline_ap": 0.0312,
+                "method_ap": 0.0,
+                "query_text": "what are the aerodynamic interference effects on the fin lift and body lift of a fin-body combinatio",
+                "query_length_words": 18,
+                "relevant_docs_count": 4,
+                "failure_reason": "Query is long (18 words), 4 relevant docs in qrels. Possible cause: semantic representation may diverge from relevant documents for this topic.",
+                "length_group": "long",
+                "length_words": 18,
+                "density_group": "medium",
+                "relevant_count": 4
+            },
+            {
+                "query_id": 167,
+                "baseline_ap": 0.0417,
+                "method_ap": 0.0,
+                "query_text": "exact solution methods for calculating the ablative mass loss of a material ablating at high tempera",
+                "query_length_words": 22,
+                "relevant_docs_count": 3,
+                "failure_reason": "Query is long (22 words), 3 relevant docs in qrels. Possible cause: semantic representation may diverge from relevant documents for this topic.",
+                "length_group": "long",
+                "length_words": 22,
+                "density_group": "sparse",
+                "relevant_count": 3
+            },
+            {
+                "query_id": 196,
+                "baseline_ap": 0.0897,
+                "method_ap": 0.0,
+                "query_text": "the problem of similarity for representative investigation of aeroelastic effects in a flow with the",
+                "query_length_words": 20,
+                "relevant_docs_count": 13,
+                "failure_reason": "Query is long (20 words), 13 relevant docs in qrels. Possible cause: semantic representation may diverge from relevant documents for this topic.",
+                "length_group": "long",
+                "length_words": 20,
+                "density_group": "dense",
+                "relevant_count": 13
+            },
+            {
+                "query_id": 204,
+                "baseline_ap": 0.0111,
+                "method_ap": 0.0,
+                "query_text": "do viscous effects seriously modify pressure distributions .",
+                "query_length_words": 8,
+                "relevant_docs_count": 15,
+                "failure_reason": "Query is long (8 words), 15 relevant docs in qrels. Possible cause: semantic representation may diverge from relevant documents for this topic.",
+                "length_group": "medium",
+                "length_words": 8,
+                "density_group": "dense",
+                "relevant_count": 15
+            },
+            {
+                "query_id": 209,
+                "baseline_ap": 0.0264,
+                "method_ap": 0.0,
+                "query_text": "what are the physical significance and characteristics of separated laminar and turbulent boundary l",
+                "query_length_words": 16,
+                "relevant_docs_count": 13,
+                "failure_reason": "Query is long (16 words), 13 relevant docs in qrels. Possible cause: semantic representation may diverge from relevant documents for this topic.",
+                "length_group": "long",
+                "length_words": 16,
+                "density_group": "dense",
+                "relevant_count": 13
+            },
+            {
+                "query_id": 221,
+                "baseline_ap": 0.0263,
+                "method_ap": 0.0,
+                "query_text": "papers applicable to this problem (calculation procedures for laminar incompressible flow with arbit",
+                "query_length_words": 16,
+                "relevant_docs_count": 19,
+                "failure_reason": "Query is long (16 words), 19 relevant docs in qrels. Possible cause: semantic representation may diverge from relevant documents for this topic.",
+                "length_group": "long",
+                "length_words": 16,
+                "density_group": "dense",
+                "relevant_count": 19
+            },
+            {
+                "query_id": 224,
+                "baseline_ap": 0.0432,
+                "method_ap": 0.0,
+                "query_text": "in practice, how close to reality are the assumptions that the flow in a hypersonic shock tube using",
+                "query_length_words": 26,
+                "relevant_docs_count": 9,
+                "failure_reason": "Query is long (26 words), 9 relevant docs in qrels. Possible cause: semantic representation may diverge from relevant documents for this topic.",
+                "length_group": "long",
+                "length_words": 26,
+                "density_group": "medium",
+                "relevant_count": 9
+            }
+        ],
+        "fixed_failures": []
+    },
+    "BM25 + PRF": {
+        "new_failures_count": 4,
+        "fixed_failures_count": 5,
+        "failures_by_length_group": {
+            "short": 0,
+            "medium": 1,
+            "long": 3
+        },
+        "failures_by_density_group": {
+            "sparse": 1,
+            "medium": 3,
+            "dense": 0
+        },
+        "new_failures": [
+            {
+                "query_id": 14,
+                "baseline_ap": 0.0556,
+                "method_ap": 0.0,
+                "query_text": "papers on shock-sound wave interaction .",
+                "query_length_words": 6,
+                "relevant_docs_count": 3,
+                "failure_reason": "Query is medium-length (6 words), 3 relevant docs in qrels. Possible cause: semantic representation may diverge from relevant documents for this topic.",
+                "length_group": "medium",
+                "length_words": 6,
+                "density_group": "sparse",
+                "relevant_count": 3
+            },
+            {
+                "query_id": 35,
+                "baseline_ap": 0.0278,
+                "method_ap": 0.0,
+                "query_text": "are there any papers dealing with acoustic wave propagation in reacting gases .",
+                "query_length_words": 13,
+                "relevant_docs_count": 4,
+                "failure_reason": "Query is long (13 words), 4 relevant docs in qrels. Possible cause: semantic representation may diverge from relevant documents for this topic.",
+                "length_group": "long",
+                "length_words": 13,
+                "density_group": "medium",
+                "relevant_count": 4
+            },
+            {
+                "query_id": 59,
+                "baseline_ap": 0.1,
+                "method_ap": 0.0,
+                "query_text": "how much is known about boundary layer flows along non-circular cylinders .",
+                "query_length_words": 12,
+                "relevant_docs_count": 5,
+                "failure_reason": "Query is long (12 words), 5 relevant docs in qrels. Possible cause: semantic representation may diverge from relevant documents for this topic.",
+                "length_group": "long",
+                "length_words": 12,
+                "density_group": "medium",
+                "relevant_count": 5
+            },
+            {
+                "query_id": 110,
+                "baseline_ap": 0.2,
+                "method_ap": 0.0,
+                "query_text": "can increasing the edge loading of a plate beyond the critical value for buckling change the bucklin",
+                "query_length_words": 19,
+                "relevant_docs_count": 5,
+                "failure_reason": "Query is long (19 words), 5 relevant docs in qrels. Possible cause: semantic representation may diverge from relevant documents for this topic.",
+                "length_group": "long",
+                "length_words": 19,
+                "density_group": "medium",
+                "relevant_count": 5
+            }
+        ],
+        "fixed_failures": [
+            {
+                "query_id": 36,
+                "baseline_ap": 0.0,
+                "method_ap": 0.1667,
+                "query_text": "has anyone investigated relaxation effects on gaseous heat transfer to a suddenly heated wall ."
+            },
+            {
+                "query_id": 74,
+                "baseline_ap": 0.0,
+                "method_ap": 0.0204,
+                "query_text": "how significant is the possible pressure of a dissociated free stream with respect to the realizatio"
+            },
+            {
+                "query_id": 117,
+                "baseline_ap": 0.0,
+                "method_ap": 0.0417,
+                "query_text": "is there any information on how the addition of a /boat-tail/ affects the normal force on the body o"
+            },
+            {
+                "query_id": 133,
+                "baseline_ap": 0.0,
+                "method_ap": 0.0607,
+                "query_text": "experimental studies of creep buckling ."
+            },
+            {
+                "query_id": 174,
+                "baseline_ap": 0.0,
+                "method_ap": 0.0208,
+                "query_text": "obtain all papers and reports that contain shock detachment distance data ."
+            }
+        ]
+    },
+    "ESA": {
+        "new_failures_count": 16,
+        "fixed_failures_count": 2,
+        "failures_by_length_group": {
+            "short": 0,
+            "medium": 1,
+            "long": 15
+        },
+        "failures_by_density_group": {
+            "sparse": 3,
+            "medium": 7,
+            "dense": 6
+        },
+        "new_failures": [
+            {
+                "query_id": 6,
+                "baseline_ap": 0.3,
+                "method_ap": 0.0,
+                "query_text": "what theoretical and experimental guides do we have as to turbulent couette flow behaviour .",
+                "query_length_words": 15,
+                "relevant_docs_count": 5,
+                "failure_reason": "Query is long (15 words), 5 relevant docs in qrels. Possible cause: semantic representation may diverge from relevant documents for this topic.",
+                "length_group": "long",
+                "length_words": 15,
+                "density_group": "medium",
+                "relevant_count": 5
+            },
+            {
+                "query_id": 19,
+                "baseline_ap": 0.0125,
+                "method_ap": 0.0,
+                "query_text": "does there exist a good basic treatment of the dynamics of re-entry combining consideration of reali",
+                "query_length_words": 23,
+                "relevant_docs_count": 10,
+                "failure_reason": "Query is long (23 words), 10 relevant docs in qrels. Possible cause: semantic representation may diverge from relevant documents for this topic.",
+                "length_group": "long",
+                "length_words": 23,
+                "density_group": "dense",
+                "relevant_count": 10
+            },
+            {
+                "query_id": 35,
+                "baseline_ap": 0.0278,
+                "method_ap": 0.0,
+                "query_text": "are there any papers dealing with acoustic wave propagation in reacting gases .",
+                "query_length_words": 13,
+                "relevant_docs_count": 4,
+                "failure_reason": "Query is long (13 words), 4 relevant docs in qrels. Possible cause: semantic representation may diverge from relevant documents for this topic.",
+                "length_group": "long",
+                "length_words": 13,
+                "density_group": "medium",
+                "relevant_count": 4
+            },
+            {
+                "query_id": 49,
+                "baseline_ap": 0.6667,
+                "method_ap": 0.0,
+                "query_text": "can the three-point boundary-value problem for the blasius equation be integrated numerically,  usin",
+                "query_length_words": 22,
+                "relevant_docs_count": 3,
+                "failure_reason": "Query is long (22 words), 3 relevant docs in qrels. Possible cause: semantic representation may diverge from relevant documents for this topic.",
+                "length_group": "long",
+                "length_words": 22,
+                "density_group": "sparse",
+                "relevant_count": 3
+            },
+            {
+                "query_id": 55,
+                "baseline_ap": 0.0606,
+                "method_ap": 0.0,
+                "query_text": "to what extent can the available information for incompressible boundary layers be applied to proble",
+                "query_length_words": 20,
+                "relevant_docs_count": 11,
+                "failure_reason": "Query is long (20 words), 11 relevant docs in qrels. Possible cause: semantic representation may diverge from relevant documents for this topic.",
+                "length_group": "long",
+                "length_words": 20,
+                "density_group": "dense",
+                "relevant_count": 11
+            },
+            {
+                "query_id": 69,
+                "baseline_ap": 0.0208,
+                "method_ap": 0.0,
+                "query_text": "what is known regarding asymptotic solutions to the exact boundary layer equations .",
+                "query_length_words": 13,
+                "relevant_docs_count": 6,
+                "failure_reason": "Query is long (13 words), 6 relevant docs in qrels. Possible cause: semantic representation may diverge from relevant documents for this topic.",
+                "length_group": "long",
+                "length_words": 13,
+                "density_group": "medium",
+                "relevant_count": 6
+            },
+            {
+                "query_id": 72,
+                "baseline_ap": 0.0463,
+                "method_ap": 0.0,
+                "query_text": "what has been done about viscous interactions in relatively low reynolds number flows, particularly ",
+                "query_length_words": 19,
+                "relevant_docs_count": 18,
+                "failure_reason": "Query is long (19 words), 18 relevant docs in qrels. Possible cause: semantic representation may diverge from relevant documents for this topic.",
+                "length_group": "long",
+                "length_words": 19,
+                "density_group": "dense",
+                "relevant_count": 18
+            },
+            {
+                "query_id": 77,
+                "baseline_ap": 0.0143,
+                "method_ap": 0.0,
+                "query_text": "how close is the comparison of the shock layer theory with existing experiments in the low reynolds ",
+                "query_length_words": 21,
+                "relevant_docs_count": 7,
+                "failure_reason": "Query is long (21 words), 7 relevant docs in qrels. Possible cause: semantic representation may diverge from relevant documents for this topic.",
+                "length_group": "long",
+                "length_words": 21,
+                "density_group": "medium",
+                "relevant_count": 7
+            },
+            {
+                "query_id": 83,
+                "baseline_ap": 0.2,
+                "method_ap": 0.0,
+                "query_text": "what is the present state of the theory of quasi-conical flows .",
+                "query_length_words": 12,
+                "relevant_docs_count": 5,
+                "failure_reason": "Query is long (12 words), 5 relevant docs in qrels. Possible cause: semantic representation may diverge from relevant documents for this topic.",
+                "length_group": "long",
+                "length_words": 12,
+                "density_group": "medium",
+                "relevant_count": 5
+            },
+            {
+                "query_id": 100,
+                "baseline_ap": 0.0962,
+                "method_ap": 0.0,
+                "query_text": "what are the effects of initial imperfections on the elastic buckling of cylindrical shells under ax",
+                "query_length_words": 18,
+                "relevant_docs_count": 10,
+                "failure_reason": "Query is long (18 words), 10 relevant docs in qrels. Possible cause: semantic representation may diverge from relevant documents for this topic.",
+                "length_group": "long",
+                "length_words": 18,
+                "density_group": "dense",
+                "relevant_count": 10
+            },
+            {
+                "query_id": 119,
+                "baseline_ap": 0.1667,
+                "method_ap": 0.0,
+                "query_text": "what is the effect of initial axisymmetric deviations from circularity on the non linear (large-defl",
+                "query_length_words": 23,
+                "relevant_docs_count": 2,
+                "failure_reason": "Query is long (23 words), sparse qrels (2 relevant docs). Possible cause: sparse coverage in qrels may amplify any small ranking change.",
+                "length_group": "long",
+                "length_words": 23,
+                "density_group": "sparse",
+                "relevant_count": 2
+            },
+            {
+                "query_id": 127,
+                "baseline_ap": 0.0208,
+                "method_ap": 0.0,
+                "query_text": "is it possible to obtain a reasonably simple analytical solution to the heat equation for an exponen",
+                "query_length_words": 22,
+                "relevant_docs_count": 6,
+                "failure_reason": "Query is long (22 words), 6 relevant docs in qrels. Possible cause: semantic representation may diverge from relevant documents for this topic.",
+                "length_group": "long",
+                "length_words": 22,
+                "density_group": "medium",
+                "relevant_count": 6
+            },
+            {
+                "query_id": 178,
+                "baseline_ap": 0.2217,
+                "method_ap": 0.0,
+                "query_text": "has a criterion been established for determining the axial compressor choking line .",
+                "query_length_words": 13,
+                "relevant_docs_count": 5,
+                "failure_reason": "Query is long (13 words), 5 relevant docs in qrels. Possible cause: semantic representation may diverge from relevant documents for this topic.",
+                "length_group": "long",
+                "length_words": 13,
+                "density_group": "medium",
+                "relevant_count": 5
+            },
+            {
+                "query_id": 204,
+                "baseline_ap": 0.0111,
+                "method_ap": 0.0,
+                "query_text": "do viscous effects seriously modify pressure distributions .",
+                "query_length_words": 8,
+                "relevant_docs_count": 15,
+                "failure_reason": "Query is long (8 words), 15 relevant docs in qrels. Possible cause: semantic representation may diverge from relevant documents for this topic.",
+                "length_group": "medium",
+                "length_words": 8,
+                "density_group": "dense",
+                "relevant_count": 15
+            },
+            {
+                "query_id": 205,
+                "baseline_ap": 0.0833,
+                "method_ap": 0.0,
+                "query_text": "has anyone investigated theoretically whether surface flexibility can stabilize a laminar boundary l",
+                "query_length_words": 14,
+                "relevant_docs_count": 3,
+                "failure_reason": "Query is long (14 words), 3 relevant docs in qrels. Possible cause: semantic representation may diverge from relevant documents for this topic.",
+                "length_group": "long",
+                "length_words": 14,
+                "density_group": "sparse",
+                "relevant_count": 3
+            },
+            {
+                "query_id": 221,
+                "baseline_ap": 0.0263,
+                "method_ap": 0.0,
+                "query_text": "papers applicable to this problem (calculation procedures for laminar incompressible flow with arbit",
+                "query_length_words": 16,
+                "relevant_docs_count": 19,
+                "failure_reason": "Query is long (16 words), 19 relevant docs in qrels. Possible cause: semantic representation may diverge from relevant documents for this topic.",
+                "length_group": "long",
+                "length_words": 16,
+                "density_group": "dense",
+                "relevant_count": 19
+            }
+        ],
+        "fixed_failures": [
+            {
+                "query_id": 133,
+                "baseline_ap": 0.0,
+                "method_ap": 0.0139,
+                "query_text": "experimental studies of creep buckling ."
+            },
+            {
+                "query_id": 152,
+                "baseline_ap": 0.0,
+                "method_ap": 0.0159,
+                "query_text": "how can the effect of the boundary-layer on wing pressure be calculated, and what is its magnitude ."
+            }
+        ]
+    },
+    "ESA (Cranfield)": {
+        "new_failures_count": 8,
+        "fixed_failures_count": 6,
+        "failures_by_length_group": {
+            "short": 0,
+            "medium": 0,
+            "long": 8
+        },
+        "failures_by_density_group": {
+            "sparse": 3,
+            "medium": 4,
+            "dense": 1
+        },
+        "new_failures": [
+            {
+                "query_id": 19,
+                "baseline_ap": 0.0125,
+                "method_ap": 0.0,
+                "query_text": "does there exist a good basic treatment of the dynamics of re-entry combining consideration of reali",
+                "query_length_words": 23,
+                "relevant_docs_count": 10,
+                "failure_reason": "Query is long (23 words), 10 relevant docs in qrels. Possible cause: semantic representation may diverge from relevant documents for this topic.",
+                "length_group": "long",
+                "length_words": 23,
+                "density_group": "dense",
+                "relevant_count": 10
+            },
+            {
+                "query_id": 59,
+                "baseline_ap": 0.1,
+                "method_ap": 0.0,
+                "query_text": "how much is known about boundary layer flows along non-circular cylinders .",
+                "query_length_words": 12,
+                "relevant_docs_count": 5,
+                "failure_reason": "Query is long (12 words), 5 relevant docs in qrels. Possible cause: semantic representation may diverge from relevant documents for this topic.",
+                "length_group": "long",
+                "length_words": 12,
+                "density_group": "medium",
+                "relevant_count": 5
+            },
+            {
+                "query_id": 75,
+                "baseline_ap": 0.0333,
+                "method_ap": 0.0,
+                "query_text": "do the discrepancies among current analyses of the vorticity effect on stagnation-point heat transfe",
+                "query_length_words": 25,
+                "relevant_docs_count": 6,
+                "failure_reason": "Query is long (25 words), 6 relevant docs in qrels. Possible cause: semantic representation may diverge from relevant documents for this topic.",
+                "length_group": "long",
+                "length_words": 25,
+                "density_group": "medium",
+                "relevant_count": 6
+            },
+            {
+                "query_id": 110,
+                "baseline_ap": 0.2,
+                "method_ap": 0.0,
+                "query_text": "can increasing the edge loading of a plate beyond the critical value for buckling change the bucklin",
+                "query_length_words": 19,
+                "relevant_docs_count": 5,
+                "failure_reason": "Query is long (19 words), 5 relevant docs in qrels. Possible cause: semantic representation may diverge from relevant documents for this topic.",
+                "length_group": "long",
+                "length_words": 19,
+                "density_group": "medium",
+                "relevant_count": 5
+            },
+            {
+                "query_id": 113,
+                "baseline_ap": 0.2,
+                "method_ap": 0.0,
+                "query_text": "what data exists on oscillatory aerodynamic forces on control surfaces at transonic mach numbers .",
+                "query_length_words": 15,
+                "relevant_docs_count": 5,
+                "failure_reason": "Query is long (15 words), 5 relevant docs in qrels. Possible cause: semantic representation may diverge from relevant documents for this topic.",
+                "length_group": "long",
+                "length_words": 15,
+                "density_group": "medium",
+                "relevant_count": 5
+            },
+            {
+                "query_id": 143,
+                "baseline_ap": 0.0476,
+                "method_ap": 0.0,
+                "query_text": "what general solutions for the stresses in pressurized shells of revolution are available .",
+                "query_length_words": 14,
+                "relevant_docs_count": 3,
+                "failure_reason": "Query is long (14 words), 3 relevant docs in qrels. Possible cause: semantic representation may diverge from relevant documents for this topic.",
+                "length_group": "long",
+                "length_words": 14,
+                "density_group": "sparse",
+                "relevant_count": 3
+            },
+            {
+                "query_id": 167,
+                "baseline_ap": 0.0417,
+                "method_ap": 0.0,
+                "query_text": "exact solution methods for calculating the ablative mass loss of a material ablating at high tempera",
+                "query_length_words": 22,
+                "relevant_docs_count": 3,
+                "failure_reason": "Query is long (22 words), 3 relevant docs in qrels. Possible cause: semantic representation may diverge from relevant documents for this topic.",
+                "length_group": "long",
+                "length_words": 22,
+                "density_group": "sparse",
+                "relevant_count": 3
+            },
+            {
+                "query_id": 205,
+                "baseline_ap": 0.0833,
+                "method_ap": 0.0,
+                "query_text": "has anyone investigated theoretically whether surface flexibility can stabilize a laminar boundary l",
+                "query_length_words": 14,
+                "relevant_docs_count": 3,
+                "failure_reason": "Query is long (14 words), 3 relevant docs in qrels. Possible cause: semantic representation may diverge from relevant documents for this topic.",
+                "length_group": "long",
+                "length_words": 14,
+                "density_group": "sparse",
+                "relevant_count": 3
+            }
+        ],
+        "fixed_failures": [
+            {
+                "query_id": 63,
+                "baseline_ap": 0.0,
+                "method_ap": 0.025,
+                "query_text": "where can i find pressure data on surfaces of swept cylinders ."
+            },
+            {
+                "query_id": 116,
+                "baseline_ap": 0.0,
+                "method_ap": 0.0238,
+                "query_text": "what is the magnitude and distribution of lift over the cone and the cylindrical portion of a cone-c"
+            },
+            {
+                "query_id": 133,
+                "baseline_ap": 0.0,
+                "method_ap": 0.0125,
+                "query_text": "experimental studies of creep buckling ."
+            },
+            {
+                "query_id": 151,
+                "baseline_ap": 0.0,
+                "method_ap": 0.0208,
+                "query_text": "what is the best theoretical method for calculating pressure on the surface of a wing alone ."
+            },
+            {
+                "query_id": 174,
+                "baseline_ap": 0.0,
+                "method_ap": 0.0278,
+                "query_text": "obtain all papers and reports that contain shock detachment distance data ."
+            },
+            {
+                "query_id": 219,
+                "baseline_ap": 0.0,
+                "method_ap": 0.0526,
+                "query_text": "what are the general effects on flow fields when the reynolds number is small ."
+            }
+        ]
+    }
+}

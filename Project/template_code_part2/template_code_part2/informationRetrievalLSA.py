@@ -1,28 +1,22 @@
-"""
-informationRetrievalLSA.py
-===========================
-Latent Semantic Analysis (LSA) based IR system for Part 5.
-
-LSA addresses two core VSM failures:
-  1. Vocabulary mismatch: words like "thermal" and "heated" that co-occur
-     in the same documents end up close in the reduced latent space, so a
-     query containing "heated" can still match a doc that uses "thermal".
-  2. Polysemy: "star" in astronomy contexts and "star" in entertainment
-     contexts will project to slightly different regions of the latent
-     space because their surrounding vocabulary is different.
-
-Method:
-  1. Build a TF-IDF term-document matrix  (shape: V x N, V=vocab, N=docs)
-  2. Apply Truncated SVD to reduce to k latent dimensions
-     - SVD: M = U * Sigma * V^T
-     - Reduced doc matrix = Sigma_k * V_k^T  (shape: k x N)
-     - To project a query into the same space:
-         q_lsa = Sigma_k^{-1} * U_k^T * q_tfidf
-  3. Rank documents by cosine similarity in the k-dimensional latent space.
-
-The number of components k is configurable for ablation testing.
-Typical values to test: 50, 100, 200, 300.
-"""
+# informationRetrievalLSA.py
+# ===========================
+# LSA (Latent Semantic Analysis) based retrieval for Part 5.
+#
+# The main idea behind LSA is that instead of working in the raw word space,
+# we compress everything down into a smaller latent space using SVD.
+# Words that appear in similar documents will end up close to each other
+# in this compressed space even if they are not the same word.
+# For example, 'thermal' and 'heated' will end up nearby because they
+# keep appearing in documents that share many other aerodynamics words.
+#
+# Steps:
+#   1. First I build the full TF-IDF matrix (V x N, where V = vocab size, N = docs)
+#   2. Then I apply Truncated SVD to reduce it to k dimensions
+#   3. Each document becomes a k-dimensional vector
+#   4. For a query, I project it into the same space using the SVD transform
+#   5. Then I rank documents by cosine similarity in the latent space
+#
+# The value of k is the main parameter to tune (I am testing 50, 100, 200, 300).
 
 import math
 import numpy as np

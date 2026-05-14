@@ -1,30 +1,27 @@
-"""
-informationRetrievalESA.py
-===========================
-Explicit Semantic Analysis (ESA) implementation for Part 5.
-
-ESA was originally proposed by Gabrilovich & Markovitch (2007).
-The main idea is to represent text (documents and queries) in a
-high-dimensional "concept space" rather than the usual word space.
-In the original paper, Wikipedia articles serve as concepts.
-
-Since we do not have a Wikipedia dump here, we use WordNet synsets
-as our explicit concepts. Each unique synset acts as one dimension
-in the concept vector. The mapping from words to concepts is done
-via nltk.corpus.wordnet.synsets(word).
-
-Pipeline Overview:
-  1. buildIndex:
-     - Build a standard TF-IDF word index (same as baseline).
-     - Collect all unique WordNet synsets reachable from our vocabulary.
-     - For every document, project its TF-IDF word vector into the
-       synset concept space. A document's weight for synset S is the
-       sum of TF-IDF weights of all its words that belong to synset S.
-  2. rank:
-     - Convert each query into the same synset concept space.
-     - Rank documents by cosine similarity between query concept
-       vector and document concept vectors.
-"""
+# informationRetrievalESA.py
+# ===========================
+# ESA (Explicit Semantic Analysis) based retrieval for Part 5.
+#
+# The idea here is to represent documents and queries not as bags of words
+# but as vectors over "concepts". We use WordNet synsets as our concepts.
+# Each synset (like 'dog.n.01') acts as one dimension in a concept vector.
+#
+# For each word in a document, I look up its WordNet synsets and add the
+# TF-IDF weight of that word to those concept dimensions.
+# So two documents that use totally different words but describe the same
+# concept (like 'velocity' vs 'speed') will hopefully end up with similar
+# concept vectors because they activate overlapping synsets.
+#
+# I am using WordNet here because we do not have Wikipedia available.
+# The original ESA paper used Wikipedia articles as concepts instead,
+# which would probably work better for this technical domain.
+#
+# Main steps:
+#   1. Build inverted index and compute TF-IDF
+#   2. Map every vocabulary word to its WordNet synsets
+#   3. Project each document into the concept space
+#   4. For ranking, do the same projection for the query
+#   5. Rank by cosine similarity in concept space
 
 import math
 from nltk.corpus import wordnet

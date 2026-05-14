@@ -1,26 +1,21 @@
-"""
-informationRetrievalBM25.py
-============================
-Manual BM25 (Okapi BM25) implementation for Part 5.
-
-BM25 improves on raw TF-IDF in two key ways:
-  1. Term frequency saturation: a term appearing 100 times in a doc
-     is NOT 100x more relevant than one appearing once. The k1 parameter
-     controls how quickly TF "saturates".
-  2. Document length normalisation: longer documents are penalised so they
-     don't dominate rankings simply by having more words.
-
-Formula (for term t, document d, query Q):
-  score(d, Q) = sum over t in Q of:
-    IDF(t) * [ TF(t,d) * (k1 + 1) ] / [ TF(t,d) + k1 * (1 - b + b * |d|/avgdl) ]
-
-where:
-  IDF(t) = log( (N - df(t) + 0.5) / (df(t) + 0.5) + 1 )   [Robertson IDF, always positive]
-  |d|    = length of document d in tokens
-  avgdl  = average document length across corpus
-  k1     = 1.5  (TF saturation; typical range 1.2-2.0)
-  b      = 0.75 (length normalisation; 0=none, 1=full)
-"""
+# informationRetrievalBM25.py
+# ============================
+# BM25 (Okapi BM25) based retrieval for Part 5.
+#
+# The main problem with our basic TF-IDF approach was that it treated every
+# extra occurrence of a word as equally important, and it also did not handle
+# document length differences properly.
+#
+# BM25 fixes this with two things:
+#   - It limits how much a word's count can contribute (so 100 occurrences
+#     is NOT treated as 100x more important than 1 occurrence).
+#   - It divides by a length factor so short focused documents are not
+#     beaten by long documents just because they have more words.
+#
+# The scoring formula I am using is:
+#   score = sum of [ IDF(t) * tf*(k1+1) / (tf + k1*(1 - b + b*|d|/avgdl)) ]
+# where IDF uses the Robertson variant: log((N - df + 0.5)/(df + 0.5) + 1)
+# This keeps all IDF values positive even for very common words.
 
 import math
 from util import build_inverted_index, count_query_words, sort_and_complete_ranking

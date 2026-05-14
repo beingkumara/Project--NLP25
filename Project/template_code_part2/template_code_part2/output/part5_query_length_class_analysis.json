@@ -1,0 +1,72 @@
+{
+    "VSM (Baseline)": {
+        "long": {
+            "count": 193,
+            "mean_ap": 0.2787
+        },
+        "medium": {
+            "count": 32,
+            "mean_ap": 0.211
+        }
+    },
+    "BM25": {
+        "long": {
+            "count": 193,
+            "mean_ap": 0.3396
+        },
+        "medium": {
+            "count": 32,
+            "mean_ap": 0.2751
+        }
+    },
+    "LSA (k=200, CV)": {
+        "long": {
+            "count": 193,
+            "mean_ap": 0.3316
+        },
+        "medium": {
+            "count": 32,
+            "mean_ap": 0.2735
+        }
+    },
+    "VSM + QE": {
+        "long": {
+            "count": 193,
+            "mean_ap": 0.2355
+        },
+        "medium": {
+            "count": 32,
+            "mean_ap": 0.1964
+        }
+    },
+    "BM25 + PRF": {
+        "long": {
+            "count": 193,
+            "mean_ap": 0.348
+        },
+        "medium": {
+            "count": 32,
+            "mean_ap": 0.2831
+        }
+    },
+    "ESA": {
+        "long": {
+            "count": 193,
+            "mean_ap": 0.2216
+        },
+        "medium": {
+            "count": 32,
+            "mean_ap": 0.1506
+        }
+    },
+    "ESA (Cranfield)": {
+        "long": {
+            "count": 193,
+            "mean_ap": 0.304
+        },
+        "medium": {
+            "count": 32,
+            "mean_ap": 0.2505
+        }
+    }
+}

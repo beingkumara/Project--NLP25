@@ -1,0 +1,166 @@
+
+
+=== PAGE 1 ===
+CS6370: Natural Language Processing
+Project
+Release Date: 26th March 2024
+Deadline: 14th May 2025
+Name:
+Roll No.:
+General Instructions:
+1. The template for the code (in Python) is provided in a separate zip file. You are expected
+to fill in the template wherever instructed.
+Note that any Python library, such as nltk,
+stanfordcorenlp, spacy, etc., can be used.
+2. A folder named Roll number.zip that contains a zip of the code folder and your responses
+to the questions (a PDF of this document with the solutions written in the text boxes) must
+be uploaded on Moodle by the deadline.
+3. Any submissions made after the deadline will not be graded.
+4. Answer the theoretical questions concisely. All the codes should contain proper comments.
+5. For questions involving coding components, paste a screenshot of the code.
+6. The institute’s academic code of conduct will be strictly enforced.
+The first assignment in the NLP course involved building a basic text processing module that
+implements sentence segmentation, tokenization, stemming/lemmatization, stopword removal, and
+some aspects of spell check. This module involves implementing an Information Retrieval system
+using the Vector Space Model. The same dataset as in Part 1 (Cranfield dataset) will be used for
+this purpose.
+The project is split into two components — the first is a warm-up component comprising Parts
+1 through 4, which acts as a precursor to the second and main component, where you improve over
+the basic IR system.
+Part 1: Working out a Toy IR System (Ambiguity Focus)
+Dataset
+Consider the following three documents:
+• d1: The star in our solar system provides heat and light.
+• d2: That Hollywood star walked the red carpet for the movie premiere.
+• d3: Astronomers observe distant stars and galaxies using telescopes.
+1
+
+
+=== PAGE 2 ===
+1. Preprocessing and Inverted Index
+Assuming the stop words are {the, in, our, and, that, for}:
+• Perform tokenization.
+• Remove stop words.
+• Construct the inverted index for the processed documents.
+2. TF-IDF Term-Document Matrix
+• Construct the TF-IDF representation for the corpus {d1, d2, d3}.
+• Clearly show:
+– Term Frequencies (TF)
+– Inverse Document Frequencies (IDF)
+– Final TF-IDF weights
+3. Boolean Retrieval
+Consider the query: “star light”
+• Retrieve documents using the inverted index.
+• Which documents match the query terms?
+4. Cosine Similarity and Ranking
+• Represent the query using TF-IDF.
+• Compute cosine similarity between the query and each document.
+• Rank the documents based on similarity scores.
+Answer the following:
+• What is the final ranking?
+• Is the ranking desirable? Justify your answer.
+2
+
+
+=== PAGE 3 ===
+5. Analysis of Word Sense Ambiguity
+Consider the query: “movie star”
+• Which document(s) should ideally be retrieved?
+• Does the system retrieve the correct document(s)?
+• Explain how word sense ambiguity (“star”) affects retrieval.
+Part 2: Building and Extending an IR System
+[Implementation]
+1. Implement the retrieval component of the Information Retrieval (IR) system using the tem-
+plate provided. Represent documents using the TF-IDF vector space model.
+Part 3: Evaluating your IR System
+[Implementation]
+1. Implement the following evaluation measures in the template provided:
+• Precision@k
+• Recall@k
+• F0.5-score@k
+• Average Precision (AP@k)
+• nDCG@k
+Report the following:
+• Precision@k:
+• Recall@k:
+• F0.5-score@k:
+• AP@k:
+• nDCG@k:
+2. Report the following global evaluation metrics:
+• Mean Average Precision (MAP): Compute MAP by taking the mean of the Average
+Precision (AP) scores across all queries, where applicable.
+• Mean Reciprocal Rank (MRR): Compute MRR by averaging the reciprocal of the
+rank of the first relevant document for each query, where applicable.
+3. Assume that for a given query, the set of relevant documents is as listed in incran qrels.json.
+Any document with a relevance score of 1 to 4 is considered as relevant.
+• For each query in the Cranfield dataset, compute Precision, Recall, F-score, Average
+Precision, and nDCG for k = 1 to 10.
+3
+
+
+=== PAGE 4 ===
+• Average each measure over all queries.
+• Plot each evaluation metric as a function of k using the provided template code.
+Report:
+• Graphs of all evaluation metrics vs k
+• Observations based on the plots
+4. Using the time module in Python, report the run time of your IR system.
+Part 4: Analysis
+[Theory]
+1. What are the limitations of the Vector Space Model (VSM)? Provide examples from the
+Cranfield dataset that illustrate these shortcomings in your IR system.
+Your answer should include:
+• Identification of key limitations of VSM
+• Concrete examples from your retrieval results
+2. The Zero-Result Problem (OOV Issue):
+• What happens when a query contains a word that does not appear in the document
+vocabulary (Out-of-Vocabulary term)?
+• How does this affect retrieval results in your system?
+• Provide an example query demonstrating this issue.
+Part 5: Improving the IR System
+[Project]
+Based on the factual record of actual retrieval failures observed in your assignment, develop hy-
+potheses that could address these failures. You may need to identify the implicit assumptions made
+by your approach that resulted in undesirable outcomes.
+To realize improvements, you may use any suitable method(s), including hybrid approaches that
+combine knowledge from linguistic, background, and introspective sources to represent documents.
+Some example methods discussed in class include:
+• Latent Semantic Analysis (LSA)
+• Explicit Semantic Analysis (ESA)
+You may also explore improvements to a search engine in terms of:
+• Efficiency of retrieval
+• Robustness to spelling errors
+4
+
+
+=== PAGE 5 ===
+• Query auto-completion
+You are expected to rigorously test your hypotheses using appropriate hypothesis testing meth-
+ods. As an outcome of your work, you should be able to make a statement of the following form:
+“An algorithm A1 is better than A2 with respect to the evaluation measure E in task
+T on a specific domain D under certain assumptions A.”
+Note that, unlike earlier parts of the assignment, this component is open-ended and not re-
+stricted to the ideas mentioned above. For each method, your final report must include a critical
+analysis of results. Methods can be combined to develop improved systems; however, such hy-
+brid approaches should be well-founded and not ad hoc (for example, simply combining multiple
+methods with tuned parameters without justification).
+You may either build upon the template code provided earlier or develop your system from
+scratch, depending on your approach. While you are free to use any dataset for experimentation,
+the Cranfield dataset must be used for evaluation.
+The project will be evaluated based on:
+• Rigor in methodology
+• Depth of understanding
+• Quality of the report
+• Performance in the viva if underperformed in the Written test of the Project
+Report Structure
+Your project report must include the following components:
+1. An introduction to the problem setting
+2. The limitations of the basic Vector Space Model (VSM) with appropriate examples from the
+dataset(s)
+3. Your proposed approach(es) to address these issues
+4. A description of the dataset(s) used for experimentation
+5. The results obtained, along with a comparative study demonstrating improvements in the IR
+system, both qualitatively and quantitatively
+The LATEX template for the final report will be uploaded on Moodle. You are instructed to
+follow the template strictly.
+5

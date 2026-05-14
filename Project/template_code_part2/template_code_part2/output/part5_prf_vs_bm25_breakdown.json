@@ -1,0 +1,56 @@
+{
+    "system_a": "BM25 + PRF",
+    "system_b": "BM25",
+    "by_query_length": {
+        "short": {
+            "a_wins": 0,
+            "b_wins": 0,
+            "ties": 0,
+            "count": 0,
+            "a_win_pct": 0.0,
+            "b_win_pct": 0.0
+        },
+        "medium": {
+            "a_wins": 17,
+            "b_wins": 8,
+            "ties": 7,
+            "count": 32,
+            "a_win_pct": 53.1,
+            "b_win_pct": 25.0
+        },
+        "long": {
+            "a_wins": 75,
+            "b_wins": 73,
+            "ties": 45,
+            "count": 193,
+            "a_win_pct": 38.9,
+            "b_win_pct": 37.8
+        }
+    },
+    "by_qrel_density": {
+        "sparse": {
+            "a_wins": 5,
+            "b_wins": 16,
+            "ties": 14,
+            "count": 35,
+            "a_win_pct": 14.3,
+            "b_win_pct": 45.7
+        },
+        "medium": {
+            "a_wins": 44,
+            "b_wins": 44,
+            "ties": 35,
+            "count": 123,
+            "a_win_pct": 35.8,
+            "b_win_pct": 35.8
+        },
+        "dense": {
+            "a_wins": 43,
+            "b_wins": 21,
+            "ties": 3,
+            "count": 67,
+            "a_win_pct": 64.2,
+            "b_win_pct": 31.3
+        }
+    }
+}

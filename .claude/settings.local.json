@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(echo $HOME)",
+      "PowerShell(ls \"$HOME\\\\.claude\\\\skills\")",
+      "PowerShell(Get-ChildItem *)",
+      "PowerShell(New-Item *)",
+      "Bash(python part3.py)",
+      "Bash(pdflatex -interaction=nonstopmode part1_final_report.tex)",
+      "Bash(python main.py)",
+      "Bash(python main.py -custom)"
+    ]
+  }
+}

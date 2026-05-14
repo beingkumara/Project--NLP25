@@ -184,13 +184,24 @@ class Evaluation():
 		Computation of fscore of the Information Retrieval System
 		at a given value of k for a single query.
 
-		NOTE: The assignment requires F0.5-score (beta = 0.5), NOT F1-score.
-		The formula for F-beta score is:
-		  F_beta = (1 + beta^2) * P * R / (beta^2 * P + R)
-		For beta = 0.5:
-		  F_0.5 = (1 + 0.25) * P * R / (0.25 * P + R)
-		       = 1.25 * P * R / (0.25 * P + R)
-		This gives more weight to Precision than Recall.
+		Parameters
+		----------
+		query_doc_IDs_ordered : list
+			Ranked document IDs for the query.
+		query_id : int
+			The ID of the query.
+		true_doc_IDs : list
+			The ground truth list of relevant document IDs.
+		k : int
+			The k value for Fscore@k.
+
+		Returns
+		-------
+		float
+			The F0.5 score for this query at k.
+
+		Note: The assignment asks for F0.5 (beta=0.5) which weights precision
+		more than recall. The formula is (1+0.25)*P*R / (0.25*P + R).
 		"""
 
 		# First compute precision@k and recall@k for this query
