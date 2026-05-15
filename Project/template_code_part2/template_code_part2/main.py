@@ -12,7 +12,8 @@ from sys import version_info
 import argparse
 import json
 import matplotlib
-matplotlib.use('Agg')   # Need this so matplotlib does not try to open a display window
+
+matplotlib.use("Agg")  # Need this so matplotlib does not try to open a display window
 import matplotlib.pyplot as plt
 import os
 
@@ -46,18 +47,10 @@ class SearchEngine:
         self.evaluator = Evaluation()
 
     def segmentSentences(self, text):
+        # we iterate through the logic here
         """
-        Segment the input text into sentences.
-
-        Parameters
-        ----------
-        text : str
-            The raw text content of a document or query.
-
-        Returns
-        -------
-        list
-            A list of strings where each string is a sentence.
+        Basically this function segments the input raw text into sentences.
+        It takes the text as a string and returns a list of sentence strings.
         """
         if self.args.segmenter == "naive":
             return self.sentenceSegmenter.naive(text)
@@ -66,17 +59,8 @@ class SearchEngine:
 
     def tokenize(self, text):
         """
-        Tokenize the input sentences.
-
-        Parameters
-        ----------
-        text : list
-            A list of strings (sentences).
-
-        Returns
-        -------
-        list
-            A list of lists (tokens per sentence).
+        Here we tokenize the input sentences.
+        Takes a list of strings and returns a list of token lists.
         """
         if self.args.tokenizer == "naive":
             return self.tokenizer.naive(text)
@@ -84,57 +68,33 @@ class SearchEngine:
             return self.tokenizer.pennTreeBank(text)
 
     def reduceInflection(self, text):
+        # we iterate through the logic here
         """
-        Reduce the words to their root forms.
-
-        Parameters
-        ----------
-        text : list
-            A list of lists of tokens.
-
-        Returns
-        -------
-        list
-            A list of lists of reduced tokens.
+        From what we studied, we need to reduce the words to their root forms here.
+        Returns the reduced tokens.
         """
         return self.inflectionReducer.reduce(text)
 
     def removeStopwords(self, text):
         """
-        Remove irrelevant common words from the text.
-
-        Parameters
-        ----------
-        text : list
-            A list of lists of tokens.
-
-        Returns
-        -------
-        list
-            A list of lists of tokens with stopwords removed.
+        Let us remove the irrelevant common stop words from the text.
+        Returns the tokens without stopwords.
         """
         return self.stopwordRemover.fromList(text)
 
     def preprocessQueries(self, queries):
         """
-        Complete preprocessing pipeline for queries.
-
-        Parameters
-        ----------
-        queries : list
-            A list of raw query strings.
-
-        Returns
-        -------
-        list
-            A list of preprocessed queries (3D list).
+        Basically the complete preprocessing pipeline for our queries.
+        Returns the final preprocessed queries.
         """
         segmentedQueries = []
         for query in queries:
             segmentedQuery = self.segmentSentences(query)
             segmentedQueries.append(segmentedQuery)
 
-        out_file = open(os.path.join(self.args.out_folder, "segmented_queries.txt"), 'w')
+        out_file = open(
+            os.path.join(self.args.out_folder, "segmented_queries.txt"), "w"
+        )
         json.dump(segmentedQueries, out_file)
         out_file.close()
 
@@ -143,7 +103,9 @@ class SearchEngine:
             tokenizedQuery = self.tokenize(query)
             tokenizedQueries.append(tokenizedQuery)
 
-        out_file = open(os.path.join(self.args.out_folder, "tokenized_queries.txt"), 'w')
+        out_file = open(
+            os.path.join(self.args.out_folder, "tokenized_queries.txt"), "w"
+        )
         json.dump(tokenizedQueries, out_file)
         out_file.close()
 
@@ -152,7 +114,7 @@ class SearchEngine:
             reducedQuery = self.reduceInflection(query)
             reducedQueries.append(reducedQuery)
 
-        out_file = open(os.path.join(self.args.out_folder, "reduced_queries.txt"), 'w')
+        out_file = open(os.path.join(self.args.out_folder, "reduced_queries.txt"), "w")
         json.dump(reducedQueries, out_file)
         out_file.close()
 
@@ -161,7 +123,9 @@ class SearchEngine:
             stopwordRemovedQuery = self.removeStopwords(query)
             stopwordRemovedQueries.append(stopwordRemovedQuery)
 
-        out_file = open(os.path.join(self.args.out_folder, "stopword_removed_queries.txt"), 'w')
+        out_file = open(
+            os.path.join(self.args.out_folder, "stopword_removed_queries.txt"), "w"
+        )
         json.dump(stopwordRemovedQueries, out_file)
         out_file.close()
 
@@ -169,24 +133,15 @@ class SearchEngine:
 
     def preprocessDocs(self, docs):
         """
-        Complete preprocessing pipeline for documents.
-
-        Parameters
-        ----------
-        docs : list
-            A list of raw document body strings.
-
-        Returns
-        -------
-        list
-            A list of preprocessed documents (3D list).
+        Here is the complete preprocessing pipeline for our documents.
+        Returns the final preprocessed documents.
         """
         segmentedDocs = []
         for doc in docs:
             segmentedDoc = self.segmentSentences(doc)
             segmentedDocs.append(segmentedDoc)
 
-        out_file = open(os.path.join(self.args.out_folder, "segmented_docs.txt"), 'w')
+        out_file = open(os.path.join(self.args.out_folder, "segmented_docs.txt"), "w")
         json.dump(segmentedDocs, out_file)
         out_file.close()
 
@@ -195,7 +150,7 @@ class SearchEngine:
             tokenizedDoc = self.tokenize(doc)
             tokenizedDocs.append(tokenizedDoc)
 
-        out_file = open(os.path.join(self.args.out_folder, "tokenized_docs.txt"), 'w')
+        out_file = open(os.path.join(self.args.out_folder, "tokenized_docs.txt"), "w")
         json.dump(tokenizedDocs, out_file)
         out_file.close()
 
@@ -204,7 +159,7 @@ class SearchEngine:
             reducedDoc = self.reduceInflection(doc)
             reducedDocs.append(reducedDoc)
 
-        out_file = open(os.path.join(self.args.out_folder, "reduced_docs.txt"), 'w')
+        out_file = open(os.path.join(self.args.out_folder, "reduced_docs.txt"), "w")
         json.dump(reducedDocs, out_file)
         out_file.close()
 
@@ -213,7 +168,9 @@ class SearchEngine:
             stopwordRemovedDoc = self.removeStopwords(doc)
             stopwordRemovedDocs.append(stopwordRemovedDoc)
 
-        out_file = open(os.path.join(self.args.out_folder, "stopword_removed_docs.txt"), 'w')
+        out_file = open(
+            os.path.join(self.args.out_folder, "stopword_removed_docs.txt"), "w"
+        )
         json.dump(stopwordRemovedDocs, out_file)
         out_file.close()
 
@@ -221,19 +178,11 @@ class SearchEngine:
 
     def evaluateDataset(self):
         """
-        Run the full IR system evaluation on the Cranfield dataset.
-
-        Parameters
-        ----------
-        None.
-
-        Returns
-        -------
-        None.
+        Finally running the full IR system evaluation on the Cranfield dataset.
         """
 
         # Loading query data from the dataset folder
-        queries_file = open(os.path.join(self.args.dataset, "cran_queries.json"), 'r')
+        queries_file = open(os.path.join(self.args.dataset, "cran_queries.json"), "r")
         queries_json = json.load(queries_file)
         queries_file.close()
 
@@ -247,7 +196,7 @@ class SearchEngine:
         processedQueries = self.preprocessQueries(queries)
 
         # Loading documents from the dataset folder
-        docs_file = open(os.path.join(self.args.dataset, "cran_docs.json"), 'r')
+        docs_file = open(os.path.join(self.args.dataset, "cran_docs.json"), "r")
         docs_json = json.load(docs_file)
         docs_file.close()
 
@@ -269,7 +218,7 @@ class SearchEngine:
         doc_IDs_ordered = ranked_list_to_dict(doc_IDs_ordered_list, query_ids)
 
         # Loading the qrels relevance file
-        qrels_file = open(os.path.join(self.args.dataset, "cran_qrels.json"), 'r')
+        qrels_file = open(os.path.join(self.args.dataset, "cran_qrels.json"), "r")
         qrels_raw = json.load(qrels_file)
         qrels_file.close()
 
@@ -288,7 +237,9 @@ class SearchEngine:
 
         for k in range(1, 11):
 
-            precision = self.evaluator.meanPrecision(doc_IDs_ordered, query_ids, qrels, k)
+            precision = self.evaluator.meanPrecision(
+                doc_IDs_ordered, query_ids, qrels, k
+            )
             recall = self.evaluator.meanRecall(doc_IDs_ordered, query_ids, qrels, k)
             fscore = self.evaluator.meanFscore(doc_IDs_ordered, query_ids, qrels, k)
 
@@ -296,17 +247,39 @@ class SearchEngine:
             recalls.append(recall)
             fscores.append(fscore)
 
-            print("Precision, Recall, F-score @ " + str(k) + ": " + str(precision) + ", " + str(recall) + ", " + str(fscore))
+            print(
+                "Precision, Recall, F-score @ "
+                + str(k)
+                + ": "
+                + str(precision)
+                + ", "
+                + str(recall)
+                + ", "
+                + str(fscore)
+            )
 
-            MAP = self.evaluator.meanAveragePrecision(doc_IDs_ordered, query_ids, qrels, k)
+            MAP = self.evaluator.meanAveragePrecision(
+                doc_IDs_ordered, query_ids, qrels, k
+            )
             nDCG = self.evaluator.meanNDCG(doc_IDs_ordered, query_ids, qrels, k)
-            MRR = self.evaluator.meanReciprocalRank(doc_IDs_ordered, query_ids, qrels, k)
+            MRR = self.evaluator.meanReciprocalRank(
+                doc_IDs_ordered, query_ids, qrels, k
+            )
 
             MAPs.append(MAP)
             nDCGs.append(nDCG)
             MRRs.append(MRR)
 
-            print("MAP, nDCG, MRR @ " + str(k) + ": " + str(MAP) + ", " + str(nDCG) + ", " + str(MRR))
+            print(
+                "MAP, nDCG, MRR @ "
+                + str(k)
+                + ": "
+                + str(MAP)
+                + ", "
+                + str(nDCG)
+                + ", "
+                + str(MRR)
+            )
 
         # Now plotting all the metrics together on one graph
         plt.plot(range(1, 11), precisions, label="Precision")
@@ -324,15 +297,7 @@ class SearchEngine:
 
     def handleCustomQuery(self):
         """
-        Allow the user to enter a custom query via the terminal.
-
-        Parameters
-        ----------
-        None.
-
-        Returns
-        -------
-        None.
+        This is to allow the user to enter a custom query via the terminal logic.
         """
 
         print("Enter query below")
@@ -341,7 +306,7 @@ class SearchEngine:
         processedQuery = self.preprocessQueries([query])[0]
 
         # Loading documents so we can build the index for ranking
-        docs_file = open(os.path.join(self.args.dataset, "cran_docs.json"), 'r')
+        docs_file = open(os.path.join(self.args.dataset, "cran_docs.json"), "r")
         docs_json = json.load(docs_file)
         docs_file.close()
 
@@ -379,14 +344,14 @@ class SearchEngine:
 
 if __name__ == "__main__":
 
-    parser = argparse.ArgumentParser(description='main.py')
+    parser = argparse.ArgumentParser(description="main.py")
 
     _script_dir = os.path.dirname(os.path.abspath(__file__))
-    parser.add_argument('-dataset', default=os.path.join(_script_dir, "cranfield/"))
-    parser.add_argument('-out_folder', default=os.path.join(_script_dir, "output/"))
-    parser.add_argument('-segmenter', default="punkt")
-    parser.add_argument('-tokenizer', default="ptb")
-    parser.add_argument('-custom', action="store_true")
+    parser.add_argument("-dataset", default=os.path.join(_script_dir, "cranfield/"))
+    parser.add_argument("-out_folder", default=os.path.join(_script_dir, "output/"))
+    parser.add_argument("-segmenter", default="punkt")
+    parser.add_argument("-tokenizer", default="ptb")
+    parser.add_argument("-custom", action="store_true")
 
     args = parser.parse_args()
 
